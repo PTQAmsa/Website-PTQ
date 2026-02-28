@@ -56,11 +56,11 @@ export default function Navbar() {
                 Pendaftaran ▾
               </button>
               <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <a href="/pendaftaran-santri-baru" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-t-lg">
+                <a href="/pendaftaran-santri-baru" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg">
                   Pendaftaran Santri Baru
                 </a>
-                <a href="/beasiswa" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-b-lg">
-                  Beasiswa
+               {/*} <a href="/beasiswa" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-b-lg">
+                  Beasiswa*/}
                 </a>
               </div>
             </div>
@@ -73,9 +73,9 @@ export default function Navbar() {
                 Tentang PTQ Amsa ▾
               </button>
               <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <a href="/tentang-pesantren" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-t-lg">
+                {/*<a href="/tentang-pesantren" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-t-lg">
                   Tentang Pesantren
-                </a>
+                </a>*/}
                 <a href="/visi-misi" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
                   Visi & Misi
                 </a>
@@ -154,9 +154,9 @@ export default function Navbar() {
                   <a href="/pendaftaran-santri-baru" target="_blank" className="block py-2 text-gray-600 hover:text-blue-600">
                     Pendaftaran Santri Baru
                   </a>
-                  <a href="/beasiswa" target="_blank" className="block py-2 text-gray-600 hover:text-blue-600">
+                  {/*<a href="/beasiswa" target="_blank" className="block py-2 text-gray-600 hover:text-blue-600">
                     Beasiswa
-                  </a>
+                  </a>*/}
                 </div>
               )}
             </div>
@@ -175,9 +175,9 @@ export default function Navbar() {
                   <a href="/tentang-pesantren" target="_blank" className="block py-2 text-gray-600 hover:text-blue-600">
                     Tentang Pesantren
                   </a>
-                  <a href="/visi-misi" target="_blank" className="block py-2 text-gray-600 hover:text-blue-600">
+                  {/*<a href="/visi-misi" target="_blank" className="block py-2 text-gray-600 hover:text-blue-600">
                     Visi & Misi
-                  </a>
+                  </a>*/}
                   <a href="/majelis-kyai" target="_blank" className="block py-2 text-gray-600 hover:text-blue-600">
                     Majelis Kyai
                   </a>
