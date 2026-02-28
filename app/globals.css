@@ -1,26 +1,102 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 1s ease-in;
+  }
+  
+  .animate-scroll-left-seamless {
+    animation: scrollLeftSeamless 60s linear infinite;
+  }
+  
+  .animate-scroll-right-seamless {
+    animation: scrollRightSeamless 60s linear infinite;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scrollLeftSeamless {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-344px * 10));
+  }
+}
+
+@keyframes scrollRightSeamless {
+  0% {
+    transform: translateX(calc(-344px * 10));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Article Content Styling */
+.prose p {
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.prose h3 {
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1rem;
+  border-left: 4px solid #fbbf24;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.prose strong {
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.prose em {
+  color: #1e40af;
+  font-style: italic;
+}
+
+.prose blockquote {
+  border-left: 4px solid #fbbf24;
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: #4b5563;
+  background: #fef3c7;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.prose ul {
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+}
+
+.prose a {
+  color: #2563eb;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.prose a:hover {
+  border-bottom-color: #2563eb;
 }
