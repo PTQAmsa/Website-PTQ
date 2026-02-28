@@ -60,8 +60,8 @@ export default function Navbar() {
                   Pendaftaran Santri Baru
                 </a>
                {/*} <a href="/beasiswa" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-b-lg">
-                  Beasiswa*/}
-                </a>
+                  Beasiswa</a>*/}
+                
               </div>
             </div>
 
