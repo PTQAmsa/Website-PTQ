@@ -32,7 +32,7 @@ export default function VideoSection() {
         <section ref={videoRef} className="relative w-full h-screen bg-black">
         <div className="absolute inset-0">
           <iframe
-            src={`https://www.youtube.com/embed/TX95SRptQBo?autoplay=${isVisible ? '1' : '0'}&mute=1&loop=1&playlist=TX95SRptQBo&controls=0&showinfo=0&rel=0&modestbranding=1`}
+            src={`https://www.youtube.com/embed/TX95SRptQBo?autoplay=${isVisible ? '1' : '0'}&mute=1&loop=1&playlist=TX95SRptQBo&controls=1&showinfo=0&rel=0&modestbranding=1`}
             title="Pesantren Tadabbur Al-Qur'an Amsa001"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -45,7 +45,7 @@ export default function VideoSection() {
               width: '100vw',
               height: '100vh',
               transform: 'translate(-50%, -50%)',
-              pointerEvents: 'none'
+              pointerEvents: 'auto'
             }}
           />
         </div>

@@ -73,12 +73,12 @@ export default function Navbar() {
                 Tentang PTQ Amsa ▾
               </button>
               <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                {/*<a href="/tentang-pesantren" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-t-lg">
+                <a href="/tentang-pesantren" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-t-lg">
                   Tentang Pesantren
-                </a>*/}
-                <a href="/visi-misi" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
-                  Visi & Misi
                 </a>
+                {/*<a href="/visi-misi" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                  Visi & Misi
+                </a>*/}
                 <a href="/majelis-kyai" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-b-lg">
                   Majelis Kyai
                 </a>

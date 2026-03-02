@@ -35,10 +35,12 @@ export default function MajelisKyai() {
               {/* Kyai 1 - Pengasuh & Pendiri */}
               <div className="bg-gradient-to-br from-blue-50 to-yellow-50 rounded-lg p-8 shadow-lg hover:shadow-xl transition">
                 <div className="text-center">
-                  <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full mx-auto mb-6 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+                  <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-blue-600 shadow-lg">
+                    <img 
+                      src="/kyai/kyai-aminullah.jpg" 
+                      alt="KH. Drs. Aminullah Tsamud"
+                      className="w-full h-full object-cover scale-125"
+                    />
                   </div>
                   <h3 className="text-xl md:text-2xl font-bold text-blue-900 mb-2">
                     KH. Drs. Aminullah Tsamud
@@ -55,10 +57,12 @@ export default function MajelisKyai() {
               {/* Kyai 2 - Kepala Sekolah */}
               <div className="bg-gradient-to-br from-blue-50 to-yellow-50 rounded-lg p-8 shadow-lg hover:shadow-xl transition">
                 <div className="text-center">
-                  <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full mx-auto mb-6 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+                  <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-blue-600 shadow-lg">
+                    <img 
+                      src="/kyai/kyai-zubaidi.jpg" 
+                      alt="Kyai Drs. Zubaidi, MM."
+                      className="w-full h-full object-cover scale-125"
+                    />
                   </div>
                   <h3 className="text-xl md:text-2xl font-bold text-blue-900 mb-2">
                     Kyai Drs. Zubaidi, MM.
@@ -75,10 +79,12 @@ export default function MajelisKyai() {
               {/* Kyai 3 - Direktur Pesantren */}
               <div className="bg-gradient-to-br from-blue-50 to-yellow-50 rounded-lg p-8 shadow-lg hover:shadow-xl transition">
                 <div className="text-center">
-                  <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full mx-auto mb-6 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+                  <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-blue-600 shadow-lg">
+                    <img 
+                      src="/kyai/kyai-ahmadie.jpg" 
+                      alt="KH. Drs. Ahmadie Thaha, M.Si."
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <h3 className="text-xl md:text-2xl font-bold text-blue-900 mb-2">
                     KH. Drs. Ahmadie Thaha, M.Si.
