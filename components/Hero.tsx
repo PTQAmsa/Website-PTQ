@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function Hero() {
   const [currentImage, setCurrentImage] = useState(0);
@@ -29,11 +30,20 @@ export default function Hero() {
         {images.map((image, index) => (
           <div
             key={index}
-            className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
+            className={`absolute inset-0 transition-opacity duration-1000 ${
               index === currentImage ? 'opacity-100' : 'opacity-0'
             }`}
-            style={{ backgroundImage: `url('${image}')` }}
-          ></div>
+          >
+            <Image
+              src={image}
+              alt={`Kegiatan Santri PTQ Amsa001 Bogor ${index + 1}`}
+              fill
+              priority={index === 0} // Priority untuk gambar pertama (LCP)
+              quality={85}
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
         ))}
       </div>
       

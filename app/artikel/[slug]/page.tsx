@@ -26,10 +26,43 @@ export default function ArtikelDetail() {
     );
   }
 
+  // Article Schema Markup
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": article.title,
+    "image": `https://ptqamsa.id${article.image}`,
+    "author": {
+      "@type": "Person",
+      "name": article.author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PTQ Amsa001",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://ptqamsa.id/Logo-color.png"
+      }
+    },
+    "datePublished": article.date,
+    "dateModified": article.date,
+    "description": article.excerpt,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://ptqamsa.id/artikel/${article.slug}`
+    }
+  };
+
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
       <BackToTop />
+
+      {/* Article Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
 
       {/* Article Header */}
       <article className="pt-24 pb-16">

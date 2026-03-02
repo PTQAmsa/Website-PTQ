@@ -1,24 +1,65 @@
 export default function Contact() {
   return (
     <section id="contact" className="py-20 px-4 bg-gradient-to-br from-blue-700 to-blue-900">
-      <div className="max-w-6xl mx-auto text-white">
+      <div className="max-w-7xl mx-auto text-white">
         <h2 className="text-4xl font-bold text-center mb-4">
           Kunjungi Kami
         </h2>
         <div className="w-24 h-1 bg-yellow-400 mx-auto mb-12"></div>
-        <div className="grid md:grid-cols-2 gap-8">
+        
+        {/* Grid 3 Kolom: Pendaftaran, Informasi Kontak, Lokasi Kami */}
+        <div className="grid md:grid-cols-3 gap-8">
+          
+          {/* Kolom 1: Pendaftaran */}
+          <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
+            <h3 className="text-2xl font-bold mb-6 text-yellow-400">Pendaftaran</h3>
+            <div className="bg-white/20 p-6 rounded-xl mb-6">
+              <div className="text-center mb-4">
+                <div className="text-lg font-semibold mb-2">Tahun Ajaran</div>
+                <div className="text-3xl font-bold text-yellow-400">2026-2027 M</div>
+                <div className="text-xl font-semibold">1447-1448 H</div>
+              </div>
+            </div>
+            <div className="space-y-4 mb-6">
+              <div className="bg-white/10 p-4 rounded-lg">
+                <div className="font-semibold mb-1">Jenjang Pendidikan</div>
+                <div className="text-yellow-400 font-bold">SMP - SMA Sederajat</div>
+              </div>
+              <div className="bg-white/10 p-4 rounded-lg">
+                <div className="font-semibold mb-1">Penerimaan</div>
+                <div className="text-yellow-400 font-bold">Putra & Putri</div>
+              </div>
+            </div>
+            <a 
+              href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full text-center bg-yellow-400 text-blue-900 py-4 rounded-xl font-bold hover:bg-yellow-300 transition shadow-lg text-lg"
+            >
+              Daftar Online Sekarang
+            </a>
+          </div>
+
+          {/* Kolom 2: Informasi Kontak */}
           <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
             <h3 className="text-2xl font-bold mb-6 text-yellow-400">Informasi Kontak</h3>
             <div className="space-y-5">
-              <div className="flex items-start gap-4">
-                <span className="text-3xl">📍</span>
+              <a 
+                href="https://maps.app.goo.gl/1H7EXzVznGXvpLG7A" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-4 hover:opacity-80 transition"
+              >
+                <svg className="w-8 h-8 mt-1 flex-shrink-0" fill="#fbbf24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
                 <div>
                   <div className="font-bold text-lg mb-1">Alamat</div>
                   <div className="opacity-90 leading-relaxed">
                     Jl. Cikopo Selatan, Gg. Yulias, Kampung Sukabirus, Desa Gadog, Kec Megamendung, Kab. Bogor, Jawa Barat 16770
                   </div>
                 </div>
-              </div>
+              </a>
               <a 
                 href="https://wa.me/6281329361375" 
                 target="_blank"
@@ -89,34 +130,32 @@ export default function Contact() {
               </a>
             </div>
           </div>
+
+          {/* Kolom 3: Lokasi Kami (Google Maps) */}
           <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
-            <h3 className="text-2xl font-bold mb-6 text-yellow-400">Pendaftaran</h3>
-            <div className="bg-white/20 p-6 rounded-xl mb-6">
-              <div className="text-center mb-4">
-                <div className="text-lg font-semibold mb-2">Tahun Ajaran</div>
-                <div className="text-3xl font-bold text-yellow-400">2026-2027 M</div>
-                <div className="text-xl font-semibold">1447-1448 H</div>
-              </div>
-            </div>
-            <div className="space-y-4 mb-6">
-              <div className="bg-white/10 p-4 rounded-lg">
-                <div className="font-semibold mb-1">Jenjang Pendidikan</div>
-                <div className="text-yellow-400 font-bold">SMP - SMA Sederajat</div>
-              </div>
-              <div className="bg-white/10 p-4 rounded-lg">
-                <div className="font-semibold mb-1">Penerimaan</div>
-                <div className="text-yellow-400 font-bold">Putra & Putri</div>
-              </div>
+            <h3 className="text-2xl font-bold mb-6 text-yellow-400">Lokasi Kami</h3>
+            <div className="rounded-xl overflow-hidden shadow-lg">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.870797276373!2d106.8781296!3d-6.662929799999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69c90d0e8acedb%3A0xfd02b98f6c862ca!2sPesantren%20Tadabbur%20Al-Qur&#39;an%20Amsa001%20Gadog%20Bogor!5e0!3m2!1sid!2sid!4v1772463586528!5m2!1sid!2sid" 
+                width="100%" 
+                height="400" 
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Lokasi Pesantren Tadabbur Al-Qur'an Amsa001 Gadog Bogor"
+              />
             </div>
             <a 
-              href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform" 
+              href="https://maps.app.goo.gl/1H7EXzVznGXvpLG7A" 
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full text-center bg-yellow-400 text-blue-900 py-4 rounded-xl font-bold hover:bg-yellow-300 transition shadow-lg text-lg"
+              className="block w-full text-center bg-yellow-400 text-blue-900 py-3 rounded-xl font-bold hover:bg-yellow-300 transition shadow-lg mt-4"
             >
-              Daftar Online Sekarang
+              Buka di Google Maps
             </a>
           </div>
+
         </div>
       </div>
     </section>
