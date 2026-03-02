@@ -40,7 +40,7 @@ export default function Programs() {
     },
     { 
       name: 'Panahan', 
-      image1: '/ekskul/Panahan/Panahan-1.jpg',
+      image1: '/ekskul/Panahan/panahan-1.jpg',
       image2: '/ekskul/Panahan/Panahan-2.jpg'
     },
     { 
