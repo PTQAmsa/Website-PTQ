@@ -1,4 +1,4 @@
-# Landing Page Pesantren Al-Hikmah
+# Landing Page Pesantren Tadabbur Al-Qur'an Amsa001
 
 Landing page modern untuk pesantren yang dibangun dengan Next.js 15 dan Tailwind CSS.
 
