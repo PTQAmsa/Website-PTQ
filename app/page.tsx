@@ -3,7 +3,7 @@ import Hero from '@/components/Hero';
 import VideoSection from '@/components/VideoSection';
 import About from '@/components/About';
 import Programs from '@/components/Programs';
-import Testimonials from '@/components/Testimonials';
+// import Testimonials from '@/components/Testimonials';
 import PSBBanner from '@/components/PSBBanner';
 import Facilities from '@/components/Facilities';
 import Contact from '@/components/Contact';
@@ -18,7 +18,7 @@ export default function Home() {
       <VideoSection />
       <About />
       <Programs />
-      <Testimonials />
+      {/* <Testimonials /> */}
       <PSBBanner />
       <Facilities />
       <Contact />
