@@ -70,6 +70,7 @@ export default function Navbar() {
               <button className={`font-medium transition-colors hover:text-yellow-400 hover:font-bold ${
                 isScrolled ? 'text-gray-700' : 'text-white'
               }`}>
+              <div></div>
                 Tentang PTQ Amsa ▾
               </button>
               <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">

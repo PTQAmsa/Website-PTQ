@@ -60,9 +60,9 @@ export default function Hero() {
           (Putra - Putri)
         </h1>
         <p className="text-xl md:text-3xl mb-2 text-yellow-400 drop-shadow-lg">
-          SMP-SMA Sederajat
+          Muadalah Mu'allimien (SMP-SMA Sederajat)
         </p>
-        <p className="text-xl md:text-3xl mb-8 opacity-90 max-w-3xl mx-auto drop-shadow-md font-semibold">
+        <p className="text-xl md:text-4xl mb-8 opacity-90 max-w-3xl mx-auto drop-shadow-md font-semibold">
           Tahun Ajaran 2026-2027 M / 1447-1448 H
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
