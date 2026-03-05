@@ -71,22 +71,14 @@ export default function PendaftaranSantriBaru() {
             </a>
           </div>
 
-          {/* Info Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-12 md:mt-16">
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition">
-              <div className="text-3xl mb-3">🕌</div>
-              <h3 className="text-white font-semibold text-lg mb-2">Putra & Putri</h3>
-              <p className="text-blue-200 text-sm">Tersedia untuk santri putra dan putri</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition">
-              <div className="text-3xl mb-3">📖</div>
-              <h3 className="text-white font-semibold text-lg mb-2">SMP - SMA</h3>
-              <p className="text-blue-200 text-sm">Tingkat SMP dan SMA sederajat</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition">
-              <div className="text-3xl mb-3">🎓</div>
-              <h3 className="text-white font-semibold text-lg mb-2">Beasiswa</h3>
-              <p className="text-blue-200 text-sm">Program beasiswa tersedia</p>
+          {/* Poster PSB */}
+          <div className="mt-12 md:mt-16 flex justify-center">
+            <div className="w-full max-w-2xl">
+              <img 
+                src="/psb-poster.jpg" 
+                alt="Poster Pendaftaran Santri Baru PTQ Amsa001 2026-2027" 
+                className="w-full h-auto rounded-lg shadow-2xl"
+              />
             </div>
           </div>
         </div>
