@@ -169,7 +169,7 @@ export default function Beasiswa() {
                 Daftar Beasiswa Sekarang
               </a>
               <a
-                href="https://wa.me/6281329361375"
+                href="https://wa.me/6285692253516"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-white text-blue-900 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition"

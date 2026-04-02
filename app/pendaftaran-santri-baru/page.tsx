@@ -48,7 +48,7 @@ export default function PendaftaranSantriBaru() {
           {/* CTA Button */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a
-              href="https://wa.me/6281329361375"
+              href="https://wa.me/6285692253516"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-blue-900 transition-all hover:scale-105 shadow-lg hover:shadow-xl"
@@ -203,12 +203,12 @@ export default function PendaftaranSantriBaru() {
             <p className="text-xl mb-6">Hubungi kami untuk informasi lebih lanjut</p>
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
               <a
-                href="https://wa.me/6281329361375"
+                href="https://wa.me/6285692253516"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-yellow-400 text-blue-900 px-6 py-3 rounded-full font-semibold hover:bg-yellow-300 transition"
               >
-                WhatsApp: +62 813-2936-1375
+                WhatsApp: +62 856-9225-3516
               </a>
               <a
                 href="mailto:info@ptqamsa.id"

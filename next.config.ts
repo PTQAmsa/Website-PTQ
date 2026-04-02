@@ -2,7 +2,7 @@
 const securityHeaders = [
   {
     key: 'Content-Security-Policy',
-    value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://i.ytimg.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'none';"
+    value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://i.ytimg.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://www.google.com; frame-ancestors 'none';"
   },
   {
     key: 'X-DNS-Prefetch-Control',

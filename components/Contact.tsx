@@ -61,7 +61,7 @@ export default function Contact() {
                 </div>
               </a>
               <a 
-                href="https://wa.me/6281329361375" 
+                href="https://wa.me/6285692253516" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-start gap-4 hover:opacity-80 transition"
@@ -71,7 +71,7 @@ export default function Contact() {
                 </svg>
                 <div>
                   <div className="font-bold text-lg mb-1">WhatsApp</div>
-                  <div className="opacity-90">+62 813-2936-1375</div>
+                  <div className="opacity-90">+62 856-9225-3516</div>
                 </div>
               </a>
               <a 
