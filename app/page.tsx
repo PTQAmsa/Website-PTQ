@@ -6,6 +6,7 @@ import Programs from '@/components/Programs';
 // import Testimonials from '@/components/Testimonials';
 import PSBBanner from '@/components/PSBBanner';
 import Facilities from '@/components/Facilities';
+import FAQPreview from '@/components/FAQPreview';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
@@ -21,6 +22,7 @@ export default function Home() {
       {/* <Testimonials /> */}
       <PSBBanner />
       <Facilities />
+      <FAQPreview />
       <Contact />
       <Footer />
       <BackToTop />

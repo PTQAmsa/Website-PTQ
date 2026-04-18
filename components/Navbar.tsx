@@ -101,6 +101,11 @@ export default function Navbar() {
             }`}>
               Kontak
             </a>
+            <a href="/faq" className={`font-medium transition-colors hover:text-yellow-400 hover:font-bold ${
+              isScrolled ? 'text-gray-700' : 'text-white'
+            }`}>
+              FAQ
+            </a>
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform"
               target="_blank"
@@ -194,6 +199,9 @@ export default function Navbar() {
             </a>
             <a href="#contact" onClick={handleContactClick} className="block py-2 text-gray-700 hover:text-yellow-500 hover:font-bold font-medium">
               Kontak
+            </a>
+            <a href="/faq" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-gray-700 hover:text-yellow-500 hover:font-bold font-medium">
+              FAQ
             </a>
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform"

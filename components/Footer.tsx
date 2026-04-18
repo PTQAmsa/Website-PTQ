@@ -2,12 +2,22 @@ export default function Footer() {
   return (
     <footer id="contact" className="bg-gray-900 text-white py-12 px-4">
       <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+        <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <h3 className="text-2xl font-bold mb-3 text-yellow-400">PTQ Amsa001</h3>
             <p className="text-gray-400 leading-relaxed">
               Pesantren Tadabbur Al-Qur'an Amsa001 Gadog, Megamendung, Kabupaten Bogor Membentuk generasi Qurani yang berakhlak mulia
             </p>
+          </div>
+          <div>
+            <h4 className="text-lg font-bold mb-3">Navigasi</h4>
+            <div className="space-y-2 text-gray-400">
+              <a href="/" className="block hover:text-white transition">Beranda</a>
+              <a href="/tentang-pesantren" className="block hover:text-white transition">Tentang Pesantren</a>
+              <a href="/pendaftaran-santri-baru" className="block hover:text-white transition">Pendaftaran</a>
+              <a href="/artikel" className="block hover:text-white transition">Artikel</a>
+              <a href="/faq" className="block hover:text-white transition">FAQ</a>
+            </div>
           </div>
           <div>
             <h4 className="text-lg font-bold mb-3">Kontak</h4>

@@ -28,7 +28,7 @@ export default function Facilities() {
   ];
 
   return (
-    <section id="facilities" className="py-20 px-4 bg-white overflow-hidden">
+    <section id="facilities" className="py-8 px-4 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto mb-12">
         <h2 className="text-4xl font-bold text-center mb-4 text-blue-800">
           Galeri Kegiatan
@@ -74,7 +74,7 @@ export default function Facilities() {
         </div>
       </div>
 
-      <p className="text-center text-gray-600 mt-12 italic">
+      <p className="text-center text-gray-800 mt-13 italic">
         Berbagai kegiatan pembelajaran dan ekstrakurikuler yang mengembangkan potensi santri
       </p>
     </section>
