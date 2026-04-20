@@ -6,7 +6,36 @@ import FAQAccordion from './FAQAccordion';
 
 const DAFTAR_LINK = "https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform";
 
+const LOKASI_ANSWER = (
+  <>
+    Kami berlokasi di{' '}
+    <a href="https://maps.app.goo.gl/wRXtbTF7QazFSKWH6" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800 font-medium">
+      Jl. Cikopo Selatan (Pasirmuncang), Gg. Yulias, Desa Gadog, Kec. Megamendung, Kab. Bogor, Jawa Barat.
+    </a>{' '}
+    Akses mudah dari Jakarta via keluar tol Puncak Gadog (Vimala Hills) belok kanan ke arah alternatif Taman Safari Cisarua.
+  </>
+);
+
+const MI_ANSWER = (
+  <>
+    Tes Multiple Intelligence (MI) adalah tes untuk mengidentifikasi kekuatan dan potensi unik setiap santri di berbagai bidang seperti:
+    <ol className="list-decimal list-inside mt-2 mb-2 space-y-1">
+      <li>Linguistik</li>
+      <li>Logika-Matematika</li>
+      <li>Visual-Spasial</li>
+      <li>Musik</li>
+      <li>Kinestetik</li>
+      <li>Interpersonal</li>
+      <li>Intrapersonal</li>
+      <li>Naturalis</li>
+    </ol>
+    Kami menggunakan tes ini untuk memahami gaya belajar dan bakat setiap santri sehingga kami bisa memberikan bimbingan yang tepat sasaran dan membantu santri mengembangkan potensi mereka secara optimal. Bukan hanya fokus pada akademik umum saja.
+  </>
+);
+
 function renderAnswer(q: string, a: string): React.ReactNode {
+  if (a === "MI_TEST") return MI_ANSWER;
+  if (a === "LOKASI_AKSES") return LOKASI_ANSWER;
   if (q === "Bagaimana cara mendaftar?") {
     return (
       <>

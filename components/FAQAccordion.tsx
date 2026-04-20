@@ -32,9 +32,9 @@ export default function FAQAccordion({ question, answer }: FAQAccordionProps) {
 
       <div className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
         <div className="overflow-hidden">
-          <p className="px-6 py-5 text-gray-600 leading-relaxed border-t border-gray-100 bg-white">
+          <div className="px-6 py-5 text-gray-600 leading-relaxed border-t border-gray-100 bg-white">
             {answer}
-          </p>
+          </div>
         </div>
       </div>
     </div>

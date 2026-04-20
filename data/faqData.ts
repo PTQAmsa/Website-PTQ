@@ -112,7 +112,7 @@ const faqData: FaqCategory[] = [
       },
       {
         q: "Apa saja tes masuk pesantren PTQ Amsa?",
-        a: "Sebelum masuk santri akan dites bacaan Al-Qur'an, tes fiqih dasar (wudhu, sholat dll), pengetahuan agama Islam, dan tes akademik.",
+        a: "Sebelum masuk santri akan dites bacaan Al-Qur'an, tes fiqih dasar (wudhu, sholat dll), pengetahuan dasar agama Islam, tes akademik dan tes Multiple Intelligence (MI).",
       },
       {
         q: "Apakah wajib survei lokasi sebelum mendaftar?",
@@ -125,7 +125,7 @@ const faqData: FaqCategory[] = [
     questions: [
       {
         q: "Di mana lokasi PTQ Amsa dan akses jalannya?",
-        a: "Kami berlokasi di Jl. Cikopo Selatan (Pasirmuncang), Gg. Yulias, Desa Gadog, Kec. Megamendung, Kab. Bogor, Jawa Barat. Akses mudah dari Jakarta via keluar tol Puncak Gadog (Vimala Hills) belok kanan ke arah alternatif Taman Safari Cisarua.",
+        a: "LOKASI_AKSES",
       },
     ],
   },
@@ -160,6 +160,10 @@ const faqData: FaqCategory[] = [
       {
         q: "Bagaimana jika anak homesick?",
         a: "PTQ Amsa memiliki metode adaptasi khusus untuk santri baru dengan pendampingan intensif dari musyrif/musyrifah dan kakak kelas. Walisantri bisa konsultasi dengan musyrif/ah terkait jika ada kendala.",
+      },
+      {
+        q: "Apa itu tes Multiple Intelligence dan mengapa PTQ Amsa menggunakannya?",
+        a: "MI_TEST",
       },
     ],
   },
