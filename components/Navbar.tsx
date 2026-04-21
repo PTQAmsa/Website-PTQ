@@ -28,9 +28,9 @@ export default function Navbar() {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <div className="flex items-center flex-shrink-0">
             <a href="/">
               <img 
                 src={isScrolled ? "/Logo-color.png" : "/Logo.png"}
@@ -41,7 +41,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-3 lg:gap-5">
             <a href="/" className={`font-medium transition-colors hover:text-yellow-400 hover:font-bold ${
               isScrolled ? 'text-gray-700' : 'text-white'
             }`}>
@@ -101,6 +101,11 @@ export default function Navbar() {
             }`}>
               Kontak
             </a>
+            <a href="/tes-bakat" className={`font-medium transition-colors hover:text-yellow-400 hover:font-bold ${
+              isScrolled ? 'text-gray-700' : 'text-white'
+            }`}>
+              Tes MI
+            </a>
             <a href="/faq" className={`font-medium transition-colors hover:text-yellow-400 hover:font-bold ${
               isScrolled ? 'text-gray-700' : 'text-white'
             }`}>
@@ -110,7 +115,7 @@ export default function Navbar() {
               href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform"
               target="_blank"
               rel="noopener noreferrer"
-              className={`px-6 py-2 rounded-full font-semibold transition ${
+              className={`ml-2 px-5 py-2 rounded-full font-semibold transition whitespace-nowrap flex-shrink-0 ${
                 isScrolled
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
                   : 'bg-yellow-400 text-blue-900 hover:bg-yellow-300'
@@ -199,6 +204,9 @@ export default function Navbar() {
             </a>
             <a href="#contact" onClick={handleContactClick} className="block py-2 text-gray-700 hover:text-yellow-500 hover:font-bold font-medium">
               Kontak
+            </a>
+            <a href="/tes-bakat" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-gray-700 hover:text-yellow-500 hover:font-bold font-medium">
+              Tes MI
             </a>
             <a href="/faq" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-gray-700 hover:text-yellow-500 hover:font-bold font-medium">
               FAQ
