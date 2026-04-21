@@ -78,6 +78,12 @@ export default function MITest() {
 
       {/* Test Card */}
       <div className="max-w-3xl mx-auto px-4 py-12">
+
+        {/* Deskripsi */}
+        <p className="text-gray-600 text-sm leading-relaxed mb-8 bg-blue-50 border border-blue-100 rounded-2xl px-5 py-4">
+          Ini adalah contoh tes Potensi Minat dan Bakat yang bisa kamu coba. Sebelum bergabung, setiap calon santri akan mengisi tes Potensi Minat dan Bakat versi lengkap. Hasil tes ini kami gunakan untuk memahami gaya belajar dan bakat unik setiap santri, sehingga kami dapat memberikan pendampingan yang tepat dan personal selama mereka nyantri di pesantren. Tes akan dilakukan berkala setahun sekali.
+        </p>
+
         <div className="space-y-6">
           {miQuestions.map((q, idx) => (
             <div key={q.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -109,6 +115,11 @@ export default function MITest() {
         {error && (
           <p className="mt-6 text-center text-red-500 font-medium">{error}</p>
         )}
+
+        {/* Deskripsi ilmiah */}
+        <p className="italic mt-8 text-sm text-gray-400 leading-relaxed text-center max-w-xl mx-auto">
+          Tes ini disusun berbasis teori Multiple Intelligences (1986) dari Howard Gardner, psikolog perkembangan lulusan Harvard. Landasan ilmiah ini kami gunakan untuk membantu Anda memahami keunikan bakat Ananda secara lebih objektif, akurat, dan terukur.
+        </p>
 
         {/* Submit */}
         <div className="mt-8 text-center">
