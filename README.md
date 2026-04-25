@@ -57,3 +57,17 @@ Anda dapat mengubah konten di file-file berikut:
 - [Next.js 15](https://nextjs.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [TypeScript](https://www.typescriptlang.org/)
+
+## Setup Supabase Pendaftaran Santri
+
+1. Isi env di `.env.local`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=YOUR_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+```
+
+2. Jalankan SQL setup di Supabase SQL Editor:
+   - file: `supabase/registration_setup.sql`
+
+3. Pastikan bucket `dokumen-santri` sudah public, lalu test submit form dari halaman pendaftaran.

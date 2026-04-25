@@ -46,6 +46,17 @@ export default function MIResultModal({ answers, onClose }: Props) {
       setFormError('Semua kolom wajib diisi.');
       return;
     }
+
+    if (!/^\+?[0-9]{10,15}$/.test(whatsapp.trim())) {
+      setFormError('Nomor WhatsApp tidak valid. Gunakan 10-15 digit angka.');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setFormError('Email tidak valid.');
+      return;
+    }
+
     setLoading(true);
     setFormError('');
 
@@ -61,13 +72,22 @@ export default function MIResultModal({ answers, onClose }: Props) {
     };
 
     try {
-      await fetch(APPS_SCRIPT_URL, {
+      const response = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-    } catch (_) {
-      // no-cors tidak bisa baca response, anggap sukses
+
+      if (!response.ok) {
+        const errorData = (await response.json().catch(() => null)) as { message?: string } | null;
+        throw new Error(errorData?.message || 'Gagal menyimpan hasil tes. Silakan coba lagi.');
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Terjadi kesalahan. Silakan coba lagi.';
+      setFormError(message);
+      setLoading(false);
+      return;
     }
 
     setLoading(false);

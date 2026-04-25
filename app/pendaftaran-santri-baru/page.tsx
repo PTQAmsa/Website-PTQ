@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import RegistrationForm from '@/components/RegistrationForm';
 
 export default function PendaftaranSantriBaru() {
   return (
@@ -59,9 +60,7 @@ export default function PendaftaranSantriBaru() {
               <span>Tanya via WhatsApp</span>
             </a>
             <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#form-pendaftaran"
               className="inline-flex items-center gap-2 bg-yellow-400 text-blue-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition-all hover:scale-105 shadow-lg hover:shadow-xl"
             >
               <span>Daftar Sekarang</span>
@@ -95,13 +94,16 @@ export default function PendaftaranSantriBaru() {
               Segera daftarkan putra-putri Anda untuk menjadi bagian dari keluarga besar PTQ Amsa001
             </p>
             <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#form-pendaftaran"
               className="inline-block bg-blue-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-700 transition"
             >
-              Daftar Online Sekarang
+              Isi Formulir Sekarang
             </a>
+          </div>
+
+          <div id="form-pendaftaran" className="mb-12 scroll-mt-28">
+            <h2 className="text-3xl font-bold text-blue-900 mb-6 text-center">Formulir Pendaftaran Online</h2>
+            <RegistrationForm />
           </div>
 
           {/* Persyaratan */}

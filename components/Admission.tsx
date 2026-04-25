@@ -1,8 +1,10 @@
+import RegistrationForm from "./RegistrationForm";
+
 export default function Admission() {
   return (
     <section className="py-20 px-4 bg-gradient-to-br from-yellow-400 to-yellow-500">
-      <div className="max-w-4xl mx-auto text-center">
-        <div className="bg-white rounded-3xl shadow-2xl p-10 md:p-16">
+      <div className="max-w-5xl mx-auto space-y-8">
+        <div className="bg-white rounded-3xl shadow-2xl p-10 md:p-16 text-center">
           <div className="mb-6">
             <span className="text-6xl mb-4 block">🎓</span>
             <h2 className="text-4xl md:text-5xl font-bold text-blue-800 mb-4">
@@ -37,15 +39,12 @@ export default function Admission() {
             </div>
           </div>
 
-          <a 
-            href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg hover:from-blue-700 hover:to-blue-800 transition shadow-xl hover:shadow-2xl transform hover:scale-105"
-          >
-            📝 Daftar Online Sekarang
-          </a>
+          <p className="text-blue-800 font-semibold">
+            Silakan lengkapi formulir pendaftaran online di bawah ini.
+          </p>
         </div>
+
+        <RegistrationForm />
       </div>
     </section>
   );

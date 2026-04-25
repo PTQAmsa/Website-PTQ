@@ -121,6 +121,24 @@ const faqData: FaqCategory[] = [
     ],
   },
   {
+    category: "Syarat Pendaftaran",
+    questions: [
+      {
+        q: "Apa saja syarat pendaftaran?",
+        a: "SYARAT_PENDAFTARAN",
+      },
+    ],
+  },
+  {
+    category: "Dokumen yang Diperlukan",
+    questions: [
+      {
+        q: "Dokumen apa saja yang perlu disiapkan?",
+        a: "DOKUMEN_DIPERLUKAN",
+      },
+    ],
+  },
+  {
     category: "Lokasi & Akses",
     questions: [
       {

@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import faqData from '../data/faqData';
 import FAQAccordion from './FAQAccordion';
 
-const DAFTAR_LINK = "https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform";
+const DAFTAR_LINK = "/pendaftaran-santri-baru";
 
 const LOKASI_ANSWER = (
   <>
@@ -33,14 +33,42 @@ const MI_ANSWER = (
   </>
 );
 
+const SYARAT_PENDAFTARAN_ANSWER = (
+  <>
+    Syarat Pendaftaran:
+    <ul className="list-none mt-2 mb-2 space-y-1">
+      <li>✓ Muslim/muslimah, berusia 12 - 15 tahun</li>
+      <li>✓ Berijazah SD/MI atau SMP/MTs</li>
+      <li>✓ Mampu membaca Al-Qur&apos;an dengan baik dan benar</li>
+      <li>✓ Latar belakang pribadi, keluarga dan sosial yang baik</li>
+      <li>✓ Memiliki motivasi dan semangat untuk menuntut ilmu, menghafal Al-Qur&apos;an, dan belajar</li>
+    </ul>
+  </>
+);
+
+const DOKUMEN_DIPERLUKAN_ANSWER = (
+  <>
+    Dokumen yang Diperlukan:
+    <ul className="list-none mt-2 mb-2 space-y-1">
+      <li>✓ Fotocopy Kartu Keluarga (KK)</li>
+      <li>✓ Fotocopy Akta Kelahiran</li>
+      <li>✓ Fotocopy Ijazah/SKHUN terakhir</li>
+      <li>✓ Pas foto 3x4 (3 lembar)</li>
+      <li>✓ Surat keterangan sehat dari dokter (opsional)</li>
+    </ul>
+  </>
+);
+
 function renderAnswer(q: string, a: string): React.ReactNode {
   if (a === "MI_TEST") return MI_ANSWER;
   if (a === "LOKASI_AKSES") return LOKASI_ANSWER;
+  if (a === "SYARAT_PENDAFTARAN") return SYARAT_PENDAFTARAN_ANSWER;
+  if (a === "DOKUMEN_DIPERLUKAN") return DOKUMEN_DIPERLUKAN_ANSWER;
   if (q === "Bagaimana cara mendaftar?") {
     return (
       <>
         Daftar bisa melalui online (bisa{' '}
-        <a href={DAFTAR_LINK} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800 font-medium">
+        <a href={DAFTAR_LINK} className="text-blue-600 underline hover:text-blue-800 font-medium">
           klik disini
         </a>
         ) ataupun datang langsung ke pesantren (offline). Bisa hubungi admin via WhatsApp untuk jadwalkan waktu survei lokasi.

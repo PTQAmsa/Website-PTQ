@@ -161,9 +161,7 @@ export default function Beasiswa() {
             <p className="text-xl mb-6">Daftarkan diri Anda sekarang dan wujudkan impian menghafal Al-Qur'an</p>
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
               <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/pendaftaran-santri-baru"
                 className="bg-yellow-400 text-blue-900 px-8 py-4 rounded-full font-semibold text-lg hover:bg-yellow-300 transition"
               >
                 Daftar Beasiswa Sekarang

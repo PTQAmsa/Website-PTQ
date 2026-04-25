@@ -3,9 +3,7 @@ export default function PSBBanner() {
     <section className="py-12 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
         <a 
-          href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/pendaftaran-santri-baru"
           className="block relative overflow-hidden rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02] group"
         >
           <img 

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   authors: [{ name: "PTQ Amsa001" }],
   openGraph: {
     title: "PTQ Amsa001 - Pesantren Tadabbur Al-Qur'an",
-    description: "Pusat pembelajaran Al-Qur'an di Bogor.",
+    description: "Mencetak generasi Qur'ani.",
     url: "https://ptqamsa.id",
     siteName: "PTQ Amsa001",
     images: [

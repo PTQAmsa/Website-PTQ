@@ -112,9 +112,7 @@ export default function Navbar() {
               FAQ
             </a>
             <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/pendaftaran-santri-baru"
               className={`ml-2 px-5 py-2 rounded-full font-semibold transition whitespace-nowrap flex-shrink-0 ${
                 isScrolled
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
@@ -212,9 +210,7 @@ export default function Navbar() {
               FAQ
             </a>
             <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLScJMfCAipPLibI5bb8VKpoikXMDcR16VjzouwRDzMWkM2CqNQ/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/pendaftaran-santri-baru"
               onClick={() => setIsMobileMenuOpen(false)}
               className="block w-full text-center bg-blue-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-700"
             >
