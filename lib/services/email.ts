@@ -13,6 +13,8 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? '';
  */
 async function sendEmail(payload: Record<string, unknown>): Promise<void> {
   try {
+    console.log('[email] Sending to Apps Script URL:', APPS_SCRIPT_URL);
+    console.log('[email] Payload type:', payload.type);
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -20,9 +22,13 @@ async function sendEmail(payload: Record<string, unknown>): Promise<void> {
       cache: 'no-store',
     });
 
+    const responseText = await response.text();
+    console.log('[email] Apps Script response status:', response.status);
+    console.log('[email] Apps Script response body:', responseText);
+
     if (!response.ok) {
       console.error(
-        `[email] Apps Script responded with ${response.status}: ${await response.text()}`
+        `[email] Apps Script responded with ${response.status}: ${responseText}`
       );
     }
   } catch (err) {
