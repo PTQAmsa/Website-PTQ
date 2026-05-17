@@ -306,8 +306,8 @@ export async function POST(req: NextRequest) {
       throw new Error(`Gagal menyimpan data pendaftaran: ${insertError.message}`);
     }
 
-    // ── Send admin notification (non-blocking) ───────────────────────────────
-    sendAdminRegistrationNotification({
+    // ── Send admin notification (await untuk pastikan terkirim) ─────────────
+    await sendAdminRegistrationNotification({
       id: registrationId,
       nama_lengkap: fields.namaLengkap,
       no_whatsapp_ortu: fields.noWhatsappOrtu,
