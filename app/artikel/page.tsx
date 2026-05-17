@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import Link from 'next/link';
+import Image from 'next/image';
 import { articles } from '@/data/articles';
 
 export default function Artikel() {
@@ -36,11 +37,13 @@ export default function Artikel() {
                 href={`/artikel/${article.slug}`}
                 className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition group"
               >
-                <div className="h-48 overflow-hidden">
-                  <img 
+                <div className="relative h-48 overflow-hidden">
+                  <Image 
                     src={article.image}
                     alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
                 <div className="p-6">

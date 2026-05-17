@@ -1,3 +1,4 @@
+import Image from 'next/image';
 export default function Programs() {
   const programs = [
     {
@@ -98,16 +99,20 @@ export default function Programs() {
                 {/* Image Container */}
                 <div className="relative aspect-square">
                   {/* Image 1 - Default */}
-                  <img
+                  <Image
                     src={ekskul.image1}
                     alt={`${ekskul.name} 1`}
-                    className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
+                    fill
+                    className="object-cover transition-opacity duration-500 group-hover:opacity-0"
+                    sizes="(max-width: 768px) 50vw, 20vw"
                   />
                   {/* Image 2 - On Hover */}
-                  <img
+                  <Image
                     src={ekskul.image2}
                     alt={`${ekskul.name} 2`}
-                    className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0 group-hover:opacity-100"
+                    fill
+                    className="object-cover transition-opacity duration-500 opacity-0 group-hover:opacity-100"
+                    sizes="(max-width: 768px) 50vw, 20vw"
                   />
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/50 to-transparent"></div>

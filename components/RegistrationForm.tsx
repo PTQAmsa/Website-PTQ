@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
-import { ChangeEvent, FormEvent, useMemo, useState } from "react";
-import { supabase } from "@/supabaseClient";
+import React, { ChangeEvent, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Step = 1 | 2 | 3;
-type RequiredFileKey = "kkFile" | "aktaFile" | "ijazahFile" | "ktpOrtuFile";
+type RequiredFileKey = "kkFile" | "aktaFile" | "ijazahFile" | "ktpOrtuFile" | "pasFotoFile";
 
 type FormDataState = {
   namaLengkap: string;
@@ -26,6 +26,7 @@ type FormDataState = {
   alamatDomisili: string;
   provinsi: string;
   kota: string;
+  emailOrtu: string;
 };
 
 type FormFilesState = {
@@ -33,6 +34,8 @@ type FormFilesState = {
   aktaFile: File | null;
   ijazahFile: File | null;
   ktpOrtuFile: File | null;
+  pasFotoFile: File | null;
+  suratSehatFile: File | null;
 };
 
 const INITIAL_FORM_DATA: FormDataState = {
@@ -55,6 +58,7 @@ const INITIAL_FORM_DATA: FormDataState = {
   alamatDomisili: "",
   provinsi: "",
   kota: "",
+  emailOrtu: "",
 };
 
 const INITIAL_FILES: FormFilesState = {
@@ -62,10 +66,15 @@ const INITIAL_FILES: FormFilesState = {
   aktaFile: null,
   ijazahFile: null,
   ktpOrtuFile: null,
+  pasFotoFile: null,
+  suratSehatFile: null,
 };
 
 const STEP_TITLES = ["Data Diri", "Data Orang Tua", "Pendidikan & Berkas"];
-const MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024;
+
+// 1. Maksimal 4 MB per file
+const MAX_FILE_SIZE_BYTES = 4 * 1024 * 1024;
+
 const ACCEPTED_FILE_TYPES = [
   "application/pdf",
   "image/jpeg",
@@ -83,6 +92,18 @@ const FILE_FIELDS: {
   { key: "aktaFile", label: "Akta Kelahiran", storagePrefix: "akta" },
   { key: "ijazahFile", label: "Ijazah", storagePrefix: "ijazah" },
   { key: "ktpOrtuFile", label: "KTP Orang Tua", storagePrefix: "ktp-ortu" },
+  { key: "pasFotoFile", label: "Pas Foto 3x4", storagePrefix: "pas-foto" },
+];
+
+// 4. Opsi penghasilan orang tua per bulan
+const PENGHASILAN_OPTIONS = [
+  { value: "", label: "Pilih rentang penghasilan" },
+  { value: "< Rp 3.000.000", label: "< Rp 3.000.000" },
+  { value: "Rp 3.000.000 - Rp 5.000.000", label: "Rp 3.000.000 - Rp 5.000.000" },
+  { value: "Rp 5.000.000 - Rp 7.000.000", label: "Rp 5.000.000 - Rp 7.000.000" },
+  { value: "Rp 7.000.000 - Rp 9.000.000", label: "Rp 7.000.000 - Rp 9.000.000" },
+  { value: "Rp 9.000.000 - Rp 11.000.000", label: "Rp 9.000.000 - Rp 11.000.000" },
+  { value: "> Rp 11.000.000", label: "> Rp 11.000.000" },
 ];
 
 function safeFileName(fileName: string) {
@@ -96,6 +117,8 @@ export default function RegistrationForm() {
   const [formData, setFormData] = useState<FormDataState>(INITIAL_FORM_DATA);
   const [files, setFiles] = useState<FormFilesState>(INITIAL_FILES);
 
+  const router = useRouter();
+
   const progressPercent = useMemo(() => (step / 3) * 100, [step]);
 
   const handleInputChange = (
@@ -103,6 +126,24 @@ export default function RegistrationForm() {
   ) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // 2. Handler NIK - hanya angka, max 16 digit
+  const handleNikChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const digits = event.target.value.replace(/\D/g, "").slice(0, 16);
+    setFormData((prev) => ({ ...prev, nik: digits }));
+  };
+
+  // 3. Handler NISN - hanya angka, max 10 digit
+  const handleNisnChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const digits = event.target.value.replace(/\D/g, "").slice(0, 10);
+    setFormData((prev) => ({ ...prev, nisn: digits }));
+  };
+
+  // Handler nomor WhatsApp — hanya angka dan +, max 15 karakter
+  const handleWhatsappChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const cleaned = event.target.value.replace(/[^\d+]/g, "").slice(0, 15);
+    setFormData((prev) => ({ ...prev, noWhatsappOrtu: cleaned }));
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +163,32 @@ export default function RegistrationForm() {
     }
 
     if (file.size > MAX_FILE_SIZE_BYTES) {
-      setErrorMessage("Ukuran file maksimal 3MB per berkas.");
+      setErrorMessage("Ukuran file maksimal 4 MB per berkas.");
+      event.target.value = "";
+      return;
+    }
+
+    setFiles((prev) => ({ ...prev, [name]: file }));
+  };
+
+  const handleOptionalFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, files: inputFiles } = event.target;
+    const file = inputFiles?.[0] ?? null;
+    setErrorMessage("");
+
+    if (!file) {
+      setFiles((prev) => ({ ...prev, [name]: null }));
+      return;
+    }
+
+    if (!ACCEPTED_FILE_TYPES.includes(file.type)) {
+      setErrorMessage("Format file tidak didukung. Gunakan PDF/JPG/JPEG/PNG/WEBP.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setErrorMessage("Ukuran file maksimal 4 MB per berkas.");
       event.target.value = "";
       return;
     }
@@ -136,7 +202,44 @@ export default function RegistrationForm() {
         "namaLengkap", "namaPanggilan", "nik", "nisn",
         "tempatLahir", "tanggalLahir", "jenisKelamin",
       ];
-      return fields.every((f) => formData[f].trim() !== "");
+      if (!fields.every((f) => formData[f].trim() !== "")) {
+        setErrorMessage("Mohon lengkapi semua data pada tahap ini sebelum lanjut.");
+        return false;
+      }
+
+      // Nama minimal 2 karakter
+      if (formData.namaLengkap.trim().length < 2) {
+        setErrorMessage("Nama lengkap minimal 2 karakter.");
+        return false;
+      }
+
+      // NIK 16 digit
+      if (formData.nik.length !== 16) {
+        setErrorMessage("NIK harus berjumlah 16 digit.");
+        return false;
+      }
+
+      // NISN 10 digit
+      if (formData.nisn.length !== 10) {
+        setErrorMessage("NISN harus berjumlah 10 digit.");
+        return false;
+      }
+
+      // Validasi tanggal lahir — harus tanggal valid dan usia 10-20 tahun
+      const tgl = new Date(formData.tanggalLahir);
+      if (isNaN(tgl.getTime())) {
+        setErrorMessage("Tanggal lahir tidak valid.");
+        return false;
+      }
+      const today = new Date();
+      const usia = today.getFullYear() - tgl.getFullYear() -
+        (today < new Date(today.getFullYear(), tgl.getMonth(), tgl.getDate()) ? 1 : 0);
+      if (usia < 10 || usia > 20) {
+        setErrorMessage("Usia calon santri harus antara 10 hingga 20 tahun.");
+        return false;
+      }
+
+      return true;
     }
 
     if (currentStep === 2) {
@@ -144,20 +247,34 @@ export default function RegistrationForm() {
         "namaAyah", "namaIbu", "pekerjaanAyah", "pekerjaanIbu",
         "noWhatsappOrtu", "relasiWhatsapp", "penghasilanOrtu",
       ];
-      return fields.every((f) => formData[f].trim() !== "");
+      if (!fields.every((f) => formData[f].trim() !== "")) {
+        setErrorMessage("Mohon lengkapi semua data pada tahap ini sebelum lanjut.");
+        return false;
+      }
+      if (!/^\+?[0-9]{9,15}$/.test(formData.noWhatsappOrtu.trim())) {
+        setErrorMessage("Nomor WhatsApp tidak valid. Gunakan format angka, contoh: 08123456789");
+        return false;
+      }
+      if (formData.emailOrtu && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailOrtu)) {
+        setErrorMessage("Format email orang tua tidak valid.");
+        return false;
+      }
+      return true;
     }
 
     const fields: (keyof FormDataState)[] = [
       "asalSekolah", "alamatSekolah", "alamatDomisili", "provinsi", "kota",
     ];
-    if (!fields.every((f) => formData[f].trim() !== "")) return false;
+    if (!fields.every((f) => formData[f].trim() !== "")) {
+      setErrorMessage("Mohon lengkapi semua data pada tahap ini sebelum lanjut.");
+      return false;
+    }
     return FILE_FIELDS.every(({ key }) => files[key] !== null);
   };
 
   const handleNextStep = () => {
     setErrorMessage("");
     if (!validateStep(step)) {
-      setErrorMessage("Mohon lengkapi semua data pada tahap ini sebelum lanjut.");
       return;
     }
     if (step < 3) setStep((prev) => (prev + 1) as Step);
@@ -168,7 +285,7 @@ export default function RegistrationForm() {
     if (step > 1) setStep((prev) => (prev - 1) as Step);
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage("");
 
@@ -178,85 +295,60 @@ export default function RegistrationForm() {
     }
 
     setIsSubmitting(true);
-    const uploadedFilePaths: string[] = [];
 
     try {
-      const uploadedUrls: Record<RequiredFileKey, string> = {
-        kkFile: "", aktaFile: "", ijazahFile: "", ktpOrtuFile: "",
-      };
+      const fd = new FormData();
+      // Append all text fields
+      fd.append("namaLengkap", formData.namaLengkap);
+      fd.append("namaPanggilan", formData.namaPanggilan);
+      fd.append("nik", formData.nik);
+      fd.append("nisn", formData.nisn);
+      fd.append("tempatLahir", formData.tempatLahir);
+      fd.append("tanggalLahir", formData.tanggalLahir);
+      fd.append("jenisKelamin", formData.jenisKelamin);
+      fd.append("namaAyah", formData.namaAyah);
+      fd.append("namaIbu", formData.namaIbu);
+      fd.append("pekerjaanAyah", formData.pekerjaanAyah);
+      fd.append("pekerjaanIbu", formData.pekerjaanIbu);
+      fd.append("noWhatsappOrtu", formData.noWhatsappOrtu);
+      fd.append("relasiWhatsapp", formData.relasiWhatsapp);
+      fd.append("penghasilanOrtu", formData.penghasilanOrtu);
+      fd.append("asalSekolah", formData.asalSekolah);
+      fd.append("alamatSekolah", formData.alamatSekolah);
+      fd.append("alamatDomisili", formData.alamatDomisili);
+      fd.append("provinsi", formData.provinsi);
+      fd.append("kota", formData.kota);
+      if (formData.emailOrtu) fd.append("emailOrtu", formData.emailOrtu);
 
-      const registrationId = crypto.randomUUID();
+      // Append files
+      if (files.kkFile) fd.append("kkFile", files.kkFile);
+      if (files.aktaFile) fd.append("aktaFile", files.aktaFile);
+      if (files.ijazahFile) fd.append("ijazahFile", files.ijazahFile);
+      if (files.ktpOrtuFile) fd.append("ktpOrtuFile", files.ktpOrtuFile);
+      if (files.pasFotoFile) fd.append("pasFotoFile", files.pasFotoFile);
+      if (files.suratSehatFile) fd.append("suratSehatFile", files.suratSehatFile);
 
-      for (const fileField of FILE_FIELDS) {
-        const currentFile = files[fileField.key];
-        if (!currentFile) throw new Error(`File ${fileField.label} belum dipilih.`);
-        if (!ACCEPTED_FILE_TYPES.includes(currentFile.type))
-          throw new Error(`Format ${fileField.label} tidak valid.`);
-        if (currentFile.size > MAX_FILE_SIZE_BYTES)
-          throw new Error(`Ukuran ${fileField.label} melebihi 3MB.`);
+      const response = await fetch("/api/submit-registration", {
+        method: "POST",
+        body: fd,
+      });
 
-        const extension = currentFile.name.split(".").pop() || "bin";
-        const filePath = `pendaftaran/${registrationId}/${fileField.storagePrefix}-${Date.now()}.${safeFileName(extension)}`;
+      const result = await response.json() as { success: boolean; registrationId?: string; studentName?: string; error?: string };
 
-        const { error: uploadError } = await supabase.storage
-          .from("dokumen-santri")
-          .upload(filePath, currentFile, { upsert: false });
-
-        if (uploadError) throw new Error(`Gagal upload ${fileField.label}: ${uploadError.message}`);
-        uploadedFilePaths.push(filePath);
-
-        const { data: publicUrlData } = supabase.storage
-          .from("dokumen-santri")
-          .getPublicUrl(filePath);
-
-        uploadedUrls[fileField.key] = publicUrlData.publicUrl;
+      if (!result.success) {
+        throw new Error(result.error ?? "Terjadi kesalahan saat mengirim pendaftaran.");
       }
 
-      const { error: insertError } = await supabase.from("pendaftaran_santri").insert([{
-        nama_lengkap: formData.namaLengkap,
-        nama_panggilan: formData.namaPanggilan,
-        nik: formData.nik,
-        nisn: formData.nisn,
-        tempat_lahir: formData.tempatLahir,
-        tanggal_lahir: formData.tanggalLahir,
-        jenis_kelamin: formData.jenisKelamin,
-        nama_ayah: formData.namaAyah,
-        nama_ibu: formData.namaIbu,
-        pekerjaan_ayah: formData.pekerjaanAyah,
-        pekerjaan_ibu: formData.pekerjaanIbu,
-        no_whatsapp_ortu: formData.noWhatsappOrtu,
-        relasi_whatsapp: formData.relasiWhatsapp,
-        penghasilan_ortu: formData.penghasilanOrtu,
-        asal_sekolah: formData.asalSekolah,
-        alamat_sekolah: formData.alamatSekolah,
-        alamat_domisili: formData.alamatDomisili,
-        provinsi: formData.provinsi,
-        kota: formData.kota,
-        url_kk: uploadedUrls.kkFile,
-        url_akta: uploadedUrls.aktaFile,
-        url_ijazah: uploadedUrls.ijazahFile,
-        url_ktp_ortu: uploadedUrls.ktpOrtuFile,
-      }]);
-
-      if (insertError) throw new Error(`Gagal menyimpan data: ${insertError.message}`);
-
-      alert("Pendaftaran berhasil dikirim. Terima kasih!");
-      setFormData(INITIAL_FORM_DATA);
-      setFiles(INITIAL_FILES);
-      setStep(1);
-    } catch (error) {
-      if (uploadedFilePaths.length > 0) {
-        await supabase.storage.from("dokumen-santri").remove(uploadedFilePaths);
-      }
-      const message =
-        error instanceof Error ? error.message : "Terjadi kesalahan saat mengirim pendaftaran.";
+      router.push(
+        `/pendaftaran-santri-baru/sukses?id=${result.registrationId}&name=${encodeURIComponent(result.studentName ?? "")}`
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Terjadi kesalahan saat mengirim pendaftaran.";
       setErrorMessage(message);
-      alert(message);
     } finally {
       setIsSubmitting(false);
     }
   };
-
   return (
     <div className="mx-auto w-full max-w-4xl">
       <div className="sticky top-0 z-20 bg-gray-50/90 backdrop-blur border-b border-gray-200 pb-4 mb-8">
@@ -300,8 +392,65 @@ export default function RegistrationForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="Nama Lengkap" name="namaLengkap" value={formData.namaLengkap} onChange={handleInputChange} />
             <Input label="Nama Panggilan" name="namaPanggilan" value={formData.namaPanggilan} onChange={handleInputChange} />
-            <Input label="NIK" name="nik" value={formData.nik} onChange={handleInputChange} />
-            <Input label="NISN" name="nisn" value={formData.nisn} onChange={handleInputChange} />
+
+            {/* 2. NIK - hanya angka, max 16 digit */}
+            <div className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">
+                NIK <span className="text-gray-400 font-normal">(16 digit)</span>
+              </span>
+              <input
+                required
+                type="text"
+                inputMode="numeric"
+                name="nik"
+                value={formData.nik}
+                onChange={handleNikChange}
+                maxLength={16}
+                placeholder="Masukkan 16 digit NIK"
+                className={`w-full rounded-lg border px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 ${
+                  formData.nik.length > 0 && formData.nik.length !== 16
+                    ? "border-red-400 bg-red-50"
+                    : "border-gray-300"
+                }`}
+              />
+              <p className={`mt-1 text-xs ${
+                formData.nik.length === 16 ? "text-emerald-600" :
+                formData.nik.length > 0 ? "text-red-500" : "text-gray-400"
+              }`}>
+                {formData.nik.length}/16 digit
+                {formData.nik.length > 0 && formData.nik.length !== 16 ? " - NIK harus berjumlah 16 digit" : ""}
+              </p>
+            </div>
+
+            {/* 3. NISN - hanya angka, max 10 digit */}
+            <div className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">
+                NISN <span className="text-gray-400 font-normal">(10 digit)</span>
+              </span>
+              <input
+                required
+                type="text"
+                inputMode="numeric"
+                name="nisn"
+                value={formData.nisn}
+                onChange={handleNisnChange}
+                maxLength={10}
+                placeholder="Masukkan 10 digit NISN"
+                className={`w-full rounded-lg border px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 ${
+                  formData.nisn.length > 0 && formData.nisn.length !== 10
+                    ? "border-red-400 bg-red-50"
+                    : "border-gray-300"
+                }`}
+              />
+              <p className={`mt-1 text-xs ${
+                formData.nisn.length === 10 ? "text-emerald-600" :
+                formData.nisn.length > 0 ? "text-red-500" : "text-gray-400"
+              }`}>
+                {formData.nisn.length}/10 digit
+                {formData.nisn.length > 0 && formData.nisn.length !== 10 ? " - NISN harus berjumlah 10 digit" : ""}
+              </p>
+            </div>
+
             <Input label="Tempat Lahir" name="tempatLahir" value={formData.tempatLahir} onChange={handleInputChange} />
             <Input label="Tanggal Lahir" name="tanggalLahir" type="date" value={formData.tanggalLahir} onChange={handleInputChange} />
             <Select
@@ -325,7 +474,7 @@ export default function RegistrationForm() {
             <Input label="Nama Ibu" name="namaIbu" value={formData.namaIbu} onChange={handleInputChange} />
             <Input label="Pekerjaan Ayah" name="pekerjaanAyah" value={formData.pekerjaanAyah} onChange={handleInputChange} />
             <Input label="Pekerjaan Ibu" name="pekerjaanIbu" value={formData.pekerjaanIbu} onChange={handleInputChange} />
-            <Input label="Nomor WhatsApp Orang Tua" name="noWhatsappOrtu" value={formData.noWhatsappOrtu} onChange={handleInputChange} />
+            <Input label="Nomor WhatsApp Orang Tua" name="noWhatsappOrtu" value={formData.noWhatsappOrtu} onChange={handleWhatsappChange} placeholder="Contoh: 08123456789" />
             <Select
               label="Relasi Pemilik WhatsApp"
               name="relasiWhatsapp"
@@ -338,7 +487,32 @@ export default function RegistrationForm() {
                 { value: "Wali", label: "Wali" },
               ]}
             />
-            <Input label="Penghasilan Orang Tua" name="penghasilanOrtu" value={formData.penghasilanOrtu} onChange={handleInputChange} />
+            {/* Email Orang Tua - opsional */}
+            <div className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">
+                Email Orang Tua
+                <span className="ml-2 text-xs font-normal text-gray-400 bg-gray-200 px-2 py-0.5 rounded-full">Opsional</span>
+              </span>
+              <input
+                type="email"
+                name="emailOrtu"
+                value={formData.emailOrtu}
+                onChange={handleInputChange}
+                placeholder="contoh@email.com"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                Pastikan nomor WhatsApp dan email diisi dengan benar. Notifikasi pendaftaran dan pembayaran akan dikirim ke sini.
+              </p>
+            </div>
+            {/* 4. Penghasilan orang tua per bulan - dropdown kategori */}
+            <Select
+              label="Penghasilan Orang Tua per-bulan"
+              name="penghasilanOrtu"
+              value={formData.penghasilanOrtu}
+              onChange={handleInputChange}
+              options={PENGHASILAN_OPTIONS}
+            />
           </div>
         ) : null}
 
@@ -352,6 +526,14 @@ export default function RegistrationForm() {
               <Input label="Kota / Kabupaten" name="kota" value={formData.kota} onChange={handleInputChange} />
               <TextArea label="Alamat Domisili" name="alamatDomisili" value={formData.alamatDomisili} onChange={handleInputChange} />
             </div>
+            {/* Payment disclaimer */}
+            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              <strong>Biaya Pendaftaran: Rp 200.000</strong> — Link pembayaran akan dikirimkan oleh admin ke nomor WhatsApp/email Anda dalam 24 jam setelah pendaftaran berhasil.
+            </div>
+            {/* 1. Info batas ukuran file 4 MB */}
+            <p className="text-xs text-gray-500 bg-blue-50 border border-blue-100 rounded-lg px-4 py-2">
+              Format yang diterima: PDF, JPG, PNG, WEBP. Maksimal <strong>4 MB</strong> per berkas.
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {FILE_FIELDS.map((fileField) => (
                 <FileInput
@@ -362,6 +544,25 @@ export default function RegistrationForm() {
                   selectedFileName={files[fileField.key]?.name ?? ""}
                 />
               ))}
+              {/* Surat Keterangan Sehat - opsional, sejajar dengan Pas Foto 3x4 */}
+              <div className="block">
+                <span className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Surat Keterangan Sehat dari Dokter
+                  <span className="ml-2 text-xs font-normal text-gray-400 bg-gray-200 px-2 py-0.5 rounded-full">Opsional</span>
+                </span>
+                <input
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.webp"
+                  name="suratSehatFile"
+                  onChange={handleOptionalFileChange}
+                  className="w-full rounded-lg border border-dashed border-gray-300 bg-gray-50 px-3 py-2.5 text-sm outline-none file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:font-semibold file:text-gray-600 hover:file:bg-gray-200"
+                />
+                {files.suratSehatFile ? (
+                  <p className="mt-1 text-xs text-gray-500">File terpilih: {files.suratSehatFile.name}</p>
+                ) : (
+                  <p className="mt-1 text-xs text-gray-400">Tidak wajib — boleh dikosongkan</p>
+                )}
+              </div>
             </div>
           </div>
         ) : null}
@@ -374,7 +575,7 @@ export default function RegistrationForm() {
               disabled={isSubmitting}
               className="px-5 py-2.5 rounded-lg font-semibold border border-gray-300 text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sebelumnya
+              &lsaquo; Sebelumnya
             </button>
           ) : (
             <div />
@@ -387,7 +588,7 @@ export default function RegistrationForm() {
               disabled={isSubmitting}
               className="px-5 py-2.5 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
             >
-              Lanjut
+              Lanjut &rsaquo;
             </button>
           ) : (
             <button
@@ -410,9 +611,10 @@ type InputProps = {
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   type?: string;
+  placeholder?: string;
 };
 
-function Input({ label, name, value, onChange, type = "text" }: InputProps) {
+function Input({ label, name, value, onChange, type = "text", placeholder }: InputProps) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-sm font-medium text-gray-700">{label}</span>
@@ -422,6 +624,7 @@ function Input({ label, name, value, onChange, type = "text" }: InputProps) {
         name={name}
         value={value}
         onChange={onChange}
+        placeholder={placeholder}
         className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
       />
     </label>

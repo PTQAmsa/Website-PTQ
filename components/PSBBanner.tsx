@@ -1,3 +1,4 @@
+import Image from 'next/image';
 export default function PSBBanner() {
   return (
     <section className="py-12 px-4 bg-white">
@@ -6,9 +7,11 @@ export default function PSBBanner() {
           href="/pendaftaran-santri-baru"
           className="block relative overflow-hidden rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02] group"
         >
-          <img 
+          <Image 
             src="/psb-banner.jpg" 
             alt="Penerimaan Santri Baru PTQ Amsa001"
+            width={1200}
+            height={600}
             className="w-full h-auto object-cover"
           />
           {/* Overlay on hover */}

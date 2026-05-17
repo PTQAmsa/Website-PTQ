@@ -1,3 +1,4 @@
+﻿import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
@@ -35,11 +36,13 @@ export default function MajelisKyai() {
               {/* Kyai 1 - Pengasuh & Pendiri */}
               <div className="bg-gradient-to-br from-blue-50 to-yellow-50 rounded-lg p-8 shadow-lg hover:shadow-xl transition">
                 <div className="text-center">
-                  <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-blue-600 shadow-lg">
-                    <img 
+                  <div className="relative w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-blue-600 shadow-lg">
+                    <Image 
                       src="/kyai/kyai-aminullah.jpg" 
                       alt="KH. Drs. Aminullah Tsamud"
-                      className="w-full h-full object-cover scale-125"
+                      fill
+                      className="object-cover scale-125"
+                      sizes="128px"
                     />
                   </div>
                   <h3 className="text-xl md:text-2xl font-bold text-blue-900 mb-2">
@@ -57,11 +60,13 @@ export default function MajelisKyai() {
               {/* Kyai 2 - Kepala Sekolah */}
               <div className="bg-gradient-to-br from-blue-50 to-yellow-50 rounded-lg p-8 shadow-lg hover:shadow-xl transition">
                 <div className="text-center">
-                  <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-blue-600 shadow-lg">
-                    <img 
+                  <div className="relative w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-blue-600 shadow-lg">
+                    <Image 
                       src="/kyai/kyai-zubaidi.jpg" 
                       alt="Kyai Drs. Zubaidi, MM."
-                      className="w-full h-full object-cover scale-125"
+                      fill
+                      className="object-cover scale-125"
+                      sizes="128px"
                     />
                   </div>
                   <h3 className="text-xl md:text-2xl font-bold text-blue-900 mb-2">
@@ -79,11 +84,13 @@ export default function MajelisKyai() {
               {/* Kyai 3 - Direktur Pesantren */}
               <div className="bg-gradient-to-br from-blue-50 to-yellow-50 rounded-lg p-8 shadow-lg hover:shadow-xl transition">
                 <div className="text-center">
-                  <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-blue-600 shadow-lg">
-                    <img 
+                  <div className="relative w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-blue-600 shadow-lg">
+                    <Image 
                       src="/kyai/kyai-ahmadie.jpg" 
                       alt="KH. Drs. Ahmadie Thaha, M.Si."
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="128px"
                     />
                   </div>
                   <h3 className="text-xl md:text-2xl font-bold text-blue-900 mb-2">

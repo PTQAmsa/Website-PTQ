@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
@@ -34,9 +35,11 @@ export default function TentangPesantren() {
               </p>
             </div>
             <div>
-              <img 
+              <Image 
                 src="/about-1.jpg" 
-                alt="Pesantren" 
+                alt="Pesantren"
+                width={600}
+                height={400}
                 className="rounded-lg shadow-xl w-full h-auto"
               />
             </div>
@@ -44,9 +47,11 @@ export default function TentangPesantren() {
 
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
             <div className="order-2 md:order-1">
-              <img 
+              <Image 
                 src="/about-2.jpg" 
-                alt="Kegiatan Santri" 
+                alt="Kegiatan Santri"
+                width={600}
+                height={400}
                 className="rounded-lg shadow-xl w-full h-auto"
               />
             </div>
