@@ -66,6 +66,8 @@ export async function POST(req: NextRequest) {
 
   if (!isValidSignature) {
     console.warn('[midtrans-callback] Invalid signature for order_id:', order_id);
+    console.warn('[midtrans-callback] status_code:', status_code, 'gross_amount:', gross_amount);
+    console.warn('[midtrans-callback] Server key prefix:', process.env.MIDTRANS_SERVER_KEY?.slice(0, 10));
     return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
   }
 
