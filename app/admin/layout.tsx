@@ -7,15 +7,11 @@ export const metadata: Metadata = {
     index: false,
     follow: false,
   },
+  icons: {
+    icon: '/Favicon Admin Website.webp',
+  },
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <head>
-        <link rel="icon" href="/Favicon Admin Website.webp" type="image/webp" />
-      </head>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

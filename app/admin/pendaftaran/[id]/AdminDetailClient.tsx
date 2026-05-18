@@ -58,6 +58,15 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, admi
   const [updateResult, setUpdateResult] = useState<{ ok: boolean; message: string } | null>(null);
   const [copied, setCopied] = useState(false);
 
+  // Tentukan sumber verifikasi pembayaran dari payment_logs
+  const verifiedBy = reg.payment_status === 'paid'
+    ? paymentLogs.find(l => l.action === 'payment_received' && l.performed_by === 'system')
+      ? 'Midtrans'
+      : paymentLogs.find(l => l.action === 'status_updated' && l.performed_by === 'admin')
+        ? 'Admin'
+        : null
+    : null;
+
   async function handleUpdateStatus() {
     setUpdating(true);
     setUpdateResult(null);
@@ -152,6 +161,11 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, admi
                 >
                   {STATUS_LABELS[reg.payment_status]}
                 </span>
+                {verifiedBy && (
+                  <span className="ml-2 text-xs text-gray-400">
+                    via {verifiedBy}
+                  </span>
+                )}
               </dd>
             </div>
             <Field label="Order ID" value={reg.order_id} />
