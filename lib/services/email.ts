@@ -81,10 +81,16 @@ export async function sendUserPaymentConfirmation(
     | 'payment_date'
   >
 ): Promise<void> {
-  // Only send to user email if provided; always send to admin
-  const recipients = [ADMIN_EMAIL];
+  // Only send to user email if provided; admin tidak perlu terima konfirmasi pembayaran
+  const recipients: string[] = [];
   if (data.email_ortu) {
     recipients.push(data.email_ortu);
+  }
+
+  // Kalau tidak ada email orang tua, tidak perlu kirim email
+  if (recipients.length === 0) {
+    console.info(`[email] No email_ortu for registration ${data.id}, skipping payment confirmation`);
+    return;
   }
 
   const formattedAmount = new Intl.NumberFormat('id-ID', {
@@ -108,7 +114,7 @@ export async function sendUserPaymentConfirmation(
     order_id: data.order_id ?? '-',
     jumlah_bayar: formattedAmount,
     tanggal_bayar: paymentDate,
-    pesan: `Pembayaran biaya pendaftaran sebesar ${formattedAmount} untuk ${data.nama_lengkap} telah berhasil diterima. Terima kasih telah mendaftarkan putra/putri Anda ke pesantren kami.`,
+    pesan: `Pembayaran biaya pendaftaran sebesar ${formattedAmount} untuk ${data.nama_lengkap} telah berhasil diterima dan terverifikasi. Kami akan segera menghubungi Anda untuk informasi selanjutnya mengenai proses pendaftaran.`,
   });
 }
 
