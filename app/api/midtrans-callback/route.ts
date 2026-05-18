@@ -96,13 +96,32 @@ export async function POST(req: NextRequest) {
   const supabase = getSupabase();
 
   // ── Fetch registration by order_id ────────────────────────────────────────
-  const { data: reg, error: fetchError } = await supabase
+  // Midtrans appends a timestamp suffix to our order_id when creating payment links
+  // e.g. our order_id: PSB-1779109027046-Z115YL
+  //      Midtrans sends: PSB-1779109027046-Z115YL-1779109125639
+  // So we try exact match first, then prefix match
+  let reg = null;
+  let fetchError = null;
+
+  const exactResult = await supabase
     .from('pendaftaran_santri')
-    .select(
-      'id, nama_lengkap, no_whatsapp_ortu, email_ortu, order_id, payment_status, payment_amount, payment_date'
-    )
+    .select('id, nama_lengkap, no_whatsapp_ortu, email_ortu, order_id, payment_status, payment_amount, payment_date')
     .eq('order_id', order_id)
-    .single();
+    .maybeSingle();
+
+  if (exactResult.data) {
+    reg = exactResult.data;
+  } else {
+    // Try prefix match — strip the last segment (Midtrans-appended timestamp)
+    const baseOrderId = order_id.split('-').slice(0, -1).join('-');
+    const prefixResult = await supabase
+      .from('pendaftaran_santri')
+      .select('id, nama_lengkap, no_whatsapp_ortu, email_ortu, order_id, payment_status, payment_amount, payment_date')
+      .eq('order_id', baseOrderId)
+      .maybeSingle();
+    reg = prefixResult.data;
+    fetchError = prefixResult.error;
+  }
 
   if (fetchError || !reg) {
     console.error('[midtrans-callback] Registration not found for order_id:', order_id);
