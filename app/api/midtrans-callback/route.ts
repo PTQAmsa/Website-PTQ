@@ -45,14 +45,24 @@ export async function POST(req: NextRequest) {
   try {
     payload = (await req.json()) as MidtransCallbackPayload;
   } catch {
+    console.error('[midtrans-callback] Invalid JSON payload');
     return NextResponse.json({ error: 'Invalid JSON payload' }, { status: 400 });
   }
 
   const { order_id, transaction_status, fraud_status, gross_amount, signature_key, status_code } =
     payload;
 
+  console.log('[midtrans-callback] Received notification:', {
+    order_id,
+    transaction_status,
+    fraud_status,
+    gross_amount,
+    status_code,
+  });
+
   // ── Validate required fields ──────────────────────────────────────────────
   if (!order_id || !transaction_status || !signature_key || !status_code || !gross_amount) {
+    console.error('[midtrans-callback] Missing required fields:', payload);
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
@@ -99,6 +109,8 @@ export async function POST(req: NextRequest) {
   let reg = null;
   let fetchError = null;
 
+  console.log('[midtrans-callback] Looking for registration with order_id:', order_id);
+
   const exactResult = await supabase
     .from('pendaftaran_santri')
     .select('id, nama_lengkap, no_whatsapp_ortu, email_ortu, order_id, payment_status, payment_amount, payment_date')
@@ -107,9 +119,12 @@ export async function POST(req: NextRequest) {
 
   if (exactResult.data) {
     reg = exactResult.data;
+    console.log('[midtrans-callback] Found exact match:', reg.id);
   } else {
     // Try prefix match — strip the last segment (Midtrans-appended timestamp)
     const baseOrderId = order_id.split('-').slice(0, -1).join('-');
+    console.log('[midtrans-callback] Trying prefix match with:', baseOrderId);
+    
     const prefixResult = await supabase
       .from('pendaftaran_santri')
       .select('id, nama_lengkap, no_whatsapp_ortu, email_ortu, order_id, payment_status, payment_amount, payment_date')
@@ -117,6 +132,10 @@ export async function POST(req: NextRequest) {
       .maybeSingle();
     reg = prefixResult.data;
     fetchError = prefixResult.error;
+    
+    if (reg) {
+      console.log('[midtrans-callback] Found prefix match:', reg.id);
+    }
   }
 
   if (fetchError || !reg) {

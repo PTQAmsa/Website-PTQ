@@ -7,9 +7,6 @@ export const metadata: Metadata = {
     index: false,
     follow: false,
   },
-  icons: {
-    icon: '/Favicon Admin Website.webp',
-  },
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

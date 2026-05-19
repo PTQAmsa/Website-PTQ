@@ -245,7 +245,7 @@ export default function RegistrationForm() {
     if (currentStep === 2) {
       const fields: (keyof FormDataState)[] = [
         "namaAyah", "namaIbu", "pekerjaanAyah", "pekerjaanIbu",
-        "noWhatsappOrtu", "relasiWhatsapp", "penghasilanOrtu",
+        "noWhatsappOrtu", "relasiWhatsapp", "penghasilanOrtu", "emailOrtu",
       ];
       if (!fields.every((f) => formData[f].trim() !== "")) {
         setErrorMessage("Mohon lengkapi semua data pada tahap ini sebelum lanjut.");
@@ -255,7 +255,7 @@ export default function RegistrationForm() {
         setErrorMessage("Nomor WhatsApp tidak valid. Gunakan format angka, contoh: 08123456789");
         return false;
       }
-      if (formData.emailOrtu && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailOrtu)) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailOrtu)) {
         setErrorMessage("Format email orang tua tidak valid.");
         return false;
       }
@@ -487,13 +487,13 @@ export default function RegistrationForm() {
                 { value: "Wali", label: "Wali" },
               ]}
             />
-            {/* Email Orang Tua - opsional */}
+            {/* Email Orang Tua - WAJIB */}
             <div className="block">
               <span className="mb-1.5 block text-sm font-medium text-gray-700">
                 Email Orang Tua
-                <span className="ml-2 text-xs font-normal text-gray-400 bg-gray-200 px-2 py-0.5 rounded-full">Opsional</span>
               </span>
               <input
+                required
                 type="email"
                 name="emailOrtu"
                 value={formData.emailOrtu}

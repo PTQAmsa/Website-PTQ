@@ -120,33 +120,51 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, admi
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* Registration details */}
+        {/* Registration details with photo */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-base font-semibold text-gray-700 mb-4">Data Pendaftaran</h2>
-          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
-            <Field label="Nama Lengkap" value={reg.nama_lengkap} />
-            <Field label="Nama Panggilan" value={reg.nama_panggilan} />
-            <Field label="NIK" value={reg.nik} />
-            <Field label="NISN" value={reg.nisn} />
-            <Field label="Tempat Lahir" value={reg.tempat_lahir} />
-            <Field label="Tanggal Lahir" value={reg.tanggal_lahir} />
-            <Field label="Jenis Kelamin" value={reg.jenis_kelamin} />
-            <Field label="Nama Ayah" value={reg.nama_ayah} />
-            <Field label="Nama Ibu" value={reg.nama_ibu} />
-            <Field label="Pekerjaan Ayah" value={reg.pekerjaan_ayah} />
-            <Field label="Pekerjaan Ibu" value={reg.pekerjaan_ibu} />
-            <Field label="No. WhatsApp Ortu" value={reg.no_whatsapp_ortu} />
-            <Field label="Relasi WhatsApp" value={reg.relasi_whatsapp} />
-            <Field label="Email Ortu" value={reg.email_ortu} />
-            <Field label="Penghasilan Ortu" value={reg.penghasilan_ortu} />
-            <Field label="Asal Sekolah" value={reg.asal_sekolah} />
-            <Field label="Alamat Sekolah" value={reg.alamat_sekolah} />
-            <Field label="Alamat Domisili" value={reg.alamat_domisili} />
-            <Field label="Provinsi" value={reg.provinsi} />
-            <Field label="Kota" value={reg.kota} />
-            <Field label="Tanggal Daftar" value={formatDate(reg.created_at)} />
-            <Field label="Terakhir Diperbarui" value={formatDate(reg.updated_at)} />
-          </dl>
+          
+          <div className="flex flex-col md:flex-row gap-6">
+            {/* Pas Foto 3x4 */}
+            {reg.url_pas_foto && (
+              <div className="flex-shrink-0">
+                <div className="w-32 h-40 rounded-lg overflow-hidden border-2 border-gray-200 shadow-sm">
+                  <img
+                    src={reg.url_pas_foto}
+                    alt={`Pas Foto ${reg.nama_lengkap}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-xs text-gray-400 text-center mt-2">Pas Foto 3x4</p>
+              </div>
+            )}
+            
+            {/* Data fields */}
+            <dl className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+              <Field label="Nama Lengkap" value={reg.nama_lengkap} />
+              <Field label="Nama Panggilan" value={reg.nama_panggilan} />
+              <Field label="NIK" value={reg.nik} />
+              <Field label="NISN" value={reg.nisn} />
+              <Field label="Tempat Lahir" value={reg.tempat_lahir} />
+              <Field label="Tanggal Lahir" value={reg.tanggal_lahir} />
+              <Field label="Jenis Kelamin" value={reg.jenis_kelamin} />
+              <Field label="Nama Ayah" value={reg.nama_ayah} />
+              <Field label="Nama Ibu" value={reg.nama_ibu} />
+              <Field label="Pekerjaan Ayah" value={reg.pekerjaan_ayah} />
+              <Field label="Pekerjaan Ibu" value={reg.pekerjaan_ibu} />
+              <Field label="No. WhatsApp Ortu" value={reg.no_whatsapp_ortu} />
+              <Field label="Relasi WhatsApp" value={reg.relasi_whatsapp} />
+              <Field label="Email Ortu" value={reg.email_ortu} />
+              <Field label="Penghasilan Ortu" value={reg.penghasilan_ortu} />
+              <Field label="Asal Sekolah" value={reg.asal_sekolah} />
+              <Field label="Alamat Sekolah" value={reg.alamat_sekolah} />
+              <Field label="Alamat Domisili" value={reg.alamat_domisili} />
+              <Field label="Provinsi" value={reg.provinsi} />
+              <Field label="Kota" value={reg.kota} />
+              <Field label="Tanggal Daftar" value={formatDate(reg.created_at)} />
+              <Field label="Terakhir Diperbarui" value={formatDate(reg.updated_at)} />
+            </dl>
+          </div>
         </div>
 
         {/* Payment info */}

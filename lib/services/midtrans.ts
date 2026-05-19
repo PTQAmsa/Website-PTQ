@@ -34,6 +34,10 @@ export async function createPaymentLink(
 ): Promise<PaymentLinkResponse> {
   const url = `${BASE_URL}/v1/payment-links`;
 
+  // Get the site URL for callback notification
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const notificationUrl = `${siteUrl}/api/midtrans-callback`;
+
   const body = {
     transaction_details: {
       order_id: params.order_id,
@@ -45,6 +49,9 @@ export async function createPaymentLink(
     expiry: {
       duration: 24,
       unit: 'hours',
+    },
+    callbacks: {
+      finish: `${siteUrl}/pendaftaran-santri-baru/sukses?order_id=${params.order_id}`,
     },
   };
 
