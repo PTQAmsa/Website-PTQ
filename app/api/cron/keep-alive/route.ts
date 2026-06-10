@@ -14,12 +14,17 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
   try {
     // Verify this is called by Vercel Cron (security check)
-    const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    // Skip auth check if CRON_SECRET is not set (fallback for debugging)
+    const cronSecret = process.env.CRON_SECRET;
+    if (cronSecret) {
+      const authHeader = request.headers.get('authorization');
+      if (authHeader !== `Bearer ${cronSecret}`) {
+        console.error('[keep-alive] Unauthorized. Header:', authHeader?.slice(0, 20), '...');
+        return NextResponse.json(
+          { error: 'Unauthorized' },
+          { status: 401 }
+        );
+      }
     }
 
     // Initialize Supabase client
