@@ -148,19 +148,70 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, admi
               <Field label="Tempat Lahir" value={reg.tempat_lahir} />
               <Field label="Tanggal Lahir" value={reg.tanggal_lahir} />
               <Field label="Jenis Kelamin" value={reg.jenis_kelamin} />
-              <Field label="Nama Ayah" value={reg.nama_ayah} />
-              <Field label="Nama Ibu" value={reg.nama_ibu} />
-              <Field label="Pekerjaan Ayah" value={reg.pekerjaan_ayah} />
-              <Field label="Pekerjaan Ibu" value={reg.pekerjaan_ibu} />
-              <Field label="No. WhatsApp Ortu" value={reg.no_whatsapp_ortu} />
-              <Field label="Relasi WhatsApp" value={reg.relasi_whatsapp} />
-              <Field label="Email Ortu" value={reg.email_ortu} />
-              <Field label="Penghasilan Ortu" value={reg.penghasilan_ortu} />
+              <Field label="No. WhatsApp Santri" value={reg.no_whatsapp_santri} />
+              
+              {/* Status dalam keluarga */}
+              <div className="sm:col-span-2 border-t border-gray-100 pt-4 mt-2">
+                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Status dalam Keluarga</p>
+              </div>
+              <Field 
+                label="Anak Ke" 
+                value={reg.anak_ke && reg.total_saudara ? `Anak ke-${reg.anak_ke} dari ${reg.total_saudara} bersaudara` : '-'} 
+              />
+              <Field label="Status Anak" value={reg.status_anak} />
+              
+              {/* Data Wali/Orang Tua */}
+              <div className="sm:col-span-2 border-t border-gray-100 pt-4 mt-2">
+                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Data Wali & Orang Tua</p>
+              </div>
+              <Field 
+                label="Hubungan Wali" 
+                value={reg.hubungan_wali === 'orang-tua-kandung' ? 'Orang Tua Kandung' : reg.hubungan_wali} 
+              />
+              
+              {reg.hubungan_wali === 'orang-tua-kandung' ? (
+                <>
+                  <Field label="Nama Ayah" value={reg.nama_ayah} />
+                  <Field label="Nama Ibu" value={reg.nama_ibu} />
+                  <Field label="Pekerjaan Ayah" value={reg.pekerjaan_ayah} />
+                  <Field label="Pekerjaan Ibu" value={reg.pekerjaan_ibu} />
+                  <Field label="No. WhatsApp Ortu" value={reg.no_whatsapp_ortu} />
+                  <Field label="Relasi WhatsApp" value={reg.relasi_whatsapp} />
+                  <Field label="Email Orang Tua" value={reg.email_ortu} />
+                </>
+              ) : (
+                <>
+                  <Field label="Nama Wali" value={reg.nama_wali} />
+                  <Field label="Hubungan dengan Santri" value={reg.hubungan_dengan_santri} />
+                  <Field label="Pekerjaan Wali" value={reg.pekerjaan_wali} />
+                  <Field label="No. WhatsApp Wali" value={reg.no_whatsapp_wali} />
+                  <Field label="Email Wali" value={reg.email_wali} />
+                  <div className="sm:col-span-2 bg-blue-50 border border-blue-100 rounded-lg p-3 mt-2">
+                    <p className="text-xs font-medium text-blue-800 mb-2">Data Orang Tua Kandung</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <Field label="Nama Ayah Kandung" value={reg.nama_ayah_kandung} />
+                      <Field label="Nama Ibu Kandung" value={reg.nama_ibu_kandung} />
+                    </div>
+                  </div>
+                </>
+              )}
+              
+              <Field label="Penghasilan per Bulan" value={reg.penghasilan_ortu} />
+              
+              {/* Data Pendidikan */}
+              <div className="sm:col-span-2 border-t border-gray-100 pt-4 mt-2">
+                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Data Pendidikan</p>
+              </div>
               <Field label="Asal Sekolah" value={reg.asal_sekolah} />
               <Field label="Alamat Sekolah" value={reg.alamat_sekolah} />
               <Field label="Alamat Domisili" value={reg.alamat_domisili} />
               <Field label="Provinsi" value={reg.provinsi} />
               <Field label="Kota" value={reg.kota} />
+              
+              {/* Metadata */}
+              <div className="sm:col-span-2 border-t border-gray-100 pt-4 mt-2">
+                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Metadata</p>
+              </div>
               <Field label="Tanggal Daftar" value={formatDate(reg.created_at)} />
               <Field label="Terakhir Diperbarui" value={formatDate(reg.updated_at)} />
             </dl>

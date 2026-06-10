@@ -18,18 +18,37 @@ export interface RegistrationRecord {
   tempat_lahir: string;
   tanggal_lahir: string;
   jenis_kelamin: string;
-  nama_ayah: string;
-  nama_ibu: string;
-  pekerjaan_ayah: string;
-  pekerjaan_ibu: string;
-  no_whatsapp_ortu: string;
-  relasi_whatsapp: string;
+  no_whatsapp_santri?: string | null;
+  // Status dalam keluarga
+  anak_ke?: number | null;
+  total_saudara?: number | null;
+  status_anak?: string | null;
+  // Data orang tua kandung (conditionally filled)
+  nama_ayah?: string | null;
+  nama_ibu?: string | null;
+  pekerjaan_ayah?: string | null;
+  pekerjaan_ibu?: string | null;
+  no_whatsapp_ortu?: string | null;
+  relasi_whatsapp?: string | null;
+  email_ortu?: string | null;
+  // Data wali (conditionally filled)
+  hubungan_wali: string;
+  nama_wali?: string | null;
+  hubungan_dengan_santri?: string | null;
+  pekerjaan_wali?: string | null;
+  no_whatsapp_wali?: string | null;
+  email_wali?: string | null;
+  nama_ayah_kandung?: string | null;
+  nama_ibu_kandung?: string | null;
+  // Penghasilan (wajib)
   penghasilan_ortu: string;
+  // Data pendidikan
   asal_sekolah: string;
   alamat_sekolah: string;
   alamat_domisili: string;
   provinsi: string;
   kota: string;
+  // File URLs
   url_kk: string;
   url_akta: string;
   url_ijazah: string;
@@ -38,7 +57,6 @@ export interface RegistrationRecord {
   url_surat_sehat?: string | null;
   created_at: string;
   // Payment fields
-  email_ortu?: string | null;
   payment_status: PaymentStatus;
   payment_link?: string | null;
   order_id?: string | null;

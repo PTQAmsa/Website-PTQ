@@ -14,6 +14,13 @@ type FormDataState = {
   tempatLahir: string;
   tanggalLahir: string;
   jenisKelamin: string;
+  noWhatsappSantri: string; // Opsional
+  // Status dalam keluarga
+  anakKe: string;
+  totalSaudara: string;
+  statusAnak: string;
+  // Data wali/orang tua
+  hubunganWali: string;
   namaAyah: string;
   namaIbu: string;
   pekerjaanAyah: string;
@@ -21,12 +28,21 @@ type FormDataState = {
   noWhatsappOrtu: string;
   relasiWhatsapp: string;
   penghasilanOrtu: string;
+  emailOrtu: string;
+  // Data tambahan untuk wali non-orang tua kandung
+  namaWali: string;
+  hubunganDenganSantri: string;
+  pekerjaanWali: string;
+  noWhatsappWali: string;
+  emailWali: string;
+  namaAyahKandung: string;
+  namaIbuKandung: string;
+  // Data pendidikan
   asalSekolah: string;
   alamatSekolah: string;
   alamatDomisili: string;
   provinsi: string;
   kota: string;
-  emailOrtu: string;
 };
 
 type FormFilesState = {
@@ -46,6 +62,13 @@ const INITIAL_FORM_DATA: FormDataState = {
   tempatLahir: "",
   tanggalLahir: "",
   jenisKelamin: "",
+  noWhatsappSantri: "",
+  // Status dalam keluarga
+  anakKe: "",
+  totalSaudara: "",
+  statusAnak: "",
+  // Data wali/orang tua
+  hubunganWali: "orang-tua-kandung",
   namaAyah: "",
   namaIbu: "",
   pekerjaanAyah: "",
@@ -53,12 +76,21 @@ const INITIAL_FORM_DATA: FormDataState = {
   noWhatsappOrtu: "",
   relasiWhatsapp: "",
   penghasilanOrtu: "",
+  emailOrtu: "",
+  // Data tambahan untuk wali non-orang tua kandung
+  namaWali: "",
+  hubunganDenganSantri: "",
+  pekerjaanWali: "",
+  noWhatsappWali: "",
+  emailWali: "",
+  namaAyahKandung: "",
+  namaIbuKandung: "",
+  // Data pendidikan
   asalSekolah: "",
   alamatSekolah: "",
   alamatDomisili: "",
   provinsi: "",
   kota: "",
-  emailOrtu: "",
 };
 
 const INITIAL_FILES: FormFilesState = {
@@ -70,7 +102,7 @@ const INITIAL_FILES: FormFilesState = {
   suratSehatFile: null,
 };
 
-const STEP_TITLES = ["Data Diri", "Data Orang Tua", "Pendidikan & Berkas"];
+const STEP_TITLES = ["Data Diri", "Data Wali & Orang Tua", "Pendidikan & Berkas"];
 
 // 1. Maksimal 4 MB per file
 const MAX_FILE_SIZE_BYTES = 4 * 1024 * 1024;
@@ -104,6 +136,28 @@ const PENGHASILAN_OPTIONS = [
   { value: "Rp 7.000.000 - Rp 9.000.000", label: "Rp 7.000.000 - Rp 9.000.000" },
   { value: "Rp 9.000.000 - Rp 11.000.000", label: "Rp 9.000.000 - Rp 11.000.000" },
   { value: "> Rp 11.000.000", label: "> Rp 11.000.000" },
+];
+
+// Opsi status anak dalam keluarga
+const STATUS_ANAK_OPTIONS = [
+  { value: "", label: "Pilih status anak" },
+  { value: "Kandung", label: "Anak Kandung" },
+  { value: "Angkat", label: "Anak Angkat" },
+  { value: "Tiri", label: "Anak Tiri" },
+  { value: "Asuh", label: "Anak Asuh" },
+];
+
+// Opsi hubungan wali dengan santri
+const HUBUNGAN_WALI_OPTIONS = [
+  { value: "", label: "Pilih hubungan wali" },
+  { value: "orang-tua-kandung", label: "Orang Tua Kandung" },
+  { value: "ayah-tiri", label: "Ayah Tiri" },
+  { value: "ibu-tiri", label: "Ibu Tiri" },
+  { value: "orang-tua-angkat", label: "Orang Tua Angkat" },
+  { value: "kakek-nenek", label: "Kakek / Nenek" },
+  { value: "paman-bibi", label: "Paman / Bibi" },
+  { value: "kakak-saudara", label: "Kakak / Saudara" },
+  { value: "lainnya", label: "Lainnya" },
 ];
 
 function safeFileName(fileName: string) {
@@ -142,8 +196,9 @@ export default function RegistrationForm() {
 
   // Handler nomor WhatsApp — hanya angka dan +, max 15 karakter
   const handleWhatsappChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const cleaned = event.target.value.replace(/[^\d+]/g, "").slice(0, 15);
-    setFormData((prev) => ({ ...prev, noWhatsappOrtu: cleaned }));
+    const { name, value } = event.target;
+    const cleaned = value.replace(/[^\d+]/g, "").slice(0, 15);
+    setFormData((prev) => ({ ...prev, [name]: cleaned }));
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -201,6 +256,7 @@ export default function RegistrationForm() {
       const fields: (keyof FormDataState)[] = [
         "namaLengkap", "namaPanggilan", "nik", "nisn",
         "tempatLahir", "tanggalLahir", "jenisKelamin",
+        "anakKe", "totalSaudara", "statusAnak",
       ];
       if (!fields.every((f) => formData[f].trim() !== "")) {
         setErrorMessage("Mohon lengkapi semua data pada tahap ini sebelum lanjut.");
@@ -239,25 +295,66 @@ export default function RegistrationForm() {
         return false;
       }
 
+      // Validasi anak ke-X tidak boleh lebih besar dari total saudara
+      const anakKe = parseInt(formData.anakKe);
+      const totalSaudara = parseInt(formData.totalSaudara);
+      if (anakKe > totalSaudara) {
+        setErrorMessage("Anak ke-X tidak boleh lebih besar dari total saudara.");
+        return false;
+      }
+      if (anakKe < 1 || totalSaudara < 1) {
+        setErrorMessage("Anak ke dan total saudara minimal 1.");
+        return false;
+      }
+
       return true;
     }
 
     if (currentStep === 2) {
-      const fields: (keyof FormDataState)[] = [
-        "namaAyah", "namaIbu", "pekerjaanAyah", "pekerjaanIbu",
-        "noWhatsappOrtu", "relasiWhatsapp", "penghasilanOrtu", "emailOrtu",
-      ];
-      if (!fields.every((f) => formData[f].trim() !== "")) {
-        setErrorMessage("Mohon lengkapi semua data pada tahap ini sebelum lanjut.");
+      // Base validation
+      if (!formData.hubunganWali.trim()) {
+        setErrorMessage("Mohon pilih hubungan wali dengan santri.");
         return false;
       }
-      if (!/^\+?[0-9]{9,15}$/.test(formData.noWhatsappOrtu.trim())) {
-        setErrorMessage("Nomor WhatsApp tidak valid. Gunakan format angka, contoh: 08123456789");
-        return false;
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailOrtu)) {
-        setErrorMessage("Format email orang tua tidak valid.");
-        return false;
+
+      // Conditional validation based on hubunganWali
+      if (formData.hubunganWali === "orang-tua-kandung") {
+        // Validate original parent fields
+        const fields: (keyof FormDataState)[] = [
+          "namaAyah", "namaIbu", "pekerjaanAyah", "pekerjaanIbu",
+          "noWhatsappOrtu", "relasiWhatsapp", "penghasilanOrtu", "emailOrtu",
+        ];
+        if (!fields.every((f) => formData[f].trim() !== "")) {
+          setErrorMessage("Mohon lengkapi semua data pada tahap ini sebelum lanjut.");
+          return false;
+        }
+        if (!/^\+?[0-9]{9,15}$/.test(formData.noWhatsappOrtu.trim())) {
+          setErrorMessage("Nomor WhatsApp tidak valid. Gunakan format angka, contoh: 08123456789");
+          return false;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailOrtu)) {
+          setErrorMessage("Format email orang tua tidak valid.");
+          return false;
+        }
+      } else {
+        // Validate wali fields + WAJIB isi nama orang tua kandung
+        const waliFields: (keyof FormDataState)[] = [
+          "namaWali", "hubunganDenganSantri", "pekerjaanWali",
+          "noWhatsappWali", "emailWali", "penghasilanOrtu",
+          "namaAyahKandung", "namaIbuKandung", // WAJIB untuk non orang tua kandung
+        ];
+        if (!waliFields.every((f) => formData[f].trim() !== "")) {
+          setErrorMessage("Mohon lengkapi semua data wali dan nama orang tua kandung sebelum lanjut.");
+          return false;
+        }
+        if (!/^\+?[0-9]{9,15}$/.test(formData.noWhatsappWali.trim())) {
+          setErrorMessage("Nomor WhatsApp wali tidak valid. Gunakan format angka, contoh: 08123456789");
+          return false;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailWali)) {
+          setErrorMessage("Format email wali tidak valid.");
+          return false;
+        }
       }
       return true;
     }
@@ -306,19 +403,38 @@ export default function RegistrationForm() {
       fd.append("tempatLahir", formData.tempatLahir);
       fd.append("tanggalLahir", formData.tanggalLahir);
       fd.append("jenisKelamin", formData.jenisKelamin);
-      fd.append("namaAyah", formData.namaAyah);
-      fd.append("namaIbu", formData.namaIbu);
-      fd.append("pekerjaanAyah", formData.pekerjaanAyah);
-      fd.append("pekerjaanIbu", formData.pekerjaanIbu);
-      fd.append("noWhatsappOrtu", formData.noWhatsappOrtu);
-      fd.append("relasiWhatsapp", formData.relasiWhatsapp);
+      fd.append("noWhatsappSantri", formData.noWhatsappSantri);
+      // Status dalam keluarga
+      fd.append("anakKe", formData.anakKe);
+      fd.append("totalSaudara", formData.totalSaudara);
+      fd.append("statusAnak", formData.statusAnak);
+      // Data wali/orang tua
+      fd.append("hubunganWali", formData.hubunganWali);
+      if (formData.hubunganWali === "orang-tua-kandung") {
+        fd.append("namaAyah", formData.namaAyah);
+        fd.append("namaIbu", formData.namaIbu);
+        fd.append("pekerjaanAyah", formData.pekerjaanAyah);
+        fd.append("pekerjaanIbu", formData.pekerjaanIbu);
+        fd.append("noWhatsappOrtu", formData.noWhatsappOrtu);
+        fd.append("relasiWhatsapp", formData.relasiWhatsapp);
+        fd.append("emailOrtu", formData.emailOrtu);
+      } else {
+        fd.append("namaWali", formData.namaWali);
+        fd.append("hubunganDenganSantri", formData.hubunganDenganSantri);
+        fd.append("pekerjaanWali", formData.pekerjaanWali);
+        fd.append("noWhatsappWali", formData.noWhatsappWali);
+        fd.append("emailWali", formData.emailWali);
+        // Nama orang tua kandung WAJIB untuk non orang tua kandung
+        fd.append("namaAyahKandung", formData.namaAyahKandung);
+        fd.append("namaIbuKandung", formData.namaIbuKandung);
+      }
       fd.append("penghasilanOrtu", formData.penghasilanOrtu);
+      // Data pendidikan
       fd.append("asalSekolah", formData.asalSekolah);
       fd.append("alamatSekolah", formData.alamatSekolah);
       fd.append("alamatDomisili", formData.alamatDomisili);
       fd.append("provinsi", formData.provinsi);
       fd.append("kota", formData.kota);
-      if (formData.emailOrtu) fd.append("emailOrtu", formData.emailOrtu);
 
       // Append files
       if (files.kkFile) fd.append("kkFile", files.kkFile);
@@ -464,55 +580,234 @@ export default function RegistrationForm() {
                 { value: "P", label: "Perempuan" },
               ]}
             />
-          </div>
-        ) : null}
 
-        {/* Step 2: Data Orang Tua */}
-        {step === 2 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input label="Nama Ayah" name="namaAyah" value={formData.namaAyah} onChange={handleInputChange} />
-            <Input label="Nama Ibu" name="namaIbu" value={formData.namaIbu} onChange={handleInputChange} />
-            <Input label="Pekerjaan Ayah" name="pekerjaanAyah" value={formData.pekerjaanAyah} onChange={handleInputChange} />
-            <Input label="Pekerjaan Ibu" name="pekerjaanIbu" value={formData.pekerjaanIbu} onChange={handleInputChange} />
-            <Input label="Nomor WhatsApp Orang Tua" name="noWhatsappOrtu" value={formData.noWhatsappOrtu} onChange={handleWhatsappChange} placeholder="Contoh: 08123456789" />
-            <Select
-              label="Relasi Pemilik WhatsApp"
-              name="relasiWhatsapp"
-              value={formData.relasiWhatsapp}
-              onChange={handleInputChange}
-              options={[
-                { value: "", label: "Pilih relasi" },
-                { value: "Ayah", label: "Ayah" },
-                { value: "Ibu", label: "Ibu" },
-                { value: "Wali", label: "Wali" },
-              ]}
-            />
-            {/* Email Orang Tua - WAJIB */}
+            {/* Nomor WhatsApp Calon Santri - Opsional */}
             <div className="block">
               <span className="mb-1.5 block text-sm font-medium text-gray-700">
-                Email Orang Tua
+                Nomor WhatsApp Calon Santri
+                <span className="ml-2 text-xs font-normal text-gray-400 bg-gray-200 px-2 py-0.5 rounded-full">Opsional</span>
               </span>
               <input
-                required
-                type="email"
-                name="emailOrtu"
-                value={formData.emailOrtu}
-                onChange={handleInputChange}
-                placeholder="contoh@email.com"
+                type="text"
+                inputMode="numeric"
+                name="noWhatsappSantri"
+                value={formData.noWhatsappSantri}
+                onChange={handleWhatsappChange}
+                maxLength={15}
+                placeholder="Contoh: 08123456789 (jika ada)"
                 className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="mt-1 text-xs text-gray-400">
-                Pastikan nomor WhatsApp dan email diisi dengan benar. Notifikasi pendaftaran dan pembayaran akan dikirim ke sini.
+                Isi jika calon santri memiliki nomor WhatsApp sendiri
               </p>
             </div>
-            {/* 4. Penghasilan orang tua per bulan - dropdown kategori */}
-            <Select
-              label="Penghasilan Orang Tua per-bulan"
-              name="penghasilanOrtu"
-              value={formData.penghasilanOrtu}
-              onChange={handleInputChange}
-              options={PENGHASILAN_OPTIONS}
-            />
+
+            {/* Status dalam Keluarga */}
+            <div className="block md:col-span-2">
+              <p className="mb-3 text-sm font-semibold text-gray-800 border-b border-gray-200 pb-2">Status dalam Keluarga</p>
+            </div>
+
+            {/* Anak ke berapa */}
+            <div className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">
+                Anak ke-
+              </span>
+              <input
+                required
+                type="number"
+                inputMode="numeric"
+                name="anakKe"
+                value={formData.anakKe}
+                onChange={handleInputChange}
+                min="1"
+                max="20"
+                placeholder="Contoh: 1"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Total saudara */}
+            <div className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">
+                dari ... Bersaudara
+              </span>
+              <input
+                required
+                type="number"
+                inputMode="numeric"
+                name="totalSaudara"
+                value={formData.totalSaudara}
+                onChange={handleInputChange}
+                min="1"
+                max="20"
+                placeholder="Contoh: 3"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Status Anak */}
+            <div className="block md:col-span-2">
+              <Select
+                label="Status Anak"
+                name="statusAnak"
+                value={formData.statusAnak}
+                onChange={handleInputChange}
+                options={STATUS_ANAK_OPTIONS}
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                Pilih status anak: Kandung, Angkat, Tiri, atau Asuh
+              </p>
+            </div>
+          </div>
+        ) : null}
+
+        {/* Step 2: Data Wali & Orang Tua */}
+        {step === 2 ? (
+          <div className="space-y-6">
+            {/* Hubungan Wali */}
+            <div className="block">
+              <Select
+                label="Hubungan Wali dengan Santri"
+                name="hubunganWali"
+                value={formData.hubunganWali}
+                onChange={handleInputChange}
+                options={HUBUNGAN_WALI_OPTIONS}
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                Pilih orang tua kandung jika santri tinggal dengan orang tua kandung
+              </p>
+            </div>
+
+            {/* Conditional rendering based on hubunganWali */}
+            {formData.hubunganWali === "orang-tua-kandung" ? (
+              /* Mode: Orang Tua Kandung */
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Nama Ayah" name="namaAyah" value={formData.namaAyah} onChange={handleInputChange} />
+                <Input label="Nama Ibu" name="namaIbu" value={formData.namaIbu} onChange={handleInputChange} />
+                <Input label="Pekerjaan Ayah" name="pekerjaanAyah" value={formData.pekerjaanAyah} onChange={handleInputChange} />
+                <Input label="Pekerjaan Ibu" name="pekerjaanIbu" value={formData.pekerjaanIbu} onChange={handleInputChange} />
+                <Input label="Nomor WhatsApp Orang Tua" name="noWhatsappOrtu" value={formData.noWhatsappOrtu} onChange={handleWhatsappChange} placeholder="Contoh: 08123456789" />
+                <Select
+                  label="Relasi Pemilik WhatsApp"
+                  name="relasiWhatsapp"
+                  value={formData.relasiWhatsapp}
+                  onChange={handleInputChange}
+                  options={[
+                    { value: "", label: "Pilih relasi" },
+                    { value: "Ayah", label: "Ayah" },
+                    { value: "Ibu", label: "Ibu" },
+                  ]}
+                />
+                {/* Email Orang Tua - WAJIB */}
+                <div className="block md:col-span-2">
+                  <span className="mb-1.5 block text-sm font-medium text-gray-700">
+                    Email Orang Tua
+                  </span>
+                  <input
+                    required
+                    type="email"
+                    name="emailOrtu"
+                    value={formData.emailOrtu}
+                    onChange={handleInputChange}
+                    placeholder="contoh@email.com"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <p className="mt-1 text-xs text-gray-400">
+                    Pastikan nomor WhatsApp dan email diisi dengan benar. Notifikasi pendaftaran dan pembayaran akan dikirim ke sini.
+                  </p>
+                </div>
+                {/* Penghasilan orang tua per bulan */}
+                <div className="block md:col-span-2">
+                  <Select
+                    label="Penghasilan Orang Tua per-bulan"
+                    name="penghasilanOrtu"
+                    value={formData.penghasilanOrtu}
+                    onChange={handleInputChange}
+                    options={PENGHASILAN_OPTIONS}
+                  />
+                </div>
+              </div>
+            ) : formData.hubunganWali ? (
+              /* Mode: Wali (bukan orang tua kandung) */
+              <div className="space-y-4">
+                {/* Info Wali */}
+                <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+                  <strong>Informasi Wali/Penanggung Jawab</strong> — Isi data wali yang akan bertanggung jawab atas santri.
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input label="Nama Wali Lengkap" name="namaWali" value={formData.namaWali} onChange={handleInputChange} />
+                  <Input label="Hubungan dengan Santri" name="hubunganDenganSantri" value={formData.hubunganDenganSantri} onChange={handleInputChange} placeholder="Contoh: Paman, Bibi, Kakek" />
+                  <Input label="Pekerjaan Wali" name="pekerjaanWali" value={formData.pekerjaanWali} onChange={handleInputChange} />
+                  <Input label="Nomor WhatsApp Wali" name="noWhatsappWali" value={formData.noWhatsappWali} onChange={handleWhatsappChange} placeholder="Contoh: 08123456789" />
+                  
+                  {/* Email Wali - WAJIB */}
+                  <div className="block md:col-span-2">
+                    <span className="mb-1.5 block text-sm font-medium text-gray-700">
+                      Email Wali
+                    </span>
+                    <input
+                      required
+                      type="email"
+                      name="emailWali"
+                      value={formData.emailWali}
+                      onChange={handleInputChange}
+                      placeholder="contoh@email.com"
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <p className="mt-1 text-xs text-gray-400">
+                      Notifikasi pendaftaran dan pembayaran akan dikirim ke nomor WhatsApp dan email ini.
+                    </p>
+                  </div>
+
+                  {/* Penghasilan wali per bulan */}
+                  <div className="block md:col-span-2">
+                    <Select
+                      label="Penghasilan Wali per-bulan"
+                      name="penghasilanOrtu"
+                      value={formData.penghasilanOrtu}
+                      onChange={handleInputChange}
+                      options={PENGHASILAN_OPTIONS}
+                    />
+                  </div>
+                </div>
+
+                {/* Data Orang Tua Kandung (WAJIB) */}
+                <div className="mt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="block">
+                      <span className="mb-1.5 block text-sm font-medium text-gray-700">
+                        Nama Ayah Kandung
+                      </span>
+                      <input
+                        required
+                        type="text"
+                        name="namaAyahKandung"
+                        value={formData.namaAyahKandung}
+                        onChange={handleInputChange}
+                        placeholder="Masukkan nama lengkap ayah kandung"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="block">
+                      <span className="mb-1.5 block text-sm font-medium text-gray-700">
+                        Nama Ibu Kandung
+                      </span>
+                      <input
+                        required
+                        type="text"
+                        name="namaIbuKandung"
+                        value={formData.namaIbuKandung}
+                        onChange={handleInputChange}
+                        placeholder="Masukkan nama lengkap ibu kandung"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
           </div>
         ) : null}
 
