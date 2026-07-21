@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import FAQAccordion from './FAQAccordion';
 
 const previewFAQs: { q: string; a: React.ReactNode }[] = [
@@ -43,10 +43,10 @@ export default function FAQPreview() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-2">
-              Pertanyaan yang Sering Ditanyakan
+            <h2 className="text-3xl md:text-3xl font-bold text-blue-900 mb-2">
+              Pertanyaan yang Sering Ditanyakan (FAQ)
             </h2>
-            <div className="w-50 h-1 bg-yellow-400 rounded-full" />
+            <div className="w-42 h-1 bg-yellow-400 rounded-full" />
           </div>
           <a
             href="/faq"

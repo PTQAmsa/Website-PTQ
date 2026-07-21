@@ -1,3 +1,4 @@
+﻿import Image from 'next/image';
 export default function Facilities() {
   // Baris 1: 10 foto (scroll kanan ke kiri)
   const row1Images = [
@@ -43,12 +44,14 @@ export default function Facilities() {
           {[...row1Images, ...row1Images].map((image, index) => (
             <div
               key={index}
-              className="flex-shrink-0 w-80 h-52 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow"
+              className="relative flex-shrink-0 w-80 h-52 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow"
             >
-              <img
+              <Image
                 src={image}
                 alt={`Galeri ${(index % row1Images.length) + 1}`}
-                className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                fill
+                className="object-cover hover:scale-110 transition-transform duration-500"
+                sizes="320px"
               />
             </div>
           ))}
@@ -62,12 +65,14 @@ export default function Facilities() {
           {[...row2Images, ...row2Images].map((image, index) => (
             <div
               key={index}
-              className="flex-shrink-0 w-80 h-52 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow"
+              className="relative flex-shrink-0 w-80 h-52 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow"
             >
-              <img
+              <Image
                 src={image}
                 alt={`Galeri ${(index % row2Images.length) + 11}`}
-                className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                fill
+                className="object-cover hover:scale-110 transition-transform duration-500"
+                sizes="320px"
               />
             </div>
           ))}
