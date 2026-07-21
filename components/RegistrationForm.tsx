@@ -2,6 +2,7 @@
 
 import React, { ChangeEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 
 type Step = 1 | 2 | 3;
 type RequiredFileKey = "kkFile" | "aktaFile" | "ijazahFile" | "ktpOrtuFile" | "pasFotoFile";
@@ -104,8 +105,9 @@ const INITIAL_FILES: FormFilesState = {
 
 const STEP_TITLES = ["Data Diri", "Data Wali & Orang Tua", "Pendidikan & Berkas"];
 
-// 1. Maksimal 4 MB per file
-const MAX_FILE_SIZE_BYTES = 4 * 1024 * 1024;
+// 1. Maksimal 2 MB per file (aman untuk upload client-side)
+const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
+const MAX_FILE_SIZE_LABEL = "2 MB";
 
 const ACCEPTED_FILE_TYPES = [
   "application/pdf",
@@ -218,7 +220,7 @@ export default function RegistrationForm() {
     }
 
     if (file.size > MAX_FILE_SIZE_BYTES) {
-      setErrorMessage("Ukuran file maksimal 4 MB per berkas.");
+      setErrorMessage(`File "${file.name}" terlalu besar (${(file.size / 1024 / 1024).toFixed(1)} MB). Maksimal ${MAX_FILE_SIZE_LABEL} per berkas. Kompres atau perkecil file Anda terlebih dahulu.`);
       event.target.value = "";
       return;
     }
@@ -243,7 +245,7 @@ export default function RegistrationForm() {
     }
 
     if (file.size > MAX_FILE_SIZE_BYTES) {
-      setErrorMessage("Ukuran file maksimal 4 MB per berkas.");
+      setErrorMessage(`File "${file.name}" terlalu besar (${(file.size / 1024 / 1024).toFixed(1)} MB). Maksimal ${MAX_FILE_SIZE_LABEL} per berkas. Kompres atau perkecil file Anda terlebih dahulu.`);
       event.target.value = "";
       return;
     }
@@ -394,8 +396,44 @@ export default function RegistrationForm() {
     setIsSubmitting(true);
 
     try {
+      // ── Upload files directly to Supabase from browser ──────────────────
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      const registrationId = crypto.randomUUID();
+
+      function safeName(name: string) {
+        return name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      }
+
+      async function uploadFile(file: File, prefix: string): Promise<string> {
+        const ext = safeName(file.name.split(".").pop() ?? "bin");
+        const path = `pendaftaran/${registrationId}/${prefix}-${Date.now()}.${ext}`;
+        const { error } = await supabase.storage
+          .from("dokumen-santri")
+          .upload(path, file, { upsert: false });
+        if (error) throw new Error(`Gagal upload ${prefix}: ${error.message}`);
+        const { data } = supabase.storage.from("dokumen-santri").getPublicUrl(path);
+        return data.publicUrl;
+      }
+
+      const [urlKk, urlAkta, urlIjazah, urlKtpOrtu, urlPasFoto] = await Promise.all([
+        uploadFile(files.kkFile!, "kk"),
+        uploadFile(files.aktaFile!, "akta"),
+        uploadFile(files.ijazahFile!, "ijazah"),
+        uploadFile(files.ktpOrtuFile!, "ktp-ortu"),
+        uploadFile(files.pasFotoFile!, "pas-foto"),
+      ]);
+
+      let urlSuratSehat: string | null = null;
+      if (files.suratSehatFile) {
+        urlSuratSehat = await uploadFile(files.suratSehatFile, "surat-sehat");
+      }
+
+      // ── Send only text data + file URLs to server ───────────────────────
       const fd = new FormData();
-      // Append all text fields
+      fd.append("registrationId", registrationId);
       fd.append("namaLengkap", formData.namaLengkap);
       fd.append("namaPanggilan", formData.namaPanggilan);
       fd.append("nik", formData.nik);
@@ -404,11 +442,9 @@ export default function RegistrationForm() {
       fd.append("tanggalLahir", formData.tanggalLahir);
       fd.append("jenisKelamin", formData.jenisKelamin);
       fd.append("noWhatsappSantri", formData.noWhatsappSantri);
-      // Status dalam keluarga
       fd.append("anakKe", formData.anakKe);
       fd.append("totalSaudara", formData.totalSaudara);
       fd.append("statusAnak", formData.statusAnak);
-      // Data wali/orang tua
       fd.append("hubunganWali", formData.hubunganWali);
       if (formData.hubunganWali === "orang-tua-kandung") {
         fd.append("namaAyah", formData.namaAyah);
@@ -424,25 +460,22 @@ export default function RegistrationForm() {
         fd.append("pekerjaanWali", formData.pekerjaanWali);
         fd.append("noWhatsappWali", formData.noWhatsappWali);
         fd.append("emailWali", formData.emailWali);
-        // Nama orang tua kandung WAJIB untuk non orang tua kandung
         fd.append("namaAyahKandung", formData.namaAyahKandung);
         fd.append("namaIbuKandung", formData.namaIbuKandung);
       }
       fd.append("penghasilanOrtu", formData.penghasilanOrtu);
-      // Data pendidikan
       fd.append("asalSekolah", formData.asalSekolah);
       fd.append("alamatSekolah", formData.alamatSekolah);
       fd.append("alamatDomisili", formData.alamatDomisili);
       fd.append("provinsi", formData.provinsi);
       fd.append("kota", formData.kota);
-
-      // Append files
-      if (files.kkFile) fd.append("kkFile", files.kkFile);
-      if (files.aktaFile) fd.append("aktaFile", files.aktaFile);
-      if (files.ijazahFile) fd.append("ijazahFile", files.ijazahFile);
-      if (files.ktpOrtuFile) fd.append("ktpOrtuFile", files.ktpOrtuFile);
-      if (files.pasFotoFile) fd.append("pasFotoFile", files.pasFotoFile);
-      if (files.suratSehatFile) fd.append("suratSehatFile", files.suratSehatFile);
+      // Send URLs instead of files
+      fd.append("urlKk", urlKk);
+      fd.append("urlAkta", urlAkta);
+      fd.append("urlIjazah", urlIjazah);
+      fd.append("urlKtpOrtu", urlKtpOrtu);
+      fd.append("urlPasFoto", urlPasFoto);
+      if (urlSuratSehat) fd.append("urlSuratSehat", urlSuratSehat);
 
       const response = await fetch("/api/submit-registration", {
         method: "POST",
@@ -825,9 +858,9 @@ export default function RegistrationForm() {
             <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               <strong>Biaya Pendaftaran: Rp 200.000</strong> — Link pembayaran akan dikirimkan oleh admin ke nomor WhatsApp/email Anda dalam 24 jam setelah pendaftaran berhasil.
             </div>
-            {/* 1. Info batas ukuran file 4 MB */}
+            {/* 1. Info batas ukuran file 2 MB */}
             <p className="text-xs text-gray-500 bg-blue-50 border border-blue-100 rounded-lg px-4 py-2">
-              Format yang diterima: PDF, JPG, PNG, WEBP. Maksimal <strong>4 MB</strong> per berkas.
+              Format yang diterima: PDF, JPG, PNG, WEBP. Maksimal <strong>{MAX_FILE_SIZE_LABEL}</strong> per berkas. Jika file Anda lebih besar, kompres dulu di <a href="https://smallpdf.com" target="_blank" rel="noopener noreferrer" className="underline text-blue-600">smallpdf.com</a> (PDF) atau <a href="https://tinypng.com" target="_blank" rel="noopener noreferrer" className="underline text-blue-600">tinypng.com</a> (gambar).
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {FILE_FIELDS.map((fileField) => (
@@ -891,7 +924,7 @@ export default function RegistrationForm() {
               disabled={isSubmitting}
               className="px-5 py-2.5 rounded-lg font-semibold bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50"
             >
-              {isSubmitting ? "Mengirim..." : "Kirim Pendaftaran"}
+              {isSubmitting ? "Mengupload & Mengirim..." : "Kirim Pendaftaran"}
             </button>
           )}
         </div>
