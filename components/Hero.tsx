@@ -66,7 +66,7 @@ export default function Hero() {
           Tahun Ajaran 2026-2027 M / 1447-1448 H
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#about" className="bg-yellow-400 text-blue-900 px-8 py-3 rounded-full font-bold hover:bg-yellow-300 transition shadow-lg">
+          <a href="/tentang-pesantren" className="bg-yellow-400 text-blue-900 px-8 py-3 rounded-full font-bold hover:bg-yellow-300 transition shadow-lg">
             Tentang Kami
           </a>
           <a href="#contact" className="border-2 border-yellow-400 text-yellow-400 px-8 py-3 rounded-full font-bold hover:bg-yellow-400 hover:text-blue-900 transition">

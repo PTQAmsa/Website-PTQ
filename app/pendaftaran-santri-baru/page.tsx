@@ -2,6 +2,7 @@
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import RegistrationForm from '@/components/RegistrationForm';
+import AlurPendaftaran from '@/components/AlurPendaftaran';
 
 export default function PendaftaranSantriBaru() {
   return (
@@ -111,30 +112,8 @@ export default function PendaftaranSantriBaru() {
           </div>
 
           {/* 3. Alur Pendaftaran */}
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold text-blue-900 mb-8 text-center">Alur Pendaftaran</h2>
-            <div className="grid md:grid-cols-4 gap-6">
-              <div className="text-center">
-                <div className="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
-                <h3 className="font-semibold text-blue-900 mb-2">Daftar Online</h3>
-                <p className="text-gray-600 text-sm">Isi formulir pendaftaran online</p>
-              </div>
-              <div className="text-center">
-                <div className="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
-                <h3 className="font-semibold text-blue-900 mb-2">Verifikasi</h3>
-                <p className="text-gray-600 text-sm">Tim kami akan memverifikasi data Anda</p>
-              </div>
-              <div className="text-center">
-                <div className="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
-                <h3 className="font-semibold text-blue-900 mb-2">Tes Masuk</h3>
-                <p className="text-gray-600 text-sm">Tes baca Al-Qur&apos;an, Pengetahuan Umum dan Wawancara</p>
-              </div>
-              <div className="text-center">
-                <div className="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
-                <h3 className="font-semibold text-blue-900 mb-2">Diterima</h3>
-                <p className="text-gray-600 text-sm">Pengumuman dan daftar ulang</p>
-              </div>
-            </div>
+          <div className="mb-16 -mx-4 sm:-mx-6 lg:-mx-8">
+            <AlurPendaftaran />
           </div>
 
           {/* 4. Butuh Bantuan */}
