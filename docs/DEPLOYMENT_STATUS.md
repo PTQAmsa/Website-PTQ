@@ -1,8 +1,17 @@
-# 🚀 Deployment Status - Feature Payment System
+# 🚀 Deployment Status
 
-## ✅ Git Push Berhasil!
+## ✅ Merged to Main & Live!
 
-Branch `feature/payment-system` sudah berhasil di-push ke GitHub!
+**Last updated:** 2026-07-21  
+**Domain:** https://ptqamsa.id  
+**Vercel Project:** website-ptq
+
+### Status:
+- ✅ Merged `feature/payment-system` → `main`
+- ✅ Domain `ptqamsa.id` terpasang di project aktif
+- ✅ Env vars dikonfigurasi di Vercel
+- ✅ Midtrans Sandbox aktif
+- ✅ Supabase: 41 pendaftar (28 pending, 13 paid)
 
 **GitHub URL:**
 ```
