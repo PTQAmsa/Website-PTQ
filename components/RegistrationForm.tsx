@@ -105,9 +105,9 @@ const INITIAL_FILES: FormFilesState = {
 
 const STEP_TITLES = ["Data Diri", "Data Wali & Orang Tua", "Pendidikan & Berkas"];
 
-// 1. Maksimal 2 MB per file (aman untuk upload client-side)
-const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
-const MAX_FILE_SIZE_LABEL = "2 MB";
+// 1. Maksimal 3 MB per file
+const MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024;
+const MAX_FILE_SIZE_LABEL = "3 MB";
 
 const ACCEPTED_FILE_TYPES = [
   "application/pdf",
