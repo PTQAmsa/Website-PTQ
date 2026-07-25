@@ -503,18 +503,26 @@ export default function RegistrationForm() {
       <div className="sticky top-0 z-20 bg-gray-50/90 backdrop-blur border-b border-gray-200 pb-4 mb-8">
         <div className="flex items-center justify-between text-xs sm:text-sm font-semibold text-gray-700 mb-2">
           {STEP_TITLES.map((title, index) => {
-            const activeStep = index + 1;
+            const activeStep = (index + 1) as Step;
             const isActive = activeStep === step;
             const isDone = activeStep < step;
             return (
-              <div
+              <button
                 key={title}
-                className={`flex-1 text-center ${
-                  isActive ? "text-blue-700" : isDone ? "text-emerald-600" : "text-gray-500"
+                type="button"
+                onClick={() => { setErrorMessage(""); setStep(activeStep); }}
+                className={`flex-1 text-center py-1 rounded transition-colors ${
+                  isActive
+                    ? "text-blue-700 font-bold"
+                    : isDone
+                    ? "text-emerald-600 hover:text-emerald-700 cursor-pointer"
+                    : "text-gray-400 hover:text-gray-600 cursor-pointer"
                 }`}
+                title={isDone ? "Kembali ke tahap ini" : isActive ? "Tahap saat ini" : "Klik untuk lihat tahap ini"}
               >
+                {isDone && <span className="mr-1">✓</span>}
                 {activeStep}. {title}
-              </div>
+              </button>
             );
           })}
         </div>
@@ -847,6 +855,19 @@ export default function RegistrationForm() {
         {/* Step 3: Pendidikan & Berkas */}
         {step === 3 ? (
           <div className="space-y-4">
+            {/* Checklist dokumen yang perlu disiapkan */}
+            <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+              <p className="font-semibold mb-2">📋 Dokumen yang perlu disiapkan:</p>
+              <ul className="space-y-1 text-xs">
+                <li>✅ <strong>Kartu Keluarga (KK)</strong> — scan/foto yang jelas</li>
+                <li>✅ <strong>Akta Kelahiran</strong> — scan/foto yang jelas</li>
+                <li>✅ <strong>Ijazah / Surat Keterangan Lulus</strong> — SD/SMP</li>
+                <li>✅ <strong>KTP Orang Tua / Wali</strong> — scan/foto yang jelas</li>
+                <li>✅ <strong>Pas Foto 3x4</strong> — foto terbaru, latar belakang terang</li>
+                <li className="text-blue-600">📎 <strong>Surat Keterangan Sehat</strong> — dari dokter (opsional)</li>
+              </ul>
+              <p className="mt-2 text-xs text-blue-600">Format: PDF, JPG, PNG, WEBP. Maks. <strong>3 MB</strong> per file.</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input label="Asal Sekolah" name="asalSekolah" value={formData.asalSekolah} onChange={handleInputChange} />
               <Input label="Alamat Sekolah" name="alamatSekolah" value={formData.alamatSekolah} onChange={handleInputChange} />
@@ -854,11 +875,9 @@ export default function RegistrationForm() {
               <Input label="Kota / Kabupaten" name="kota" value={formData.kota} onChange={handleInputChange} />
               <TextArea label="Alamat Domisili" name="alamatDomisili" value={formData.alamatDomisili} onChange={handleInputChange} />
             </div>
-            {/* Payment disclaimer */}
             <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               <strong>Biaya Pendaftaran: Rp 200.000</strong> — Link pembayaran akan dikirimkan oleh admin ke nomor WhatsApp/email Anda dalam 24 jam setelah pendaftaran berhasil.
             </div>
-            {/* 1. Info batas ukuran file 2 MB */}
             <p className="text-xs text-gray-500 bg-blue-50 border border-blue-100 rounded-lg px-4 py-2">
               Format yang diterima: PDF, JPG, PNG, WEBP. Maksimal <strong>{MAX_FILE_SIZE_LABEL}</strong> per berkas. Jika file Anda lebih besar, kompres dulu di <a href="https://smallpdf.com" target="_blank" rel="noopener noreferrer" className="underline text-blue-600">smallpdf.com</a> (PDF) atau <a href="https://tinypng.com" target="_blank" rel="noopener noreferrer" className="underline text-blue-600">tinypng.com</a> (gambar).
             </p>
