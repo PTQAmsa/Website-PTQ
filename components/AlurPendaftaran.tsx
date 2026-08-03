@@ -12,10 +12,12 @@ const stepsOnline = [
       <>
         Isi formulir pendaftaran online di{' '}
         <a
-          href="/pendaftaran-santri-baru"
+          href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-blue-600 underline hover:text-blue-800 font-medium"
         >
-          ptqamsa.id/pendaftaran-santri-baru
+          Google Form PTQ Amsa
         </a>
       </>
     ),
@@ -140,7 +142,9 @@ export default function AlurPendaftaran() {
 
         <div className="mt-12 text-center">
           <a
-            href="/pendaftaran-santri-baru"
+            href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block bg-blue-600 text-white px-10 py-3 rounded-full font-bold hover:bg-blue-700 transition shadow-md"
           >
             Daftar Sekarang →

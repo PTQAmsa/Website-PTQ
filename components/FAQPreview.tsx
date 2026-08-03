@@ -23,7 +23,7 @@ const previewFAQs: { q: string; a: React.ReactNode }[] = [
     a: (
       <>
         Daftar bisa melalui online (bisa{' '}
-        <a href="/pendaftaran-santri-baru" className="text-blue-600 underline hover:text-blue-800 font-medium">
+        <a href="https://forms.gle/L7GqaZdfDdZ2cxBK6" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800 font-medium">
           klik disini
         </a>
         ) ataupun datang langsung ke pesantren (offline). Bisa hubungi admin via WhatsApp untuk jadwalkan waktu survei lokasi.

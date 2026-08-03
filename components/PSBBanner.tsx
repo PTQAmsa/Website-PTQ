@@ -4,8 +4,9 @@ export default function PSBBanner() {
     <section className="py-12 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
         <a 
-          href="/pendaftaran-santri-baru"
-          className="block relative overflow-hidden rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02] group"
+          href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
+          target="_blank"
+          rel="noopener noreferrer"          className="block relative overflow-hidden rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02] group"
         >
           <Image 
             src="/psb-banner.jpg" 

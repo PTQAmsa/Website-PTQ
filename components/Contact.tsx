@@ -31,7 +31,9 @@ export default function Contact() {
               </div>
             </div>
             <a 
-              href="/pendaftaran-santri-baru"
+              href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
+              target="_blank"
+              rel="noopener noreferrer"
               className="block w-full text-center bg-yellow-400 text-blue-900 py-4 rounded-xl font-bold hover:bg-yellow-300 transition shadow-lg text-lg"
             >
               Daftar Online Sekarang
