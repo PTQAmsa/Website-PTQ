@@ -16,7 +16,7 @@ export default function Footer() {
             <div className="space-y-2 text-gray-400">
               <Link href="/" className="block hover:text-white transition">Beranda</Link>
               <Link href="/tentang-pesantren" className="block hover:text-white transition">Tentang Pesantren</Link>
-              <Link href="/pendaftaran-santri-baru" className="block hover:text-white transition">Pendaftaran</Link>
+              <Link href="https://forms.gle/L7GqaZdfDdZ2cxBK6" target="_blank" rel="noopener noreferrer" className="block hover:text-white transition">Pendaftaran</Link>
               <Link href="/artikel" className="block hover:text-white transition">Artikel</Link>
               <Link href="/faq" className="block hover:text-white transition">FAQ</Link>
             </div>
