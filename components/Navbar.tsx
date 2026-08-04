@@ -61,7 +61,7 @@ export default function Navbar() {
                 Pendaftaran <svg className="inline-block w-2.5 h-2.5 ml-1" fill="currentColor" viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg>
               </button>
               <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <a href="https://forms.gle/L7GqaZdfDdZ2cxBK6" target="_blank" rel="noopener noreferrer" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg">
+                <a href="/pendaftaran-santri-baru" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg">
                   Pendaftaran Santri Baru
                 </a>
               </div>
@@ -160,7 +160,7 @@ export default function Navbar() {
               </button>
               {openDropdown === 'pendaftaran' && (
                 <div className="pl-4 space-y-2 mt-2">
-                  <a href="https://forms.gle/L7GqaZdfDdZ2cxBK6" target="_blank" rel="noopener noreferrer" className="block py-2 text-gray-600 hover:text-blue-600">
+                  <a href="/pendaftaran-santri-baru" className="block py-2 text-gray-600 hover:text-blue-600">
                     Pendaftaran Santri Baru
                   </a>
                 </div>

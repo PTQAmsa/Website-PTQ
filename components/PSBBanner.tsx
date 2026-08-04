@@ -4,9 +4,8 @@ export default function PSBBanner() {
     <section className="py-12 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
         <a 
-          href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
-          target="_blank"
-          rel="noopener noreferrer"          className="block relative overflow-hidden rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02] group"
+          href="/pendaftaran-santri-baru"
+          className="block relative overflow-hidden rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02] group"
         >
           <Image 
             src="/psb-banner.jpg" 
@@ -21,7 +20,7 @@ export default function PSBBanner() {
           {/* Optional: CTA Button Overlay */}
           <div className="absolute bottom-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div className="bg-yellow-400 text-blue-900 px-8 py-3 rounded-full font-bold shadow-lg">
-              Daftar Sekarang →
+              Lihat Info Pendaftaran →
             </div>
           </div>
         </a>

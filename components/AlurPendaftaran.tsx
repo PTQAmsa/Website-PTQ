@@ -86,7 +86,7 @@ const stepsOffline = [
   },
 ];
 
-export default function AlurPendaftaran() {
+export default function AlurPendaftaran({ hideCTA = false }: { hideCTA?: boolean }) {
   const [mode, setMode] = useState<Mode>('online');
   const steps = mode === 'online' ? stepsOnline : stepsOffline;
 
@@ -140,6 +140,7 @@ export default function AlurPendaftaran() {
           </div>
         </div>
 
+        {!hideCTA && (
         <div className="mt-12 text-center">
           <a
             href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
@@ -150,6 +151,7 @@ export default function AlurPendaftaran() {
             Daftar Sekarang →
           </a>
         </div>
+        )}
       </div>
     </section>
   );

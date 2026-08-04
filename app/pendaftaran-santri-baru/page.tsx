@@ -1,8 +1,8 @@
 ﻿import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
-import RegistrationForm from '@/components/RegistrationForm';
 import AlurPendaftaran from '@/components/AlurPendaftaran';
+import Image from 'next/image';
 
 export default function PendaftaranSantriBaru() {
   return (
@@ -12,7 +12,6 @@ export default function PendaftaranSantriBaru() {
 
       {/* Hero Banner Section */}
       <section className="relative pt-24 pb-11 md:pt-32 md:pb-10 bg-gradient-to-br from-blue-800 via-blue-900 to-blue-950 overflow-hidden">
-        {/* Decorative Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-64 h-64 bg-yellow-400 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-400 rounded-full blur-3xl"></div>
@@ -27,8 +26,6 @@ export default function PendaftaranSantriBaru() {
             </svg>
           </div>
         </div>
-
-        {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6">
             Pendaftaran Santri Baru
@@ -44,79 +41,83 @@ export default function PendaftaranSantriBaru() {
         </div>
       </section>
 
+      {/* Banner PSB 2027 */}
+      <section className="bg-white px-4 pt-10 pb-2">
+        <div className="max-w-7xl mx-auto">
+          <Image
+            src="/banner-psb-2027.jpg"
+            alt="Banner Penerimaan Santri Baru 2026-2027 PTQ Amsa001"
+            width={1200}
+            height={600}
+            className="w-full h-auto rounded-2xl shadow-lg"
+            priority
+          />
+        </div>
+      </section>
+
       {/* Content Section */}
       <section className="py-9 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          {/* 1. Persyaratan Pendaftaran */}
+          {/* Persyaratan Pendaftaran */}
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-blue-900 mb-8 text-center">Persyaratan Pendaftaran</h2>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="bg-blue-50 rounded-lg p-6">
                 <h3 className="text-xl font-semibold text-blue-900 mb-4">Dokumen yang Diperlukan:</h3>
                 <ul className="space-y-3">
-                  <li className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-xl">&#10003;</span>
-                    <span className="text-gray-700">Fotocopy Kartu Keluarga (KK)</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-xl">&#10003;</span>
-                    <span className="text-gray-700">Fotocopy Akta Kelahiran</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-xl">&#10003;</span>
-                    <span className="text-gray-700">Fotocopy Ijazah/SKHUN terakhir</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-xl">&#10003;</span>
-                    <span className="text-gray-700">Pas foto 3x4</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-xl">&#10003;</span>
-                    <span className="text-gray-700">Surat keterangan sehat dari dokter (opsional)</span>
-                  </li>
+                  {[
+                    'Fotocopy Kartu Keluarga (KK)',
+                    'Fotocopy Akta Kelahiran',
+                    'Fotocopy Ijazah/SKHUN terakhir',
+                    'Pas foto 3x4',
+                    'Surat keterangan sehat dari dokter (opsional)',
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <span className="text-yellow-500 text-xl">&#10003;</span>
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div className="bg-blue-50 rounded-lg p-6">
                 <h3 className="text-xl font-semibold text-blue-900 mb-4">Syarat Pendaftaran:</h3>
                 <ul className="space-y-3">
-                  <li className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-xl">&#10003;</span>
-                    <span className="text-gray-700">Muslim/muslimah, berusia 12 - 15 tahun</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-xl">&#10003;</span>
-                    <span className="text-gray-700">Berijazah SD/MI atau SMP/MTs</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-xl">&#10003;</span>
-                    <span className="text-gray-700">Mampu membaca Al-Qur&apos;an dengan baik dan benar</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-xl">&#10003;</span>
-                    <span className="text-gray-700">Latar belakang pribadi, keluarga dan sosial yang baik</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-xl">&#10003;</span>
-                    <span className="text-gray-700">Memiliki motivasi dan semangat untuk menuntut ilmu, menghafal Al-Qur&apos;an, dan belajar</span>
-                  </li>
+                  {[
+                    'Muslim/muslimah, berusia 12 - 15 tahun',
+                    'Berijazah SD/MI atau SMP/MTs',
+                    'Mampu membaca Al-Qur\'an dengan baik dan benar',
+                    'Latar belakang pribadi, keluarga dan sosial yang baik',
+                    'Memiliki motivasi dan semangat untuk menuntut ilmu, menghafal Al-Qur\'an, dan belajar',
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <span className="text-yellow-500 text-xl">&#10003;</span>
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
           </div>
 
-          {/* 2. Formulir Pendaftaran */}
-          <div id="form-pendaftaran" className="mb-16 scroll-mt-28">
-            <h2 className="text-3xl font-bold text-blue-900 mb-6 text-center">Formulir Pendaftaran Online</h2>
-            <RegistrationForm />
+          {/* Tombol Daftar Sekarang — di atas Alur Pendaftaran */}
+          <div className="mb-10 text-center">
+            <a
+              href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-blue-600 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition shadow-md"
+            >
+              Daftar Sekarang →
+            </a>
           </div>
 
-          {/* 3. Alur Pendaftaran */}
+          {/* Alur Pendaftaran — tanpa CTA button di bawah */}
           <div className="mb-16 -mx-4 sm:-mx-6 lg:-mx-8">
-            <AlurPendaftaran />
+            <AlurPendaftaran hideCTA={true} />
           </div>
 
-          {/* 4. Butuh Bantuan */}
+          {/* Butuh Bantuan */}
           <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg p-8 md:p-12 text-white text-center">
             <h2 className="text-3xl font-bold mb-6">Butuh Bantuan?</h2>
             <p className="text-xl mb-6">Hubungi kami untuk informasi lebih lanjut</p>
