@@ -63,7 +63,7 @@ export default function Hero() {
           Muadalah Mu'allimien (SMP-SMA Sederajat)
         </p>
         <p className="text-xl md:text-4xl mb-8 opacity-90 max-w-3xl mx-auto drop-shadow-md font-semibold">
-          Tahun Ajaran 2026-2027 M / 1447-1448 H
+          Tahun Ajaran 2027-2028 M / 1448-1449 H
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a href="/tentang-pesantren" className="bg-yellow-400 text-blue-900 px-8 py-3 rounded-full font-bold hover:bg-yellow-300 transition shadow-lg">

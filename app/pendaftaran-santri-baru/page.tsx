@@ -31,7 +31,7 @@ export default function PendaftaranSantriBaru() {
             Pendaftaran Santri Baru
           </h1>
           <p className="text-xl md:text-2xl lg:text-3xl text-yellow-400 font-semibold mb-4">
-            Tahun Ajaran 2026-2027 M / 1447-1448 H
+            Tahun Ajaran 2027-2028 M / 1448-1449 H
           </p>
           <p className="text-base md:text-lg text-blue-100 max-w-3xl mx-auto">
             Bergabunglah bersama kami di Pesantren Tadabbur Al-Qur&apos;an Amsa001 Gadog
@@ -46,7 +46,7 @@ export default function PendaftaranSantriBaru() {
         <div className="max-w-7xl mx-auto">
           <Image
             src="/banner-psb-2027.jpg"
-            alt="Banner Penerimaan Santri Baru 2026-2027 PTQ Amsa001"
+            alt="Banner Penerimaan Santri Baru 2027-2028 PTQ Amsa001"
             width={1200}
             height={600}
             className="w-full h-auto rounded-2xl shadow-lg"

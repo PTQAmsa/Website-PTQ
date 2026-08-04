@@ -16,8 +16,8 @@ export default function Contact() {
             <div className="bg-white/20 p-6 rounded-xl mb-6">
               <div className="text-center mb-4">
                 <div className="text-lg font-semibold mb-2">Tahun Ajaran</div>
-                <div className="text-3xl font-bold text-yellow-400">2026-2027 M</div>
-                <div className="text-xl font-semibold">1447-1448 H</div>
+                <div className="text-3xl font-bold text-yellow-400">2027-2028 M</div>
+                <div className="text-xl font-semibold">1448-1449 H</div>
               </div>
             </div>
             <div className="space-y-4 mb-6">

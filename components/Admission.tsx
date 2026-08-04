@@ -21,8 +21,8 @@ export default function Admission() {
             <div className="border-t-2 border-blue-200 my-6"></div>
             <div className="text-blue-800">
               <div className="text-lg font-semibold mb-2">Tahun Ajaran</div>
-              <div className="text-3xl font-bold text-blue-700">2026-2027 M</div>
-              <div className="text-xl font-semibold text-blue-600">1447-1448 H</div>
+              <div className="text-3xl font-bold text-blue-700">2027-2028 M</div>
+              <div className="text-xl font-semibold text-blue-600">1448-1449 H</div>
             </div>
           </div>
 
