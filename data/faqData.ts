@@ -91,7 +91,7 @@ const faqData: FaqCategory[] = [
     questions: [
       {
         q: "Berapa biaya masuk dan SPP bulanan?",
-        a: "Biaya terdiri dari pendaftaran, peralatan kamar, wakaf pembangunan (bisa dicicil), dan SPP bulanan. Untuk detail lengkap, bisa hubungi admin via WhatsApp.",
+        a: "BIAYA_PENDAFTARAN",
       },
       {
         q: "Apakah ada program beasiswa?",

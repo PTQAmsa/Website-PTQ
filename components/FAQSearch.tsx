@@ -59,11 +59,55 @@ const DOKUMEN_DIPERLUKAN_ANSWER = (
   </>
 );
 
+const BIAYA_PENDAFTARAN_ANSWER = (
+  <>
+    <p className="font-semibold text-blue-900 mb-2">Pembiayaan Awal:</p>
+    <table className="w-full text-sm mb-4">
+      <tbody>
+        <tr className="border-b border-gray-100">
+          <td className="py-1.5">1. Biaya Pendaftaran</td>
+          <td className="py-1.5 text-right font-semibold">Rp 200.000,-</td>
+        </tr>
+        <tr className="border-b border-gray-100">
+          <td className="py-1.5">2. Lemari, kasur, bantal, selimut dan sprei</td>
+          <td className="py-1.5 text-right font-semibold">Rp 1.000.000,-</td>
+        </tr>
+        <tr>
+          <td className="py-1.5">3. Wakaf Pembangunan <span className="text-gray-500 font-normal">(bisa dicicil 2x)</span></td>
+          <td className="py-1.5 text-right font-semibold">Rp 5.000.000,-</td>
+        </tr>
+      </tbody>
+    </table>
+    <p className="font-semibold text-blue-900 mb-2">Iuran Bulanan:</p>
+    <table className="w-full text-sm">
+      <tbody>
+        <tr className="border-b border-gray-100">
+          <td className="py-1.5">1. SPP</td>
+          <td className="py-1.5 text-right">Rp 600.000,-</td>
+        </tr>
+        <tr className="border-b border-gray-100">
+          <td className="py-1.5">2. Makan</td>
+          <td className="py-1.5 text-right">Rp 550.000,-</td>
+        </tr>
+        <tr className="border-b border-gray-200">
+          <td className="py-1.5">3. Laundry</td>
+          <td className="py-1.5 text-right">Rp 200.000,-</td>
+        </tr>
+        <tr className="bg-blue-50 rounded">
+          <td className="py-2 font-bold text-blue-900">Total Iuran Bulanan</td>
+          <td className="py-2 text-right font-bold text-blue-900">Rp 1.350.000,-</td>
+        </tr>
+      </tbody>
+    </table>
+  </>
+);
+
 function renderAnswer(q: string, a: string): React.ReactNode {
   if (a === "MI_TEST") return MI_ANSWER;
   if (a === "LOKASI_AKSES") return LOKASI_ANSWER;
   if (a === "SYARAT_PENDAFTARAN") return SYARAT_PENDAFTARAN_ANSWER;
   if (a === "DOKUMEN_DIPERLUKAN") return DOKUMEN_DIPERLUKAN_ANSWER;
+  if (a === "BIAYA_PENDAFTARAN") return BIAYA_PENDAFTARAN_ANSWER;
   if (q === "Bagaimana cara mendaftar?") {
     return (
       <>
