@@ -8,6 +8,7 @@ import WhatsAppFloat from '../components/WhatsAppFloat';
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.ptqamsa.id"),
   title: "PTQ Amsa001 | Pesantren Tadabbur Al-Qur'an Terbaik di Bogor",
   description: "Mencetak generasi Qur'ani di Bogor. Program tahfidz dan tadabbur Al-Qur'an intensif di Pesantren Amsa001.",
   keywords: ["pesantren bogor", "tahfidz quran bogor", "ptq amsa001", "tadabbur alquran", "pondok pesantren bogor", "pesantren terbaik bogor"],
@@ -15,11 +16,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "PTQ Amsa001 - Pesantren Tadabbur Al-Qur'an",
     description: "Mencetak generasi Qur'ani.",
-    url: "https://ptqamsa.id",
+    url: "https://www.ptqamsa.id",
     siteName: "PTQ Amsa001",
     images: [
       {
-        url: "https://ptqamsa.id/Logo-color.png",
+        url: "https://www.ptqamsa.id/Logo-color.png",
         width: 1200,
         height: 630,
         alt: "PTQ Amsa001 Logo",
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PTQ Amsa001 - Pesantren Tadabbur Al-Qur'an",
     description: "Pusat pembelajaran Al-Qur'an di Bogor.",
-    images: ["https://ptqamsa.id/Logo-color.png"],
+    images: ["https://www.ptqamsa.id/Logo-color.png"],
   },
   robots: {
     index: true,
@@ -64,9 +65,9 @@ export default function RootLayout({
               "@type": "EducationalOrganization",
               "name": "Pesantren Tadabbur Al-Qur'an Amsa001",
               "alternateName": "PTQ Amsa001",
-              "url": "https://ptqamsa.id",
-              "logo": "https://ptqamsa.id/Logo-color.png",
-              "image": "https://ptqamsa.id/hero-bg-1.jpg",
+              "url": "https://www.ptqamsa.id",
+              "logo": "https://www.ptqamsa.id/Logo-color.png",
+              "image": "https://www.ptqamsa.id/hero-bg-1.jpg",
               "description": "Pesantren tahfidz dan tadabbur Al-Qur'an di Bogor yang mencetak generasi Qur'ani dengan program intensif",
               "address": {
                 "@type": "PostalAddress",
@@ -107,10 +108,10 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "name": "PTQ Amsa001",
-              "url": "https://ptqamsa.id",
+              "url": "https://www.ptqamsa.id",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://ptqamsa.id/artikel?q={search_term_string}",
+                "target": "https://www.ptqamsa.id/artikel?q={search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             })
@@ -129,19 +130,19 @@ export default function RootLayout({
                   "@type": "ListItem",
                   "position": 1,
                   "name": "Beranda",
-                  "item": "https://ptqamsa.id"
+                  "item": "https://www.ptqamsa.id"
                 },
                 {
                   "@type": "ListItem",
                   "position": 2,
                   "name": "Pendaftaran",
-                  "item": "https://ptqamsa.id/pendaftaran-santri-baru"
+                  "item": "https://www.ptqamsa.id/pendaftaran-santri-baru"
                 },
                 {
                   "@type": "ListItem",
                   "position": 3,
                   "name": "Artikel",
-                  "item": "https://ptqamsa.id/artikel"
+                  "item": "https://www.ptqamsa.id/artikel"
                 }
               ]
             })

@@ -50,8 +50,9 @@ Tambahkan artikel baru ke dalam array `articles`:
   `,
   image: '/artikel/artikel-4.jpg',           // Path foto artikel
   author: 'Admin PTQ Amsa',                  // Nama penulis
-  date: '28 Februari 2026',                  // Tanggal publikasi
-  category: 'Kegiatan'                       // Kategori artikel
+  publishedAt: '2026-11-09',                 // Tanggal terbit (YYYY-MM-DD, WIB)
+  category: 'Kegiatan',                      // Kategori artikel
+  tags: ['kegiatan pesantren', 'tahfidz']    // 3–5 tag dari docs/RENCANA_ARTIKEL.md
 }
 ```
 
@@ -80,17 +81,20 @@ Gunakan HTML tags untuk format konten:
 - **Link**: `<a href="https://example.com">Teks Link</a>`
 - **Quote**: `<blockquote>Kutipan teks</blockquote>`
 
-### 4. Kategori Artikel
+### 4. Kategori & Tag
 
-Kategori yang tersedia:
-- Kegiatan
-- Pendidikan
-- Tahfidz
-- Tadabbur
-- Ekstrakurikuler
-- Kehidupan Santri
-- Parenting
-- Berita
+Daftar kategori, tag, dan usulan tema ada di `docs/RENCANA_ARTIKEL.md`.
+
+### 5. Jadwal Terbit
+
+Artikel tampil otomatis mulai pukul 00:00 WIB pada tanggal `publishedAt`
+(paling lambat ±1 jam setelahnya). Sebelum tanggal itu artikel tidak muncul di
+daftar, halaman artikel, maupun sitemap. Jadi beberapa artikel bisa dimasukkan
+sekaligus dengan tanggal berbeda, misalnya tiap Senin.
+
+- Jangan memberi tanggal mundur ke masa lalu untuk artikel baru.
+- Bila artikel lama direvisi besar, tambahkan `updatedAt: 'YYYY-MM-DD'`.
+- Sitemap (`/sitemap.xml`) diperbarui otomatis; tidak perlu diedit.
 
 ## Contoh Artikel Lengkap
 
@@ -119,8 +123,9 @@ Kategori yang tersedia:
   `,
   image: '/artikel/daurah-ramadhan.jpg',
   author: 'Ustadz Ahmad Fauzi',
-  date: '15 Maret 2026',
-  category: 'Kegiatan'
+  publishedAt: '2027-03-15',
+  category: 'Kegiatan',
+  tags: ['ramadhan', 'kegiatan pesantren', 'tadabbur']
 }
 ```
 

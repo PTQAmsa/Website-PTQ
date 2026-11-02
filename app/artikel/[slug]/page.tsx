@@ -1,37 +1,71 @@
-'use client';
-
-import { useParams } from 'next/navigation';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import Link from 'next/link';
-import { articles } from '@/data/articles';
+import { formatArticleDate, getPublishedArticle, getPublishedArticles } from '@/lib/articles';
+import { SITE_URL } from '@/lib/site';
 
-export default function ArtikelDetail() {
-  const params = useParams();
-  const article = articles.find(a => a.slug === params.slug);
+// Artikel terjadwal muncul tanpa deploy ulang (lihat lib/articles.ts)
+export const revalidate = 3600;
 
-  if (!article) {
-    return (
-      <main className="min-h-screen">
-        <Navbar />
-        <div className="max-w-4xl mx-auto px-4 py-32 text-center">
-          <h1 className="text-4xl font-bold text-blue-900 mb-4">Artikel Tidak Ditemukan</h1>
-          <Link href="/artikel" className="text-blue-600 hover:text-blue-800">
-            Kembali ke Daftar Artikel
-          </Link>
-        </div>
-        <Footer />
-      </main>
-    );
-  }
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export function generateStaticParams() {
+  return getPublishedArticles().map((article) => ({ slug: article.slug }));
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const article = getPublishedArticle(slug);
+  if (!article) return { title: 'Artikel Tidak Ditemukan | PTQ Amsa001' };
+
+  const url = `${SITE_URL}/artikel/${article.slug}`;
+  const image = `${SITE_URL}${article.image}`;
+  return {
+    title: `${article.title} | PTQ Amsa001`,
+    description: article.excerpt,
+    keywords: article.tags,
+    authors: [{ name: article.author }],
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      url,
+      title: article.title,
+      description: article.excerpt,
+      siteName: 'PTQ Amsa001',
+      locale: 'id_ID',
+      images: [{ url: image, alt: article.title }],
+      publishedTime: article.publishedAt,
+      modifiedTime: article.updatedAt ?? article.publishedAt,
+      authors: [article.author],
+      tags: article.tags,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description: article.excerpt,
+      images: [image],
+    },
+  };
+}
+
+export default async function ArtikelDetail({ params }: PageProps) {
+  const { slug } = await params;
+  const article = getPublishedArticle(slug);
+  if (!article) notFound();
+
+  const articleUrl = `${SITE_URL}/artikel/${article.slug}`;
 
   // Article Schema Markup
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": article.title,
-    "image": `https://ptqamsa.id${article.image}`,
+    "image": `${SITE_URL}${article.image}`,
     "author": {
       "@type": "Person",
       "name": article.author
@@ -41,15 +75,17 @@ export default function ArtikelDetail() {
       "name": "PTQ Amsa001",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://ptqamsa.id/Logo-color.png"
+        "url": `${SITE_URL}/Logo-color.png`
       }
     },
-    "datePublished": article.date,
-    "dateModified": article.date,
+    "datePublished": article.publishedAt,
+    "dateModified": article.updatedAt ?? article.publishedAt,
     "description": article.excerpt,
+    "keywords": article.tags.join(', '),
+    "articleSection": article.category,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://ptqamsa.id/artikel/${article.slug}`
+      "@id": articleUrl
     }
   };
 
@@ -82,7 +118,9 @@ export default function ArtikelDetail() {
             <span className="bg-yellow-400 text-blue-900 px-4 py-1 rounded-full text-sm font-bold">
               {article.category}
             </span>
-            <span className="text-gray-500">{article.date}</span>
+            <time dateTime={article.publishedAt} className="text-gray-500">
+              {formatArticleDate(article.publishedAt)}
+            </time>
             <span className="text-gray-500">•</span>
             <span className="text-gray-500">{article.author}</span>
           </div>
@@ -116,12 +154,26 @@ export default function ArtikelDetail() {
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
 
+          {/* Tags */}
+          {article.tags.length > 0 && (
+            <ul className="mt-8 flex flex-wrap gap-2" aria-label="Tag artikel">
+              {article.tags.map((tag) => (
+                <li
+                  key={tag}
+                  className="bg-blue-50 text-blue-800 text-sm px-3 py-1 rounded-full"
+                >
+                  #{tag}
+                </li>
+              ))}
+            </ul>
+          )}
+
           {/* Share Section */}
           <div className="mt-12 pt-8 border-t border-gray-200">
             <h3 className="text-xl font-bold text-blue-900 mb-4">Bagikan Artikel</h3>
             <div className="flex gap-4">
               <a 
-                href={`https://wa.me/?text=${encodeURIComponent(article.title + ' - ' + window.location.href)}`}
+                href={`https://wa.me/?text=${encodeURIComponent(article.title + ' - ' + articleUrl)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-green-500 text-white p-3 rounded-full hover:bg-green-600 transition"
@@ -131,7 +183,7 @@ export default function ArtikelDetail() {
                 </svg>
               </a>
               <a 
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition"

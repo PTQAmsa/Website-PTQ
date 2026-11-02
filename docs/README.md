@@ -28,6 +28,10 @@
 - **[INTEGRASI_KEUANGAN.md](./INTEGRASI_KEUANGAN.md)** - PSB → SIKA PTQ (Keuangan-Santri)
   - Kontrak API v1, rancangan sisi SIKA, keputusan yang perlu ditetapkan
 
+### 📝 Artikel
+- **[RENCANA_ARTIKEL.md](./RENCANA_ARTIKEL.md)** - Kategori, daftar tag, usulan tema, prompt penulis AI
+- **[../data/README-ARTIKEL.md](../data/README-ARTIKEL.md)** - Cara menambah & menjadwalkan artikel
+
 ### 🐛 Bug Fix
 - **[PAYMENT_STATUS_FIX.md](./PAYMENT_STATUS_FIX.md)** - Fix payment status auto-update
   - Root cause analysis

@@ -6,8 +6,13 @@ export interface Article {
   content: string;
   image: string;
   author: string;
-  date: string;
+  /** Tanggal terbit (WIB), format YYYY-MM-DD. Tanggal di masa depan = artikel terjadwal. */
+  publishedAt: string;
+  /** Diisi bila artikel direvisi besar, format YYYY-MM-DD. */
+  updatedAt?: string;
   category: string;
+  /** 3–5 tag huruf kecil, pilih dari docs/RENCANA_ARTIKEL.md */
+  tags: string[];
 }
 
 export const articles: Article[] = [
@@ -50,8 +55,9 @@ export const articles: Article[] = [
     `,
     image: '/artikel/Artikel-1.jpeg',
     author: 'Admin PTQ Amsa',
-    date: '11 Januari 2026',
-    category: 'Pendidikan'
+    publishedAt: '2026-01-11',
+    category: 'Pendidikan',
+    tags: ['santri digital', 'pendidikan islam', 'adab menuntut ilmu']
   },
   {
     id: '2',
@@ -105,8 +111,9 @@ export const articles: Article[] = [
     `,
     image: '/artikel/Artikel-2.jpg',
     author: 'Bez',
-    date: '21 Januari 2026',
-    category: 'Parenting'
+    publishedAt: '2026-01-21',
+    category: 'Parenting',
+    tags: ['persiapan mondok', 'tips orang tua', 'santri baru']
   },
   {
     id: '3',
@@ -143,8 +150,9 @@ export const articles: Article[] = [
     `,
     image: '/artikel/Artikel-3.jpg',
     author: 'Bez',
-    date: '30 Januari 2026',
-    category: 'Kehidupan Santri'
+    publishedAt: '2026-01-30',
+    category: 'Kehidupan Santri',
+    tags: ['kehidupan santri', 'ibadah harian', 'adab menuntut ilmu']
   },
   {
     id: '4',
@@ -188,8 +196,9 @@ export const articles: Article[] = [
     `,
     image: '/artikel/Artikel-4.jpg',
     author: 'Bez',
-    date: '10 Februari 2026',
-    category: 'Kehidupan Santri'
+    publishedAt: '2026-02-10',
+    category: 'Kehidupan Santri',
+    tags: ['kehidupan santri', 'kemandirian', 'pendidikan karakter']
   },
   {
     id: '5',
@@ -236,7 +245,8 @@ export const articles: Article[] = [
     `,
     image: '/artikel/Artikel-5.jpg',
     author: 'Bez',
-    date: '20 Februari 2026',
-    category: 'Parenting'
+    publishedAt: '2026-02-20',
+    category: 'Parenting',
+    tags: ['tips orang tua', 'adab menuntut ilmu', 'pendidikan islam']
   },
 ];
