@@ -1,3 +1,4 @@
+import { BIAYA_PENDAFTARAN, formatRupiah } from '@/lib/config/psb';
 import type { RegistrationRecord } from '@/lib/types/registration';
 
 // Google Apps Script URL — same service used by Tes Multiple Intelligence
@@ -70,34 +71,18 @@ export async function sendAdminRegistrationNotification(
  * Triggered by the Midtrans callback webhook when status = 'paid'.
  */
 export async function sendUserPaymentConfirmation(
-  data: Pick<
-    RegistrationRecord,
-    | 'id'
-    | 'nama_lengkap'
-    | 'no_whatsapp_ortu'
-    | 'email_ortu'
-    | 'order_id'
-    | 'payment_amount'
-    | 'payment_date'
-  >
-): Promise<void> {
-  // Only send to user email if provided; admin tidak perlu terima konfirmasi pembayaran
-  const recipients: string[] = [];
-  if (data.email_ortu) {
-    recipients.push(data.email_ortu);
+  data: Pick<RegistrationRecord, 'id' | 'nama_lengkap' | 'order_id' | 'payment_amount' | 'payment_date'> & {
+    // Email orang tua ATAU wali (lihat getRegistrantContact)
+    email: string | null;
   }
-
-  // Kalau tidak ada email orang tua, tidak perlu kirim email
-  if (recipients.length === 0) {
-    console.info(`[email] No email_ortu for registration ${data.id}, skipping payment confirmation`);
+): Promise<void> {
+  // Admin tidak perlu terima konfirmasi pembayaran; kalau tidak ada email, lewati
+  if (!data.email) {
+    console.info(`[email] No parent/guardian email for registration ${data.id}, skipping payment confirmation`);
     return;
   }
 
-  const formattedAmount = new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-  }).format(data.payment_amount);
+  const formattedAmount = formatRupiah(data.payment_amount ?? BIAYA_PENDAFTARAN);
 
   const paymentDate = data.payment_date
     ? new Date(data.payment_date).toLocaleString('id-ID', {
@@ -107,7 +92,7 @@ export async function sendUserPaymentConfirmation(
 
   await sendEmail({
     type: 'user_payment_confirmation',
-    to: recipients.join(','),
+    to: data.email,
     subject: `[Pembayaran Berhasil] Pendaftaran ${data.nama_lengkap}`,
     nama_santri: data.nama_lengkap,
     registration_id: data.id,
@@ -122,29 +107,31 @@ export async function sendUserPaymentConfirmation(
  * Sends the payment link to the parent after admin generates it.
  */
 export async function sendPaymentLinkToParent(
-  data: Pick<
-    RegistrationRecord,
-    'id' | 'nama_lengkap' | 'no_whatsapp_ortu' | 'email_ortu' | 'order_id'
-  >,
+  data: Pick<RegistrationRecord, 'id' | 'nama_lengkap' | 'order_id'> & {
+    // Email orang tua ATAU wali (lihat getRegistrantContact)
+    email: string | null;
+  },
   paymentLink: string
 ): Promise<void> {
-  if (!data.email_ortu) {
+  if (!data.email) {
     // No email provided — admin must send via WhatsApp manually
     console.info(
-      `[email] No email_ortu for registration ${data.id}, skipping payment link email`
+      `[email] No parent/guardian email for registration ${data.id}, skipping payment link email`
     );
     return;
   }
 
+  const formattedAmount = formatRupiah(BIAYA_PENDAFTARAN);
+
   await sendEmail({
     type: 'payment_link_notification',
-    to: data.email_ortu,
+    to: data.email,
     subject: `[Link Pembayaran] Pendaftaran ${data.nama_lengkap}`,
     nama_santri: data.nama_lengkap,
     registration_id: data.id,
     order_id: data.order_id ?? '-',
     payment_link: paymentLink,
-    jumlah_bayar: 'Rp 200.000',
-    pesan: `Berikut adalah link pembayaran biaya pendaftaran santri baru untuk ${data.nama_lengkap}. Silakan selesaikan pembayaran sebesar Rp 200.000 melalui link berikut.`,
+    jumlah_bayar: formattedAmount,
+    pesan: `Berikut adalah link pembayaran biaya pendaftaran santri baru untuk ${data.nama_lengkap}. Silakan selesaikan pembayaran sebesar ${formattedAmount} melalui link berikut.`,
   });
 }

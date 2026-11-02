@@ -32,33 +32,29 @@ Halaman untuk orang tua mendaftarkan santri baru.
 
 ### 3. Admin Dashboard (YANG ANDA CARI!)
 ```
-http://localhost:3000/admin/pendaftaran?pw=admin12345
+http://localhost:3000/admin/pendaftaran
 ```
 
-**Password default:** `admin12345`
-
 **Cara akses:**
-1. Buka browser (Chrome/Firefox/Edge)
-2. Copy-paste URL di atas
-3. Tekan Enter
-4. Anda akan langsung masuk ke dashboard admin
+1. Buka URL di atas
+2. Masukkan password admin (nilai `ADMIN_PASSWORD` di `.env.local` / Vercel)
+3. Klik "Masuk" — sesi berlaku 8 jam, keluar lewat tombol **Keluar**
 
-**Atau jika diminta password:**
-- Masukkan: `admin12345`
-- Klik "Masuk"
+> Password **tidak lagi** ditulis di URL (`?pw=...` sudah tidak berlaku).
+> Lihat `docs/SECURITY_HARDENING.md`.
 
 ---
 
-### 4. Detail Pendaftaran (dengan Pas Foto 3x4)
+### 4. Detail Pendaftaran (Pas Foto & Dokumen)
 ```
-http://localhost:3000/admin/pendaftaran/[id]?pw=admin12345
+http://localhost:3000/admin/pendaftaran/[id]
 ```
 
 **Cara akses:**
 1. Buka admin dashboard dulu
-2. Klik salah satu nama santri di list
-3. Anda akan melihat detail lengkap
-4. **Pas foto 3x4 akan tampil di kiri atas** (yang baru!)
+2. Klik "Detail →" pada salah satu pendaftar
+3. Pas foto tampil di kiri atas, semua dokumen (KK, akta, ijazah, KTP, surat sehat)
+   ada di bagian **Dokumen Pendaftaran** — link berlaku 1 jam
 
 ---
 
@@ -69,7 +65,7 @@ Buka di browser Anda:
 ### Untuk Testing:
 - **Homepage**: http://localhost:3000
 - **Form Pendaftaran**: http://localhost:3000/pendaftaran-santri-baru
-- **Admin Dashboard**: http://localhost:3000/admin/pendaftaran?pw=admin12345
+- **Admin Dashboard**: http://localhost:3000/admin/pendaftaran
 
 ### Halaman Lain:
 - **FAQ**: http://localhost:3000/faq
@@ -96,7 +92,7 @@ Buka di browser Anda:
 7. Baru bisa lanjut ke Step 3
 
 ### 2. Pas Foto 3x4 di Admin Dashboard
-**Test di:** http://localhost:3000/admin/pendaftaran?pw=admin12345
+**Test di:** http://localhost:3000/admin/pendaftaran
 
 1. Login ke admin dashboard
 2. Klik salah satu nama santri yang sudah ada pas fotonya
@@ -136,14 +132,12 @@ http://192.168.0.100:3000
 
 ## 🔐 Password Admin
 
-**Default password:** `admin12345`
+Password diambil dari env `ADMIN_PASSWORD` (jangan pakai password contoh/default).
 
 **Cara ganti password:**
-1. Buka file `.env.local`
-2. Cari baris: `ADMIN_PASSWORD=admin12345`
-3. Ganti dengan password baru
-4. Save file
-5. Restart server (`Ctrl+C` lalu `npm run dev`)
+1. Lokal: ubah `ADMIN_PASSWORD` di `.env.local`, lalu restart server
+2. Production: ubah `ADMIN_PASSWORD` di Vercel → Settings → Environment Variables, lalu redeploy
+3. Semua sesi admin lama otomatis keluar setelah password diganti
 
 ---
 
@@ -183,9 +177,9 @@ npm run dev
 4. Coba clear cache browser (Ctrl + Shift + R)
 
 ### Admin dashboard tidak bisa diakses?
-1. Pastikan URL lengkap dengan password: `?pw=admin12345`
-2. Cek password di `.env.local` (default: `admin12345`)
-3. Coba copy-paste URL lengkap dari dokumen ini
+1. Cek password sama dengan `ADMIN_PASSWORD` di `.env.local`
+2. Pesan "Terlalu banyak percobaan" → tunggu 15 menit
+3. Pesan "ADMIN_PASSWORD belum diatur" → isi env tersebut lalu restart server
 
 ---
 
@@ -208,7 +202,7 @@ npm run dev
 2. Buka 3 tabs di browser:
    - Tab 1: Homepage (http://localhost:3000)
    - Tab 2: Form Pendaftaran (http://localhost:3000/pendaftaran-santri-baru)
-   - Tab 3: Admin Dashboard (http://localhost:3000/admin/pendaftaran?pw=admin12345)
+   - Tab 3: Admin Dashboard (http://localhost:3000/admin/pendaftaran, login dulu)
 3. Pastikan semua halaman loading dengan baik
 
 ### Saat Presentasi:

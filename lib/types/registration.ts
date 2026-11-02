@@ -106,6 +106,13 @@ export interface RegistrationError {
   error: string;
 }
 
+// Dokumen pendaftar yang ditampilkan di dashboard admin (URL sudah ditandatangani)
+export interface RegistrationDocument {
+  key: string;
+  label: string;
+  url: string;
+}
+
 // Payment log entry as stored in Supabase
 export interface PaymentLog {
   id: string;

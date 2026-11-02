@@ -2,12 +2,19 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import type { RegistrationRecord, PaymentLog, PaymentStatus } from '@/lib/types/registration';
+import { useRouter } from 'next/navigation';
+import { BIAYA_PENDAFTARAN, formatRupiah } from '@/lib/config/psb';
+import type {
+  RegistrationRecord,
+  RegistrationDocument,
+  PaymentLog,
+  PaymentStatus,
+} from '@/lib/types/registration';
 
 interface Props {
   registration: RegistrationRecord;
   paymentLogs: PaymentLog[];
-  adminPassword: string;
+  documents: RegistrationDocument[];
 }
 
 const STATUS_BADGE: Record<PaymentStatus, string> = {
@@ -52,7 +59,9 @@ function Field({ label, value }: { label: string; value: string | null | undefin
   );
 }
 
-export default function AdminDetailClient({ registration: reg, paymentLogs, adminPassword }: Props) {
+export default function AdminDetailClient({ registration: reg, paymentLogs, documents }: Props) {
+  const router = useRouter();
+  const pasFotoUrl = documents.find((d) => d.key === 'url_pas_foto')?.url;
   const [selectedStatus, setSelectedStatus] = useState<PaymentStatus>(reg.payment_status);
   const [updating, setUpdating] = useState(false);
   const [updateResult, setUpdateResult] = useState<{ ok: boolean; message: string } | null>(null);
@@ -73,17 +82,19 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, admi
     try {
       const res = await fetch('/api/admin/update-payment-status', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${adminPassword}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ registrationId: reg.id, status: selectedStatus }),
       });
+      if (res.status === 401) {
+        window.location.reload(); // sesi habis → tampilkan form login
+        return;
+      }
       const json = await res.json();
       if (!res.ok || !json.success) {
         throw new Error(json.error ?? 'Gagal memperbarui status');
       }
       setUpdateResult({ ok: true, message: `Status berhasil diperbarui ke "${STATUS_LABELS[selectedStatus]}"` });
+      router.refresh(); // muat ulang badge status & riwayat pembayaran
     } catch (err) {
       setUpdateResult({
         ok: false,
@@ -111,7 +122,7 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, admi
             <p className="text-sm text-gray-500 mt-0.5">ID: {reg.id}</p>
           </div>
           <Link
-            href={`/admin/pendaftaran?pw=${encodeURIComponent(adminPassword)}`}
+            href="/admin/pendaftaran"
             className="text-sm text-emerald-600 hover:underline"
           >
             ← Kembali ke Daftar
@@ -126,11 +137,11 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, admi
           
           <div className="flex flex-col md:flex-row gap-6">
             {/* Pas Foto 3x4 */}
-            {reg.url_pas_foto && (
+            {pasFotoUrl && (
               <div className="flex-shrink-0">
                 <div className="w-32 h-40 rounded-lg overflow-hidden border-2 border-gray-200 shadow-sm">
                   <img
-                    src={reg.url_pas_foto}
+                    src={pasFotoUrl}
                     alt={`Pas Foto ${reg.nama_lengkap}`}
                     className="w-full h-full object-cover"
                   />
@@ -218,6 +229,31 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, admi
           </div>
         </div>
 
+        {/* Documents */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-base font-semibold text-gray-700 mb-1">Dokumen Pendaftaran</h2>
+          <p className="text-xs text-gray-400 mb-4">Link dokumen berlaku 1 jam. Muat ulang halaman bila sudah kadaluarsa.</p>
+          {documents.length === 0 ? (
+            <p className="text-sm text-gray-400">Tidak ada dokumen.</p>
+          ) : (
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {documents.map((doc) => (
+                <li key={doc.key}>
+                  <a
+                    href={doc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:border-emerald-300 hover:bg-emerald-50 transition-colors"
+                  >
+                    <span>{doc.label}</span>
+                    <span className="text-xs text-emerald-600">Buka ↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         {/* Payment info */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-base font-semibold text-gray-700 mb-4">Informasi Pembayaran</h2>
@@ -238,7 +274,7 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, admi
               </dd>
             </div>
             <Field label="Order ID" value={reg.order_id} />
-            <Field label="Jumlah" value="Rp 200.000" />
+            <Field label="Jumlah" value={formatRupiah(reg.payment_amount ?? BIAYA_PENDAFTARAN)} />
             <Field label="Tanggal Bayar" value={formatDate(reg.payment_date)} />
             <Field label="Metode Bayar" value={reg.payment_method} />
             <div className="sm:col-span-2">
@@ -299,7 +335,7 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, admi
             </button>
           </div>
           {selectedStatus === reg.payment_status && (
-            <p className="text-xs text-gray-400 mt-2">Status saat ini sudah "{STATUS_LABELS[reg.payment_status]}".</p>
+            <p className="text-xs text-gray-400 mt-2">Status saat ini sudah &ldquo;{STATUS_LABELS[reg.payment_status]}&rdquo;.</p>
           )}
           {updateResult && (
             <p

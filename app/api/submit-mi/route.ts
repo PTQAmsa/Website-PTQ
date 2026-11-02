@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createRateLimiter, getClientIP } from '@/lib/utils/rate-limit';
 
 // Apps Script URL — hanya untuk arsip spreadsheet, tidak mengirim email
 const APPS_SCRIPT_URL =
   process.env.APPS_SCRIPT_URL ??
   'https://script.google.com/macros/s/AKfycbxxyHqqvETFrPuEDZvRmQvmkhNhLd2DXoyT-pNlK--VXq1BDMMQh6jM2uA2P5hxR5TDlA/exec';
 
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 menit
-const RATE_LIMIT_MAX_REQUESTS = 5;
-const requestLogs = new Map<string, number[]>();
+// 5 request per 10 menit per IP
+const isRateLimited = createRateLimiter({ windowMs: 10 * 60 * 1000, max: 5 });
 
 // Email dihapus — hanya nama dan WhatsApp yang diperlukan untuk arsip
 type SubmitMIPayload = {
@@ -19,25 +19,6 @@ type SubmitMIPayload = {
   top3?: string;
   skorDetail: string;
 };
-
-function getClientIP(req: NextRequest): string {
-  const forwarded = req.headers.get('x-forwarded-for');
-  if (forwarded) return forwarded.split(',')[0].trim();
-  return req.headers.get('x-real-ip') ?? 'unknown';
-}
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  const timestamps = requestLogs.get(key) ?? [];
-  const active = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-  if (active.length >= RATE_LIMIT_MAX_REQUESTS) {
-    requestLogs.set(key, active);
-    return true;
-  }
-  active.push(now);
-  requestLogs.set(key, active);
-  return false;
-}
 
 function parsePayload(raw: unknown): SubmitMIPayload | null {
   if (!raw || typeof raw !== 'object') return null;

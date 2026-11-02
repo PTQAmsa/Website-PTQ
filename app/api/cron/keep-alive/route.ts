@@ -1,82 +1,66 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { hasValidBearerToken } from '@/lib/utils/secure-compare';
 
 /**
  * Keep-Alive Cron Job
- * 
- * Purpose: Ping Supabase database every 6 days to prevent auto-pause
- * Trigger: Vercel Cron (runs every 6 days at 00:00 UTC)
- * 
- * Supabase free tier auto-pauses projects after 7 days of inactivity.
- * This endpoint performs a simple database query to keep the project active.
+ *
+ * Supabase Free Plan mem-pause project yang "kurang aktivitas database
+ * selama 7 hari". Dokumentasi Supabase menyebut yang dibutuhkan adalah
+ * "a few user requests to the database each day" — bukan 1 ping per minggu.
+ * Karena itu endpoint ini dipanggil beberapa kali SETIAP HARI oleh:
+ *   1. Vercel Cron (vercel.json) — 3x sehari
+ *   2. GitHub Actions (.github/workflows/supabase-keep-alive.yml) — cadangan
+ *      sekaligus pengirim email bila ping gagal
+ *
+ * Detail & cara cek: docs/SUPABASE_KEEP_ALIVE.md
  */
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
+  // Vercel Cron otomatis mengirim "Authorization: Bearer <CRON_SECRET>"
+  if (!hasValidBearerToken(request.headers.get('authorization'), process.env.CRON_SECRET)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const startedAt = Date.now();
+
   try {
-    // Verify this is called by Vercel Cron (security check)
-    // Skip auth check if CRON_SECRET is not set (fallback for debugging)
-    const cronSecret = process.env.CRON_SECRET;
-    if (cronSecret) {
-      const authHeader = request.headers.get('authorization');
-      if (authHeader !== `Bearer ${cronSecret}`) {
-        console.error('[keep-alive] Unauthorized. Header:', authHeader?.slice(0, 20), '...');
-        return NextResponse.json(
-          { error: 'Unauthorized' },
-          { status: 401 }
-        );
-      }
-    }
+    const supabase = getSupabaseAdmin();
 
-    // Initialize Supabase client
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    // Query nyata ke dua tabel = aktivitas database yang dihitung Supabase
+    const [registrations, paymentLogs] = await Promise.all([
+      supabase.from('pendaftaran_santri').select('id').limit(1),
+      supabase.from('payment_logs').select('id').limit(1),
+    ]);
 
-    // Perform a simple query to keep database active
-    const { data, error } = await supabase
-      .from('pendaftaran_santri')
-      .select('id')
-      .limit(1);
-
+    const error = registrations.error ?? paymentLogs.error;
     if (error) {
-      console.error('Keep-alive query failed:', error);
+      console.error('[keep-alive] Query failed:', error);
       return NextResponse.json(
-        {
-          success: false,
-          error: error.message,
-          timestamp: new Date().toISOString()
-        },
+        { success: false, error: error.message, timestamp: new Date().toISOString() },
         { status: 500 }
       );
     }
 
-    // Log success
-    console.log('Keep-alive ping successful:', {
-      timestamp: new Date().toISOString(),
-      recordsFound: data?.length || 0
+    console.log('[keep-alive] Ping successful', {
+      source: request.headers.get('user-agent')?.startsWith('vercel-cron') ? 'vercel-cron' : 'external',
+      durationMs: Date.now() - startedAt,
     });
 
     return NextResponse.json({
       success: true,
       message: 'Database keep-alive ping successful',
       timestamp: new Date().toISOString(),
-      recordsChecked: data?.length || 0
+      durationMs: Date.now() - startedAt,
     });
-
-  } catch (error: any) {
-    console.error('Keep-alive cron error:', error);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[keep-alive] Error:', error);
     return NextResponse.json(
-      {
-        success: false,
-        error: error.message,
-        timestamp: new Date().toISOString()
-      },
+      { success: false, error: message, timestamp: new Date().toISOString() },
       { status: 500 }
     );
   }
 }
-
-// Prevent caching
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;

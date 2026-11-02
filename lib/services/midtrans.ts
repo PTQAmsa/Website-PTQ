@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+import { safeEqual } from '@/lib/utils/secure-compare';
 import type {
   PaymentLinkParams,
   PaymentLinkResponse,
@@ -34,9 +35,9 @@ export async function createPaymentLink(
 ): Promise<PaymentLinkResponse> {
   const url = `${BASE_URL}/v1/payment-links`;
 
-  // Get the site URL for callback notification
+  // Notification URL (/api/midtrans-callback) diatur di Midtrans Dashboard,
+  // bukan per link — lihat docs/MIDTRANS_SETUP.md
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  const notificationUrl = `${siteUrl}/api/midtrans-callback`;
 
   const body = {
     transaction_details: {
@@ -122,5 +123,5 @@ export function verifyCallbackSignature(
   const serverKey = getServerKey();
   const raw = `${orderId}${statusCode}${grossAmount}${serverKey}`;
   const computed = createHash('sha512').update(raw).digest('hex');
-  return computed === incomingHash;
+  return safeEqual(computed, incomingHash);
 }

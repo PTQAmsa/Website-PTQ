@@ -1,38 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import { generateOrderId } from '@/lib/utils/order-id';
+import { BIAYA_PENDAFTARAN } from '@/lib/config/psb';
 import { sendAdminRegistrationNotification } from '@/lib/services/email';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { generateOrderId } from '@/lib/utils/order-id';
+import { createRateLimiter, getClientIP } from '@/lib/utils/rate-limit';
 
 // ── Rate limiting ────────────────────────────────────────────────────────────
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
-const RATE_LIMIT_MAX_REQUESTS = 5;
-const requestLogs = new Map<string, number[]>();
+// 5 requests per 10 minutes per IP
+const isRateLimited = createRateLimiter({ windowMs: 10 * 60 * 1000, max: 5 });
 
-function getClientIP(req: NextRequest): string {
-  const forwarded = req.headers.get('x-forwarded-for');
-  if (forwarded) return forwarded.split(',')[0].trim();
-  return req.headers.get('x-real-ip') ?? 'unknown';
-}
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  const timestamps = requestLogs.get(key) ?? [];
-  const active = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-  if (active.length >= RATE_LIMIT_MAX_REQUESTS) {
-    requestLogs.set(key, active);
-    return true;
+/**
+ * File diunggah browser langsung ke bucket "dokumen-santri" di folder
+ * pendaftaran/<registrationId>/. Tolak URL lain agar data tidak bisa diisi
+ * link sembarang (phishing / pelacak) yang nanti dibuka admin.
+ */
+function isOwnDocumentUrl(value: string, registrationId: string): boolean {
+  try {
+    const url = new URL(value);
+    const supabaseOrigin = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').origin;
+    return (
+      url.origin === supabaseOrigin &&
+      url.pathname.startsWith(
+        `/storage/v1/object/public/dokumen-santri/pendaftaran/${registrationId}/`
+      )
+    );
+  } catch {
+    return false;
   }
-  active.push(now);
-  requestLogs.set(key, active);
-  return false;
-}
-
-// ── Supabase server client ───────────────────────────────────────────────────
-function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) throw new Error('Supabase env vars missing');
-  return createClient(url, key);
 }
 
 // ── Required text fields ─────────────────────────────────────────────────────
@@ -161,6 +157,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Format email tidak valid.' }, { status: 400 });
   }
 
+  // ── Use registrationId from client (files already uploaded with this ID) ──
+  const registrationId = formData.get('registrationId');
+  if (typeof registrationId !== 'string' || !UUID_PATTERN.test(registrationId)) {
+    return NextResponse.json(
+      { success: false, error: 'ID pendaftaran tidak valid. Muat ulang halaman lalu coba lagi.' },
+      { status: 400 }
+    );
+  }
+
   // ── Validate file URLs (files uploaded from client browser to Supabase) ───
   const urlKk = formData.get('urlKk');
   const urlAkta = formData.get('urlAkta');
@@ -176,7 +181,7 @@ export async function POST(req: NextRequest) {
     ['KTP Orang Tua', urlKtpOrtu],
     ['Pas Foto', urlPasFoto],
   ]) {
-    if (!url || typeof url !== 'string' || !url.startsWith('http')) {
+    if (!url || typeof url !== 'string' || !isOwnDocumentUrl(url, registrationId)) {
       return NextResponse.json(
         { success: false, error: `URL file ${label} tidak valid. Pastikan upload berhasil.` },
         { status: 400 }
@@ -184,16 +189,17 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ── Use registrationId from client (files already uploaded with this ID) ──
-  const clientRegistrationId = formData.get('registrationId');
-  const registrationId =
-    clientRegistrationId && typeof clientRegistrationId === 'string'
-      ? clientRegistrationId
-      : crypto.randomUUID();
+  if (urlSuratSehat && (typeof urlSuratSehat !== 'string' || !isOwnDocumentUrl(urlSuratSehat, registrationId))) {
+    return NextResponse.json(
+      { success: false, error: 'URL file Surat Keterangan Sehat tidak valid. Pastikan upload berhasil.' },
+      { status: 400 }
+    );
+  }
+
   const orderId = generateOrderId();
 
   // ── Insert registration record ─────────────────────────────────────────────
-  const supabase = getSupabase();
+  const supabase = getSupabaseAdmin();
 
   const insertData: Record<string, unknown> = {
     id: registrationId,
@@ -220,9 +226,9 @@ export async function POST(req: NextRequest) {
     url_ijazah: urlIjazah,
     url_ktp_ortu: urlKtpOrtu,
     url_pas_foto: urlPasFoto,
-    url_surat_sehat: urlSuratSehat && typeof urlSuratSehat === 'string' ? urlSuratSehat : null,
+    url_surat_sehat: typeof urlSuratSehat === 'string' && urlSuratSehat ? urlSuratSehat : null,
     payment_status: 'pending',
-    payment_amount: 200000,
+    payment_amount: BIAYA_PENDAFTARAN,
     order_id: orderId,
   };
 
@@ -247,8 +253,13 @@ export async function POST(req: NextRequest) {
   const { error: insertError } = await supabase.from('pendaftaran_santri').insert([insertData]);
 
   if (insertError) {
+    // Detail error database hanya untuk log server, jangan dikirim ke publik
+    console.error('[submit-registration] Insert error:', insertError);
     return NextResponse.json(
-      { success: false, error: `Gagal menyimpan data pendaftaran: ${insertError.message}` },
+      {
+        success: false,
+        error: 'Gagal menyimpan data pendaftaran. Silakan coba lagi atau hubungi admin via WhatsApp.',
+      },
       { status: 500 }
     );
   }

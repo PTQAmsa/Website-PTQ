@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:callback": "node scripts/test-callback.js",
-    "check:payment": "node scripts/check-payment-status.js"
+    "check:payment": "node scripts/check-payment-status.js",
+    "check:exposure": "node scripts/check-supabase-exposure.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.104.0",

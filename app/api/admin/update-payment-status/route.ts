@@ -1,27 +1,13 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { isAdminRequest } from '@/lib/admin-auth';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
 import type { PaymentStatus } from '@/lib/types/registration';
 
 const VALID_STATUSES: PaymentStatus[] = ['pending', 'paid', 'failed', 'expired'];
 
-function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) throw new Error('Supabase env vars missing');
-  return createClient(url, key);
-}
-
-function verifyAdminAuth(req: NextRequest): boolean {
-  const authHeader = req.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
-  const token = authHeader.slice(7);
-  const adminPassword = process.env.ADMIN_PASSWORD ?? '';
-  return token === adminPassword;
-}
-
 export async function PATCH(req: NextRequest) {
   // Auth check
-  if (!verifyAdminAuth(req)) {
+  if (!isAdminRequest(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -46,7 +32,7 @@ export async function PATCH(req: NextRequest) {
   }
 
   const newStatus = status as PaymentStatus;
-  const supabase = getSupabase();
+  const supabase = getSupabaseAdmin();
 
   // Fetch current registration
   const { data: reg, error: fetchError } = await supabase

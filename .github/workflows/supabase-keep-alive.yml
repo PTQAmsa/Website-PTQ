@@ -1,0 +1,62 @@
+name: Supabase Keep-Alive
+
+# Cadangan untuk Vercel Cron (vercel.json) sekaligus alarm: GitHub mengirim
+# email ke pemilik repo bila job ini gagal — misalnya Supabase sudah ter-pause
+# atau URL/secret salah. Detail: docs/SUPABASE_KEEP_ALIVE.md
+on:
+  schedule:
+    # 2x sehari. Menit 23 dipilih agar tidak bentrok antrean jam bulat GitHub.
+    - cron: '23 4 * * *' # 11:23 WIB
+    - cron: '23 12 * * *' # 19:23 WIB
+  workflow_dispatch:
+
+concurrency:
+  group: supabase-keep-alive
+  cancel-in-progress: false
+
+jobs:
+  ping-database:
+    name: Ping Supabase Database
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write # untuk langkah "Keep this workflow enabled"
+    env:
+      # Bisa diganti tanpa ubah kode: Settings → Secrets and variables → Actions → Variables
+      KEEP_ALIVE_URL: ${{ vars.KEEP_ALIVE_URL || 'https://www.ptqamsa.id/api/cron/keep-alive' }}
+
+    steps:
+      - name: Ping keep-alive endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::Secret CRON_SECRET belum diisi (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+          # --retry mengulang otomatis untuk timeout & HTTP 408/429/5xx (cold start)
+          http_code=$(curl --silent --show-error \
+            --output response.json --write-out '%{http_code}' \
+            --max-time 60 --retry 3 --retry-delay 20 --retry-all-errors \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            "$KEEP_ALIVE_URL") || true
+
+          echo "HTTP Status: $http_code"
+          cat response.json 2>/dev/null || true
+          echo
+
+          if [ "$http_code" != "200" ]; then
+            echo "::error::Keep-alive gagal (HTTP $http_code). Cek apakah project Supabase ter-pause, lalu cek CRON_SECRET & KEEP_ALIVE_URL."
+            exit 1
+          fi
+          echo "✅ Keep-alive ping successful"
+
+      # GitHub otomatis menonaktifkan jadwal workflow di repo publik setelah
+      # 60 hari tanpa aktivitas repo. Mengaktifkan ulang via API mencegahnya.
+      - name: Keep this workflow enabled
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method PUT "repos/${{ github.repository }}/actions/workflows/supabase-keep-alive.yml/enable"

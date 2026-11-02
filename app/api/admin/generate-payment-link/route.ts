@@ -1,26 +1,18 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { isAdminRequest } from '@/lib/admin-auth';
+import { BIAYA_PENDAFTARAN } from '@/lib/config/psb';
 import { createPaymentLink } from '@/lib/services/midtrans';
 import { sendPaymentLinkToParent } from '@/lib/services/email';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { generateOrderId } from '@/lib/utils/order-id';
+import { getRegistrantContact } from '@/lib/utils/registration';
 
-function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) throw new Error('Supabase env vars missing');
-  return createClient(url, key);
-}
-
-function verifyAdminAuth(req: NextRequest): boolean {
-  const authHeader = req.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
-  const token = authHeader.slice(7);
-  const adminPassword = process.env.ADMIN_PASSWORD ?? '';
-  return token === adminPassword;
-}
+// Sanitasi nomor telepon — Midtrans hanya terima angka, +, (), spasi, dan -
+const sanitizePhone = (phone: string) => phone.replace(/[^\d+\-()\s]/g, '').trim();
 
 export async function POST(req: NextRequest) {
   // Auth check
-  if (!verifyAdminAuth(req)) {
+  if (!isAdminRequest(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -36,12 +28,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'registrationId is required' }, { status: 400 });
   }
 
-  const supabase = getSupabase();
+  const supabase = getSupabaseAdmin();
 
   // Fetch registration
   const { data: reg, error: fetchError } = await supabase
     .from('pendaftaran_santri')
-    .select('id, nama_lengkap, no_whatsapp_ortu, email_ortu, payment_status, order_id')
+    .select(
+      'id, nama_lengkap, no_whatsapp_ortu, email_ortu, no_whatsapp_wali, email_wali, payment_status, payment_link, order_id'
+    )
     .eq('id', registrationId)
     .single();
 
@@ -49,35 +43,42 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Pendaftaran tidak ditemukan' }, { status: 404 });
   }
 
-  if (reg.payment_status !== 'pending') {
+  if (reg.payment_status === 'paid') {
     return NextResponse.json(
-      { error: `Status pembayaran saat ini adalah "${reg.payment_status}", bukan "pending"` },
+      { error: 'Pembayaran pendaftaran ini sudah lunas' },
       { status: 409 }
     );
   }
 
-  if (!reg.order_id) {
-    return NextResponse.json({ error: 'order_id tidak ditemukan pada data pendaftaran' }, { status: 400 });
+  // Pendaftar lewat wali menyimpan kontak di kolom *_wali, bukan *_ortu
+  const contact = getRegistrantContact(reg);
+  if (!contact.whatsapp) {
+    return NextResponse.json(
+      { error: 'Nomor WhatsApp orang tua/wali tidak ditemukan pada data pendaftaran' },
+      { status: 400 }
+    );
   }
 
-  // Sanitasi nomor telepon — Midtrans hanya terima angka, +, (), spasi, dan -
-  const sanitizePhone = (phone: string) => phone.replace(/[^\d+\-()\s]/g, '').trim();
+  // Setiap link memakai order_id baru: Midtrans menolak order_id yang sudah
+  // pernah dipakai, dan link lama kadaluarsa setelah 24 jam. order_id lama
+  // tetap tercatat di payment_logs sehingga callback-nya masih bisa dicocokkan.
+  const orderId = generateOrderId();
 
   // Call Midtrans
   let paymentResponse: { payment_url: string; order_id: string };
   try {
     paymentResponse = await createPaymentLink({
-      order_id: reg.order_id,
-      gross_amount: 200000,
+      order_id: orderId,
+      gross_amount: BIAYA_PENDAFTARAN,
       customer_details: {
         first_name: reg.nama_lengkap,
-        phone: sanitizePhone(reg.no_whatsapp_ortu),
-        email: reg.email_ortu ?? undefined,
+        phone: sanitizePhone(contact.whatsapp),
+        email: contact.email ?? undefined,
       },
       item_details: [
         {
           id: 'biaya_pendaftaran',
-          price: 200000,
+          price: BIAYA_PENDAFTARAN,
           quantity: 1,
           name: 'Biaya Pendaftaran Santri Baru',
         },
@@ -94,7 +95,12 @@ export async function POST(req: NextRequest) {
   // Update registration record
   const { error: updateError } = await supabase
     .from('pendaftaran_santri')
-    .update({ payment_link: paymentUrl, updated_at: new Date().toISOString() })
+    .update({
+      payment_link: paymentUrl,
+      order_id: orderId,
+      payment_status: 'pending',
+      updated_at: new Date().toISOString(),
+    })
     .eq('id', registrationId);
 
   if (updateError) {
@@ -106,9 +112,13 @@ export async function POST(req: NextRequest) {
   const { error: logError } = await supabase.from('payment_logs').insert([
     {
       registration_id: registrationId,
-      order_id: reg.order_id,
+      order_id: orderId,
       action: 'link_generated',
-      details: { payment_url: paymentUrl },
+      details: {
+        payment_url: paymentUrl,
+        previous_order_id: reg.order_id ?? null,
+        previous_status: reg.payment_status,
+      },
       performed_by: 'admin',
     },
   ]);
@@ -118,15 +128,9 @@ export async function POST(req: NextRequest) {
     // Non-fatal — continue
   }
 
-  // Send email to parent (non-blocking)
+  // Send email to parent/guardian (non-blocking)
   sendPaymentLinkToParent(
-    {
-      id: reg.id,
-      nama_lengkap: reg.nama_lengkap,
-      no_whatsapp_ortu: reg.no_whatsapp_ortu,
-      email_ortu: reg.email_ortu ?? null,
-      order_id: reg.order_id,
-    },
+    { id: reg.id, nama_lengkap: reg.nama_lengkap, order_id: orderId, email: contact.email },
     paymentUrl
   ).catch((err) => console.error('[generate-payment-link] Email error:', err));
 

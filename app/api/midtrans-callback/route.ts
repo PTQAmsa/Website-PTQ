@@ -1,16 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import { BIAYA_PENDAFTARAN } from '@/lib/config/psb';
 import { verifyCallbackSignature } from '@/lib/services/midtrans';
 import { sendUserPaymentConfirmation } from '@/lib/services/email';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { getRegistrantContact } from '@/lib/utils/registration';
 import type { MidtransCallbackPayload, PaymentStatus } from '@/lib/types/registration';
 
-const EXPECTED_AMOUNT = '200000.00';
+// Midtrans sends gross_amount as "200000.00"
+const EXPECTED_AMOUNT = BIAYA_PENDAFTARAN.toFixed(2);
 
-function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) throw new Error('Supabase env vars missing');
-  return createClient(url, key);
+const REGISTRATION_COLUMNS =
+  'id, nama_lengkap, no_whatsapp_ortu, email_ortu, no_whatsapp_wali, email_wali, order_id, payment_status, payment_amount, payment_date';
+
+/**
+ * Cari pendaftaran berdasarkan order_id dari Midtrans.
+ *
+ * Midtrans appends a timestamp suffix to our order_id when creating payment links
+ * e.g. our order_id: PSB-1779109027046-Z115YL
+ *      Midtrans sends: PSB-1779109027046-Z115YL-1779109125639
+ * So we try exact match first, then prefix match. Bila admin sudah membuat link
+ * baru, order_id lama hanya tercatat di payment_logs — dicari di sana terakhir.
+ */
+async function findRegistrationByOrderId(supabase: SupabaseClient, orderId: string) {
+  const baseOrderId = orderId.split('-').slice(0, -1).join('-');
+  const candidates = [...new Set([orderId, baseOrderId].filter(Boolean))];
+
+  for (const candidate of candidates) {
+    const { data } = await supabase
+      .from('pendaftaran_santri')
+      .select(REGISTRATION_COLUMNS)
+      .eq('order_id', candidate)
+      .maybeSingle();
+    if (data) return data;
+  }
+
+  const { data: log } = await supabase
+    .from('payment_logs')
+    .select('registration_id')
+    .in('order_id', candidates)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!log?.registration_id) return null;
+
+  const { data } = await supabase
+    .from('pendaftaran_santri')
+    .select(REGISTRATION_COLUMNS)
+    .eq('id', log.registration_id)
+    .maybeSingle();
+  return data;
 }
 
 /**
@@ -80,7 +120,6 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Validate payment amount ───────────────────────────────────────────────
-  // Midtrans sends gross_amount as "200000.00"
   const normalizedAmount = parseFloat(gross_amount).toFixed(2);
   if (normalizedAmount !== EXPECTED_AMOUNT) {
     console.warn(
@@ -99,46 +138,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ status: 'ok' });
   }
 
-  const supabase = getSupabase();
+  const supabase = getSupabaseAdmin();
 
   // ── Fetch registration by order_id ────────────────────────────────────────
-  // Midtrans appends a timestamp suffix to our order_id when creating payment links
-  // e.g. our order_id: PSB-1779109027046-Z115YL
-  //      Midtrans sends: PSB-1779109027046-Z115YL-1779109125639
-  // So we try exact match first, then prefix match
-  let reg = null;
-  let fetchError = null;
+  const reg = await findRegistrationByOrderId(supabase, order_id);
 
-  console.log('[midtrans-callback] Looking for registration with order_id:', order_id);
-
-  const exactResult = await supabase
-    .from('pendaftaran_santri')
-    .select('id, nama_lengkap, no_whatsapp_ortu, email_ortu, order_id, payment_status, payment_amount, payment_date')
-    .eq('order_id', order_id)
-    .maybeSingle();
-
-  if (exactResult.data) {
-    reg = exactResult.data;
-    console.log('[midtrans-callback] Found exact match:', reg.id);
-  } else {
-    // Try prefix match — strip the last segment (Midtrans-appended timestamp)
-    const baseOrderId = order_id.split('-').slice(0, -1).join('-');
-    console.log('[midtrans-callback] Trying prefix match with:', baseOrderId);
-    
-    const prefixResult = await supabase
-      .from('pendaftaran_santri')
-      .select('id, nama_lengkap, no_whatsapp_ortu, email_ortu, order_id, payment_status, payment_amount, payment_date')
-      .eq('order_id', baseOrderId)
-      .maybeSingle();
-    reg = prefixResult.data;
-    fetchError = prefixResult.error;
-    
-    if (reg) {
-      console.log('[midtrans-callback] Found prefix match:', reg.id);
-    }
-  }
-
-  if (fetchError || !reg) {
+  if (!reg) {
     console.error('[midtrans-callback] Registration not found for order_id:', order_id);
     // Return 200 to prevent Midtrans from retrying — we can't process this
     return NextResponse.json({ status: 'ok' });
@@ -149,6 +154,17 @@ export async function POST(req: NextRequest) {
   if (reg.payment_status === newStatus) {
     console.info(
       `[midtrans-callback] Idempotent: order_id ${order_id} already has status "${newStatus}"`
+    );
+    return NextResponse.json({ status: 'ok' });
+  }
+
+  // ── Lunas bersifat final ──────────────────────────────────────────────────
+  // Satu link bisa menghasilkan beberapa transaksi (mis. VA BCA dibuat tapi
+  // tidak dibayar, lalu bayar lewat QRIS). Notifikasi "expire"/"cancel" dari
+  // transaksi yang ditinggalkan tidak boleh menimpa status lunas.
+  if (reg.payment_status === 'paid') {
+    console.warn(
+      `[midtrans-callback] Ignoring "${transaction_status}" for order_id ${order_id}: registration ${reg.id} is already paid`
     );
     return NextResponse.json({ status: 'ok' });
   }
@@ -203,8 +219,7 @@ export async function POST(req: NextRequest) {
     sendUserPaymentConfirmation({
       id: reg.id,
       nama_lengkap: reg.nama_lengkap,
-      no_whatsapp_ortu: reg.no_whatsapp_ortu,
-      email_ortu: reg.email_ortu ?? null,
+      email: getRegistrantContact(reg).email,
       order_id: reg.order_id ?? null,
       payment_amount: reg.payment_amount,
       payment_date: updatePayload.payment_date as string,

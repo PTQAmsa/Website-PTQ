@@ -1,5 +1,12 @@
 -- Setup fitur pendaftaran santri baru
 -- Jalankan di Supabase SQL Editor
+--
+-- ⚠️ ARSIP (versi awal, April 2026). Skema produksi sudah jauh berkembang:
+-- kolom pembayaran (payment_status, order_id, payment_link, ...), kolom wali,
+-- url_pas_foto/url_surat_sehat, dan tabel payment_logs TIDAK ada di file ini.
+-- Jangan jalankan ulang di production. Untuk skema terbaru, dump dari
+-- Supabase (Database → Backups / `supabase db dump --schema-only`).
+-- Aturan akses terbaru: supabase/security_hardening.sql
 
 create extension if not exists pgcrypto;
 
@@ -31,17 +38,13 @@ create table if not exists public.pendaftaran_santri (
   created_at timestamptz not null default timezone('utc'::text, now())
 );
 
+-- Tanpa policy untuk anon: insert dilakukan server (service role) lewat
+-- /api/submit-registration.
 alter table public.pendaftaran_santri enable row level security;
 
-drop policy if exists "Anon can insert pendaftaran santri" on public.pendaftaran_santri;
-create policy "Anon can insert pendaftaran santri"
-  on public.pendaftaran_santri
-  for insert
-  to anon
-  with check (true);
-
+-- Bucket private: admin membuka dokumen lewat signed URL dari server.
 insert into storage.buckets (id, name, public)
-values ('dokumen-santri', 'dokumen-santri', true)
+values ('dokumen-santri', 'dokumen-santri', false)
 on conflict (id) do update set public = excluded.public;
 
 drop policy if exists "Anon can upload dokumen santri" on storage.objects;
@@ -54,9 +57,6 @@ create policy "Anon can upload dokumen santri"
     and name like 'pendaftaran/%'
   );
 
+-- Sengaja TIDAK ada policy SELECT publik: policy itu membuat siapa pun bisa
+-- mendaftar & mengunduh KK/akta/KTP semua pendaftar.
 drop policy if exists "Public can view dokumen santri" on storage.objects;
-create policy "Public can view dokumen santri"
-  on storage.objects
-  for select
-  to public
-  using (bucket_id = 'dokumen-santri');

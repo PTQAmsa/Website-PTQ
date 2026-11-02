@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { RegistrationRecord, PaymentStatus } from '@/lib/types/registration';
+import { getRegistrantContact } from '@/lib/utils/registration';
 
 interface Props {
   registrations: RegistrationRecord[];
-  adminPassword: string;
 }
 
 type FilterStatus = 'semua' | PaymentStatus;
@@ -36,7 +37,8 @@ function formatDate(iso: string) {
   });
 }
 
-export default function AdminDashboardClient({ registrations, adminPassword }: Props) {
+export default function AdminDashboardClient({ registrations }: Props) {
+  const router = useRouter();
   const [filter, setFilter] = useState<FilterStatus>('semua');
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [paymentLinks, setPaymentLinks] = useState<Record<string, string>>({});
@@ -46,23 +48,33 @@ export default function AdminDashboardClient({ registrations, adminPassword }: P
   const filtered =
     filter === 'semua' ? registrations : registrations.filter((r) => r.payment_status === filter);
 
-  async function handleGenerateLink(reg: RegistrationRecord) {
+  async function handleGenerateLink(reg: RegistrationRecord, isRegenerate = false) {
+    if (
+      isRegenerate &&
+      !window.confirm(
+        `Buat link pembayaran baru untuk ${reg.nama_lengkap}? Link lama tidak akan dipakai lagi.`
+      )
+    ) {
+      return;
+    }
     setLoadingId(reg.id);
     setErrors((prev) => ({ ...prev, [reg.id]: '' }));
     try {
       const res = await fetch('/api/admin/generate-payment-link', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${adminPassword}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ registrationId: reg.id }),
       });
+      if (res.status === 401) {
+        window.location.reload(); // sesi habis → tampilkan form login
+        return;
+      }
       const json = await res.json();
       if (!res.ok || !json.success) {
         throw new Error(json.error ?? 'Gagal membuat link pembayaran');
       }
       setPaymentLinks((prev) => ({ ...prev, [reg.id]: json.paymentLink }));
+      router.refresh(); // status bisa berubah (mis. kadaluarsa → pending)
     } catch (err) {
       setErrors((prev) => ({
         ...prev,
@@ -84,16 +96,24 @@ export default function AdminDashboardClient({ registrations, adminPassword }: P
     { label: 'Pending', value: 'pending' },
     { label: 'Lunas', value: 'paid' },
     { label: 'Gagal', value: 'failed' },
+    { label: 'Kadaluarsa', value: 'expired' },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <h1 className="text-xl font-semibold text-gray-800">Dashboard Admin — Pendaftaran Santri</h1>
-        <p className="text-sm text-gray-500 mt-0.5">
-          Total: {registrations.length} pendaftar
-        </p>
+      <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-semibold text-gray-800">Dashboard Admin — Pendaftaran Santri</h1>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Total: {registrations.length} pendaftar
+          </p>
+        </div>
+        <form method="POST" action="/api/admin/logout">
+          <button type="submit" className="text-sm text-gray-500 hover:text-red-600 transition-colors">
+            Keluar
+          </button>
+        </form>
       </div>
 
       <div className="px-4 sm:px-6 py-6 max-w-7xl mx-auto">
@@ -139,16 +159,17 @@ export default function AdminDashboardClient({ registrations, adminPassword }: P
                 )}
                 {filtered.map((reg, idx) => {
                   const generatedLink = paymentLinks[reg.id] ?? reg.payment_link;
-                  const showBuatLink =
-                    reg.payment_status === 'pending' && !generatedLink;
+                  const canGenerateLink = reg.payment_status !== 'paid';
+                  const showBuatLink = canGenerateLink && !generatedLink;
                   const isLoading = loadingId === reg.id;
+                  const contact = getRegistrantContact(reg);
 
                   return (
                     <tr key={reg.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-4 py-3 text-gray-400">{idx + 1}</td>
                       <td className="px-4 py-3 font-medium text-gray-800">{reg.nama_lengkap}</td>
-                      <td className="px-4 py-3 text-gray-600">{reg.no_whatsapp_ortu}</td>
-                      <td className="px-4 py-3 text-gray-600">{reg.email_ortu ?? '-'}</td>
+                      <td className="px-4 py-3 text-gray-600">{contact.whatsapp ?? '-'}</td>
+                      <td className="px-4 py-3 text-gray-600">{contact.email ?? '-'}</td>
                       <td className="px-4 py-3">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_BADGE[reg.payment_status]}`}
@@ -184,7 +205,7 @@ export default function AdminDashboardClient({ registrations, adminPassword }: P
 
                           {/* Show payment link */}
                           {generatedLink && (
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex flex-wrap items-center gap-1.5">
                               <a
                                 href={generatedLink}
                                 target="_blank"
@@ -207,6 +228,17 @@ export default function AdminDashboardClient({ registrations, adminPassword }: P
                                   </svg>
                                 )}
                               </button>
+                              {/* Link Midtrans berlaku 24 jam — izinkan membuat ulang selama belum lunas */}
+                              {canGenerateLink && (
+                                <button
+                                  onClick={() => handleGenerateLink(reg, true)}
+                                  disabled={isLoading}
+                                  className="text-xs text-gray-500 hover:text-emerald-700 underline disabled:opacity-50"
+                                  title="Buat link pembayaran baru (link lama kadaluarsa setelah 24 jam)"
+                                >
+                                  {isLoading ? 'Membuat...' : 'Buat ulang'}
+                                </button>
+                              )}
                             </div>
                           )}
 
@@ -217,7 +249,7 @@ export default function AdminDashboardClient({ registrations, adminPassword }: P
 
                           {/* Detail link */}
                           <Link
-                            href={`/admin/pendaftaran/${reg.id}?pw=${encodeURIComponent(adminPassword)}`}
+                            href={`/admin/pendaftaran/${reg.id}`}
                             className="text-xs text-blue-600 hover:underline"
                           >
                             Detail →

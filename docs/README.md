@@ -17,6 +17,17 @@
   - Testing guide
   - Troubleshooting
 
+### 🔒 Keamanan & Operasional (wajib dibaca)
+- **[SECURITY_HARDENING.md](./SECURITY_HARDENING.md)** - Penguncian data pendaftar
+  - Service role key, login admin berbasis sesi, bucket dokumen private
+  - Langkah aktivasi berurutan + `npm run check:exposure`
+- **[SUPABASE_KEEP_ALIVE.md](./SUPABASE_KEEP_ALIVE.md)** - Mencegah Supabase ter-pause
+  - Vercel Cron 3x/hari + GitHub Actions 2x/hari (cadangan & alarm email)
+
+### 🔗 Integrasi
+- **[INTEGRASI_KEUANGAN.md](./INTEGRASI_KEUANGAN.md)** - PSB → SIKA PTQ (Keuangan-Santri)
+  - Kontrak API v1, rancangan sisi SIKA, keputusan yang perlu ditetapkan
+
 ### 🐛 Bug Fix
 - **[PAYMENT_STATUS_FIX.md](./PAYMENT_STATUS_FIX.md)** - Fix payment status auto-update
   - Root cause analysis
@@ -75,6 +86,12 @@ npm run test:callback PSB-1779109027046-Z115YL
 npm run check:payment <order_id>
 ```
 Mengecek status pembayaran langsung dari Midtrans API.
+
+### Check Data Exposure
+```bash
+npm run check:exposure
+```
+Mencoba membaca data pendaftar memakai anon key (seperti orang asing). Semua harus ✅.
 
 **Example:**
 ```bash

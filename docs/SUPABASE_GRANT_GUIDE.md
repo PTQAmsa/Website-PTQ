@@ -1,5 +1,14 @@
 # Supabase GRANT Guide - Post October 30, 2026
 
+> ⚠️ **Update 29 Oktober 2026 — baca dulu [SECURITY_HARDENING.md](./SECURITY_HARDENING.md).**
+> Pola `GRANT ALL ... TO anon` + policy "Enable read for anon" di template bawah
+> membuat isi tabel bisa dibaca dan diubah siapa pun yang memegang anon key —
+> dan anon key terlihat di browser. Pola itulah yang membuat data
+> `pendaftaran_santri` & `payment_logs` terbuka; keduanya kini dikunci lewat
+> `supabase/security_hardening.sql`. Untuk tabel berisi **data pribadi atau
+> keuangan**: jangan beri GRANT ke `anon`/`authenticated`, akses hanya dari
+> server dengan `getSupabaseAdmin()` (service role).
+
 ## 📋 Overview
 
 Mulai **30 Oktober 2026**, table baru di schema "public" memerlukan GRANT explicit untuk bisa diakses via Data API (PostgREST, GraphQL, supabase-js).
