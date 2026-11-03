@@ -28,6 +28,24 @@ export function getPublishedArticle(slug: string, now = new Date()): Article | u
   return article && isPublished(article, now) ? article : undefined;
 }
 
+/** Semua artikel termasuk yang terjadwal, terbaru lebih dulu. Khusus halaman admin. */
+export function getAllArticles(): Article[] {
+  return [...articles].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+}
+
+/** Cari artikel tanpa memeriksa jadwal terbit. Khusus pratinjau admin. */
+export function getArticleBySlug(slug: string): Article | undefined {
+  return articles.find((a) => a.slug === slug);
+}
+
+/** Jumlah hari (WIB) sampai artikel terbit; 0 = hari ini, negatif = sudah lewat. */
+export function daysUntilPublish(article: Article, now = new Date()): number {
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  return Math.round(
+    (Date.parse(`${article.publishedAt}T00:00:00Z`) - Date.parse(`${todayInWib(now)}T00:00:00Z`)) / DAY_MS
+  );
+}
+
 /** "2026-01-11" → "11 Januari 2026" */
 export function formatArticleDate(isoDate: string): string {
   return new Date(`${isoDate}T00:00:00+07:00`).toLocaleDateString('id-ID', {

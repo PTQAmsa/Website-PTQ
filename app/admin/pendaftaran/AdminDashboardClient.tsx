@@ -109,11 +109,16 @@ export default function AdminDashboardClient({ registrations }: Props) {
             Total: {registrations.length} pendaftar
           </p>
         </div>
-        <form method="POST" action="/api/admin/logout">
-          <button type="submit" className="text-sm text-gray-500 hover:text-red-600 transition-colors">
-            Keluar
-          </button>
-        </form>
+        <div className="flex items-center gap-5">
+          <a href="/admin/artikel" className="text-sm text-gray-500 hover:text-emerald-700 transition-colors">
+            Artikel
+          </a>
+          <form method="POST" action="/api/admin/logout">
+            <button type="submit" className="text-sm text-gray-500 hover:text-red-600 transition-colors">
+              Keluar
+            </button>
+          </form>
+        </div>
       </div>
 
       <div className="px-4 sm:px-6 py-6 max-w-7xl mx-auto">
