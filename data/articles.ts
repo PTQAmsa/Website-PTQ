@@ -101,8 +101,10 @@ export const articles: Article[] = [
       
       <p><strong>Pelajaran:</strong> Memberikan pendidikan terbaik (seperti di pesantren) adalah bentuk kasih sayang tertinggi orang tua kepada anak, sebagaimana teladan Nabi Luqman.</p>
       
-      <p><strong>Hadits Riwayat Tirmidzi:</strong><br>
-      <em>"Tiada suatu pemberian yang lebih utama dari orang tua kepada anaknya selain pendidikan adab yang baik."</em></p>
+      <p><strong>Hadits Riwayat Bukhari dan Muslim:</strong><br>
+      <em>"Setiap kalian adalah pemimpin, dan setiap kalian akan dimintai pertanggungjawaban atas yang dipimpinnya... Seorang laki-laki adalah pemimpin bagi keluarganya dan ia akan dimintai pertanggungjawaban atas mereka. Seorang perempuan adalah pemimpin di rumah suaminya dan atas anak-anaknya, dan ia akan dimintai pertanggungjawaban atas mereka..."</em></p>
+
+      <p><strong>Pelajaran:</strong> Mendidik anak, termasuk menyiapkan mental dan agamanya sebelum masuk pesantren, adalah amanah orang tua yang kelak akan ditanyakan.</p>
       
       <h3>Kesimpulan</h3>
       <p>Melepas anak ke pesantren memang berat di awal, namun itu adalah investasi jangka panjang. Dengan mental yang siap, anak tidak akan merasa "dibuang", melainkan merasa <strong>"diutus"</strong> untuk menjadi pejuang ilmu.</p>
@@ -131,8 +133,8 @@ export const articles: Article[] = [
       <h3>2. Pajar dan Dhuha: Menjemput Berkah dan Ilmu (Subuh & Belajar)</h3>
       <p>Setelah shalat Subuh berjamaah, energi santri langsung dialihkan untuk <em>tholabul 'ilmi</em> (menuntut ilmu)—baik menghafal Al-Qur'an, mengaji kitab kuning, maupun belajar ilmu umum. Hikmahnya adalah memanfaatkan waktu fajar yang penuh berkah untuk menanamkan pondasi keilmuan.</p>
       
-      <p><strong>Dalil (Hadits Riwayat Tirmidzi):</strong><br>
-      <em>"Apabila seorang hamba belajar satu bab dari ilmu, maka itu lebih baik baginya daripada dunia dan seisinya."</em></p>
+      <p><strong>Dalil (Hadits Riwayat Muslim):</strong><br>
+      <em>"Barang siapa menempuh suatu jalan untuk mencari ilmu, Allah akan mudahkan baginya jalan menuju surga."</em></p>
       
       <h3>3. Siang dan Sore: Keseimbangan dan Produktivitas (Istirahat & Eskul)</h3>
       <p>Pesantren modern tidak melupakan kebutuhan jasmani dan bakat. Setelah makan siang dan istirahat sejenak, santri melanjutkan dengan kegiatan ekstrakurikuler—olahraga, seni, organisasi, atau keterampilan praktis. Hikmahnya adalah melatih <em>time management</em> (manajemen waktu) dan keseimbangan antara 'akal dan jasad'.</p>
@@ -556,7 +558,7 @@ export const articles: Article[] = [
 
       <p>Ingin tahu lebih banyak tentang fasilitas dan kehidupan santri? Silakan baca halaman <a href="/faq">FAQ</a> atau jadwalkan kunjungan ke pesantren. Semoga Allah senantiasa menjaga kesehatan anak-anak kita.</p>
 
-      <p><em>Foto: Dokumentasi PTQ Amsa001</em></p>
+      <p><em>Foto: Baarast Project / Pexels</em></p>
     `,
     image: '/artikel/Artikel-9.jpg',
     author: 'Admin PTQ Amsa',
@@ -923,7 +925,7 @@ export const articles: Article[] = [
         <li><strong>Total iuran bulanan: Rp 1.350.000</strong></li>
       </ul>
 
-      <p>Rincian biaya terbaru selalu dapat dilihat di halaman <a href="/faq">FAQ</a>. PTQ Amsa001 juga memiliki program beasiswa. Jenis dan persyaratannya bisa dibaca di halaman <a href="/beasiswa">Beasiswa</a>.</p>
+      <p>Rincian biaya terbaru selalu dapat dilihat di halaman <a href="/faq">FAQ</a>. PTQ Amsa001 juga memiliki program khusus untuk anak yatim/dhuafa berupa potongan SPP 50% dan bebas wakaf, serta program beasiswa tahfidz. Untuk detail persyaratannya, silakan berkonsultasi dengan admin.</p>
 
       <h3>Survei Lokasi</h3>
       <p>Survei lokasi tidak wajib, tetapi sangat dianjurkan agar Ayah, Bunda, dan calon santri bisa melihat langsung suasana pesantren. Kunjungan dibuka setiap hari pada jam kerja. Silakan hubungi admin terlebih dahulu untuk mengatur jadwal.</p>
