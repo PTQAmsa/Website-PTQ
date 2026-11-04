@@ -925,7 +925,7 @@ export const articles: Article[] = [
         <li><strong>Total iuran bulanan: Rp 1.350.000</strong></li>
       </ul>
 
-      <p>Rincian biaya terbaru selalu dapat dilihat di halaman <a href="/faq">FAQ</a>. PTQ Amsa001 juga memiliki program khusus untuk anak yatim/dhuafa berupa potongan SPP 50% dan bebas wakaf, serta program beasiswa tahfidz. Untuk detail persyaratannya, silakan berkonsultasi dengan admin.</p>
+      <p>Rincian biaya terbaru selalu dapat dilihat di halaman <a href="/faq">FAQ</a>. PTQ Amsa001 juga memiliki program khusus untuk anak yatim/dhuafa berupa potongan SPP 50% dan bebas wakaf. Keringanan lainnya dapat didiskusikan langsung dengan Kyai saat berkunjung ke pesantren; untuk detail persyaratan, silakan berkonsultasi dengan admin.</p>
 
       <h3>Survei Lokasi</h3>
       <p>Survei lokasi tidak wajib, tetapi sangat dianjurkan agar Ayah, Bunda, dan calon santri bisa melihat langsung suasana pesantren. Kunjungan dibuka setiap hari pada jam kerja. Silakan hubungi admin terlebih dahulu untuk mengatur jadwal.</p>

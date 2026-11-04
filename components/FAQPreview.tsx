@@ -32,7 +32,7 @@ const previewFAQs: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "Apakah ada program beasiswa?",
-    a: "Ya. PTQ Amsa memiliki program khusus untuk anak yatim/dhuafa (potongan SPP 50% + bebas wakaf) dan juga program beasiswa tahfidz. Silakan konsultasi dengan admin untuk detail persyaratan.",
+    a: "Ya. PTQ Amsa memiliki program khusus untuk anak yatim/dhuafa berupa potongan SPP 50% + bebas wakaf. Keringanan lainnya dapat didiskusikan langsung dengan Kyai saat berkunjung ke pesantren. Silakan konsultasi dengan admin untuk detail persyaratan.",
   },
 ];
 
