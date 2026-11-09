@@ -2,8 +2,9 @@ import type { MetadataRoute } from 'next';
 import { getPublishedArticles } from '@/lib/articles';
 import { SITE_URL } from '@/lib/site';
 
-// Artikel terjadwal masuk sitemap pada tanggal terbitnya tanpa deploy ulang
-export const revalidate = 3600;
+// Dirender per permintaan: cache ISR sitemap di Vercel tidak ikut diperbarui saat
+// artikel terjadwal terbit (Nov 2026 sitemap tertahan di 5 artikel). Biayanya kecil.
+export const dynamic = 'force-dynamic';
 
 type ChangeFrequency = NonNullable<MetadataRoute.Sitemap[number]['changeFrequency']>;
 
