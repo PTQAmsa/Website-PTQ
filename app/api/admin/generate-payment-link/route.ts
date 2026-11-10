@@ -1,6 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
 import { isAdminRequest } from '@/lib/admin-auth';
-import { BIAYA_PENDAFTARAN } from '@/lib/config/psb';
+import { BIAYA_PENDAFTARAN, PEMBAYARAN_ONLINE_AKTIF } from '@/lib/config/psb';
 import { createPaymentLink } from '@/lib/services/midtrans';
 import { sendPaymentLinkToParent } from '@/lib/services/email';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
@@ -14,6 +14,13 @@ export async function POST(req: NextRequest) {
   // Auth check
   if (!isAdminRequest(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!PEMBAYARAN_ONLINE_AKTIF) {
+    return NextResponse.json(
+      { error: 'Pembayaran online belum diaktifkan (lihat lib/config/psb.ts).' },
+      { status: 409 }
+    );
   }
 
   let body: { registrationId?: string };

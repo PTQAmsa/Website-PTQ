@@ -16,14 +16,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "PTQ Amsa001 - Pesantren Tadabbur Al-Qur'an",
     description: "Mencetak generasi Qur'ani.",
-    url: "https://www.ptqamsa.id",
+    // Tanpa url di sini: halaman lain tidak ikut mengaku sebagai beranda saat dibagikan
     siteName: "PTQ Amsa001",
     images: [
       {
-        url: "https://www.ptqamsa.id/Logo-color.png",
+        url: "https://www.ptqamsa.id/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "PTQ Amsa001 Logo",
+        alt: "Santri dan ustadz PTQ Amsa001 Gadog",
       },
     ],
     locale: "id_ID",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PTQ Amsa001 - Pesantren Tadabbur Al-Qur'an",
     description: "Pusat pembelajaran Al-Qur'an di Bogor.",
-    images: ["https://www.ptqamsa.id/Logo-color.png"],
+    images: ["https://www.ptqamsa.id/og-image.jpg"],
   },
   robots: {
     index: true,
@@ -74,7 +74,7 @@ export default function RootLayout({
                 "streetAddress": "Gadog",
                 "addressLocality": "Bogor",
                 "addressRegion": "Jawa Barat",
-                "postalCode": "16710",
+                "postalCode": "16770",
                 "addressCountry": "ID"
               },
               "geo": {
@@ -89,7 +89,7 @@ export default function RootLayout({
               },
               "sameAs": [
                 "https://www.instagram.com/ptqamsa001",
-                "https://www.youtube.com/@ptqamsa001"
+                "https://www.youtube.com/@pesantrentadabburalquranamsa"
               ],
               "foundingDate": "2001",
               "founder": {
@@ -108,43 +108,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "name": "PTQ Amsa001",
-              "url": "https://www.ptqamsa.id",
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": "https://www.ptqamsa.id/artikel?q={search_term_string}",
-                "query-input": "required name=search_term_string"
-              }
-            })
-          }}
-        />
-        
-        {/* Breadcrumb Schema */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Beranda",
-                  "item": "https://www.ptqamsa.id"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": "Pendaftaran",
-                  "item": "https://www.ptqamsa.id/pendaftaran-santri-baru"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 3,
-                  "name": "Artikel",
-                  "item": "https://www.ptqamsa.id/artikel"
-                }
-              ]
+              "url": "https://www.ptqamsa.id"
             })
           }}
         />

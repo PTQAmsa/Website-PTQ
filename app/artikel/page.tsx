@@ -82,22 +82,30 @@ export default function Artikel() {
             ))}
           </div>
 
-          {/* Newsletter Subscription */}
+          {/* Ikuti kabar terbaru */}
           <div className="mt-12 bg-yellow-50 rounded-lg p-8 md:p-12">
             <div className="max-w-2xl mx-auto text-center">
-              <h2 className="text-3xl font-bold text-blue-900 mb-4">Dapatkan Artikel Terbaru</h2>
+              <h2 className="text-3xl font-bold text-blue-900 mb-4">Dapatkan Kabar Terbaru</h2>
               <p className="text-gray-700 mb-6">
-                Berlangganan newsletter kami untuk mendapatkan artikel dan informasi terbaru langsung ke email Anda
+                Artikel baru terbit setiap pekan. Ikuti kegiatan santri sehari-hari di media sosial kami.
               </p>
               <div className="flex flex-col md:flex-row gap-4 justify-center">
-                <input
-                  type="email"
-                  placeholder="Masukkan email Anda"
-                  className="px-6 py-3 rounded-full border-2 border-blue-300 focus:border-blue-600 focus:outline-none flex-1 max-w-md"
-                />
-                <button className="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition">
-                  Berlangganan
-                </button>
+                <a
+                  href="https://www.instagram.com/ptqamsa001"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition"
+                >
+                  Instagram @ptqamsa001
+                </a>
+                <a
+                  href="https://www.youtube.com/@pesantrentadabburalquranamsa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white text-blue-900 border-2 border-blue-300 px-8 py-3 rounded-full font-semibold hover:border-blue-600 transition"
+                >
+                  YouTube
+                </a>
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { createRateLimiter, getClientIP } from '@/lib/utils/rate-limit';
 
 // Apps Script URL — hanya untuk arsip spreadsheet, tidak mengirim email
@@ -62,14 +62,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ status: 'error', message: 'Payload tidak valid.' }, { status: 400 });
   }
 
-  // Kirim ke Apps Script untuk arsip spreadsheet (non-blocking)
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-    cache: 'no-store',
-    redirect: 'follow',
-  }).catch((err) => console.error('[submit-mi] Apps Script error:', err));
+  // Kirim ke Apps Script untuk arsip spreadsheet setelah respons terkirim.
+  // after() menahan fungsi Vercel tetap hidup sampai fetch selesai.
+  after(() =>
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      cache: 'no-store',
+      redirect: 'follow',
+    }).catch((err) => console.error('[submit-mi] Apps Script error:', err))
+  );
 
   return NextResponse.json({ status: 'success', message: 'Hasil tes berhasil disimpan.' });
 }

@@ -1,3 +1,5 @@
+import { URL_FORMULIR_PENDAFTARAN } from '@/lib/config/psb';
+
 export default function Contact() {
   return (
     <section id="contact" className="py-20 px-4 bg-gradient-to-br from-blue-700 to-blue-900">
@@ -31,9 +33,7 @@ export default function Contact() {
               </div>
             </div>
             <a 
-              href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={URL_FORMULIR_PENDAFTARAN}
               className="block w-full text-center bg-yellow-400 text-blue-900 py-4 rounded-xl font-bold hover:bg-yellow-300 transition shadow-lg text-lg"
             >
               Daftar Online Sekarang

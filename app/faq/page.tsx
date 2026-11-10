@@ -6,6 +6,7 @@ import FAQSearch from '../../components/FAQSearch';
 export const metadata: Metadata = {
   title: 'FAQ - Pertanyaan yang Sering Diajukan',
   description: 'Temukan jawaban atas pertanyaan umum seputar PTQ Amsa001 — kurikulum, fasilitas, pendaftaran, biaya, dan lainnya.',
+  alternates: { canonical: '/faq' },
 };
 
 export default function FAQPage() {

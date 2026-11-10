@@ -7,6 +7,7 @@ import SuksesContent from "./SuksesContent";
 
 export const metadata: Metadata = {
   title: "Pendaftaran Berhasil | PTQ Amsa001",
+  robots: { index: false, follow: false },
 };
 
 function LoadingSkeleton() {

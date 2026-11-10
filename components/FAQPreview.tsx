@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import FAQAccordion from './FAQAccordion';
+import { URL_FORMULIR_PENDAFTARAN } from '@/lib/config/psb';
 
 const previewFAQs: { q: string; a: React.ReactNode }[] = [
   {
@@ -23,7 +24,7 @@ const previewFAQs: { q: string; a: React.ReactNode }[] = [
     a: (
       <>
         Daftar bisa melalui online (bisa{' '}
-        <a href="https://forms.gle/L7GqaZdfDdZ2cxBK6" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800 font-medium">
+        <a href={URL_FORMULIR_PENDAFTARAN} className="text-blue-600 underline hover:text-blue-800 font-medium">
           klik disini
         </a>
         ) ataupun datang langsung ke pesantren (offline). Bisa hubungi admin via WhatsApp untuk jadwalkan waktu survei lokasi.

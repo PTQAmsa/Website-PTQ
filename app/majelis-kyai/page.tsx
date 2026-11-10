@@ -2,6 +2,13 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Majelis Kyai | PTQ Amsa001",
+  description: "Kenali para kyai pengasuh dan pembimbing santri di Pesantren Tadabbur Al-Qur'an Amsa001 Gadog, Megamendung, Bogor.",
+  alternates: { canonical: '/majelis-kyai' },
+};
 
 export default function MajelisKyai() {
   return (

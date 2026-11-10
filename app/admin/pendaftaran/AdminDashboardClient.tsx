@@ -3,6 +3,16 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { PEMBAYARAN_ONLINE_AKTIF } from '@/lib/config/psb';
+import {
+  JENIS_PENDAFTARAN,
+  LULUSAN,
+  STATUS_PENDAFTARAN,
+  labelOpsi,
+  linkWhatsApp,
+  statusInfo,
+  type StatusPendaftaran,
+} from '@/lib/psb/pilihan';
 import type { RegistrationRecord, PaymentStatus } from '@/lib/types/registration';
 import { getRegistrantContact } from '@/lib/utils/registration';
 
@@ -10,16 +20,16 @@ interface Props {
   registrations: RegistrationRecord[];
 }
 
-type FilterStatus = 'semua' | PaymentStatus;
+type FilterStatus = 'semua' | StatusPendaftaran;
 
-const STATUS_LABELS: Record<PaymentStatus, string> = {
+const PAYMENT_LABELS: Record<PaymentStatus, string> = {
   pending: 'Pending',
   paid: 'Lunas',
   failed: 'Gagal',
   expired: 'Kadaluarsa',
 };
 
-const STATUS_BADGE: Record<PaymentStatus, string> = {
+const PAYMENT_BADGE: Record<PaymentStatus, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
   paid: 'bg-green-100 text-green-800',
   failed: 'bg-red-100 text-red-800',
@@ -37,16 +47,35 @@ function formatDate(iso: string) {
   });
 }
 
+/** Posisi pengisian data tahap 2. */
+export function DataBadge({ reg }: { reg: Pick<RegistrationRecord, 'data_lengkap_at' | 'token_lengkapi'> }) {
+  if (reg.data_lengkap_at) {
+    return <span className="inline-flex rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">✓ Lengkap</span>;
+  }
+  if (reg.token_lengkapi) {
+    return <span className="inline-flex rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">Menunggu wali</span>;
+  }
+  return <span className="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">Link belum dibuat</span>;
+}
+
 export default function AdminDashboardClient({ registrations }: Props) {
   const router = useRouter();
   const [filter, setFilter] = useState<FilterStatus>('semua');
+  const [search, setSearch] = useState('');
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [paymentLinks, setPaymentLinks] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState<string | null>(null);
 
-  const filtered =
-    filter === 'semua' ? registrations : registrations.filter((r) => r.payment_status === filter);
+  const keyword = search.trim().toLowerCase();
+  const filtered = registrations.filter(
+    (r) =>
+      (filter === 'semua' || statusInfo(r.status_pendaftaran).value === filter) &&
+      (!keyword || r.nama_lengkap.toLowerCase().includes(keyword))
+  );
+
+  const countByStatus = (status: StatusPendaftaran) =>
+    registrations.filter((r) => statusInfo(r.status_pendaftaran).value === status).length;
 
   async function handleGenerateLink(reg: RegistrationRecord, isRegenerate = false) {
     if (
@@ -91,12 +120,9 @@ export default function AdminDashboardClient({ registrations }: Props) {
     setTimeout(() => setCopied(null), 2000);
   }
 
-  const filterButtons: { label: string; value: FilterStatus }[] = [
-    { label: 'Semua', value: 'semua' },
-    { label: 'Pending', value: 'pending' },
-    { label: 'Lunas', value: 'paid' },
-    { label: 'Gagal', value: 'failed' },
-    { label: 'Kadaluarsa', value: 'expired' },
+  const filterButtons: { label: string; value: FilterStatus; count: number }[] = [
+    { label: 'Semua', value: 'semua', count: registrations.length },
+    ...STATUS_PENDAFTARAN.map((s) => ({ label: s.label, value: s.value, count: countByStatus(s.value) })),
   ];
 
   return (
@@ -110,9 +136,9 @@ export default function AdminDashboardClient({ registrations }: Props) {
           </p>
         </div>
         <div className="flex items-center gap-5">
-          <a href="/admin/artikel" className="text-sm text-gray-500 hover:text-emerald-700 transition-colors">
+          <Link href="/admin/artikel" className="text-sm text-gray-500 hover:text-emerald-700 transition-colors">
             Artikel
-          </a>
+          </Link>
           <form method="POST" action="/api/admin/logout">
             <button type="submit" className="text-sm text-gray-500 hover:text-red-600 transition-colors">
               Keluar
@@ -122,8 +148,8 @@ export default function AdminDashboardClient({ registrations }: Props) {
       </div>
 
       <div className="px-4 sm:px-6 py-6 max-w-7xl mx-auto">
-        {/* Filter buttons */}
-        <div className="flex flex-wrap gap-2 mb-5">
+        {/* Filter tahapan + cari nama */}
+        <div className="flex flex-wrap items-center gap-2 mb-5">
           {filterButtons.map((btn) => (
             <button
               key={btn.value}
@@ -134,9 +160,16 @@ export default function AdminDashboardClient({ registrations }: Props) {
                   : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'
               }`}
             >
-              {btn.label}
+              {btn.label} <span className="opacity-70">({btn.count})</span>
             </button>
           ))}
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Cari nama santri…"
+            className="ml-auto w-full sm:w-56 rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
         </div>
 
         {/* Table */}
@@ -146,10 +179,13 @@ export default function AdminDashboardClient({ registrations }: Props) {
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="text-left px-4 py-3 font-medium text-gray-600 w-10">No</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Nama</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">WhatsApp</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Email</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Calon Santri</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Orang Tua / Wali</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Tahapan</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Data Lengkap</th>
+                  {PEMBAYARAN_ONLINE_AKTIF && (
+                    <th className="text-left px-4 py-3 font-medium text-gray-600">Pembayaran</th>
+                  )}
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Tanggal Daftar</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Aksi</th>
                 </tr>
@@ -157,31 +193,68 @@ export default function AdminDashboardClient({ registrations }: Props) {
               <tbody className="divide-y divide-gray-100">
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="text-center py-10 text-gray-400">
+                    <td colSpan={PEMBAYARAN_ONLINE_AKTIF ? 8 : 7} className="text-center py-10 text-gray-400">
                       Tidak ada data.
                     </td>
                   </tr>
                 )}
                 {filtered.map((reg, idx) => {
                   const generatedLink = paymentLinks[reg.id] ?? reg.payment_link;
-                  const canGenerateLink = reg.payment_status !== 'paid';
+                  const canGenerateLink = PEMBAYARAN_ONLINE_AKTIF && reg.payment_status !== 'paid';
                   const showBuatLink = canGenerateLink && !generatedLink;
+                  const showPaymentLink = PEMBAYARAN_ONLINE_AKTIF && generatedLink;
                   const isLoading = loadingId === reg.id;
                   const contact = getRegistrantContact(reg);
+                  const status = statusInfo(reg.status_pendaftaran);
 
                   return (
-                    <tr key={reg.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={reg.id} className="hover:bg-gray-50 transition-colors align-top">
                       <td className="px-4 py-3 text-gray-400">{idx + 1}</td>
-                      <td className="px-4 py-3 font-medium text-gray-800">{reg.nama_lengkap}</td>
-                      <td className="px-4 py-3 text-gray-600">{contact.whatsapp ?? '-'}</td>
-                      <td className="px-4 py-3 text-gray-600">{contact.email ?? '-'}</td>
                       <td className="px-4 py-3">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_BADGE[reg.payment_status]}`}
-                        >
-                          {STATUS_LABELS[reg.payment_status]}
+                        <Link href={`/admin/pendaftaran/${reg.id}`} className="font-medium text-gray-800 hover:text-emerald-700">
+                          {reg.nama_lengkap}
+                        </Link>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {[
+                            reg.jenis_pendaftaran && labelOpsi(JENIS_PENDAFTARAN, reg.jenis_pendaftaran),
+                            reg.lulusan && `Lulusan ${labelOpsi(LULUSAN, reg.lulusan)}`,
+                            reg.kota,
+                          ]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </p>
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        <p>{contact.nama ?? '-'}</p>
+                        {contact.whatsapp ? (
+                          <a
+                            href={linkWhatsApp(contact.whatsapp)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-0.5 inline-flex items-center gap-1 text-xs font-medium text-emerald-700 hover:underline"
+                            title="Buka chat WhatsApp"
+                          >
+                            💬 {contact.whatsapp}
+                          </a>
+                        ) : null}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${status.badge}`}>
+                          {status.label}
                         </span>
                       </td>
+                      <td className="px-4 py-3">
+                        <DataBadge reg={reg} />
+                      </td>
+                      {PEMBAYARAN_ONLINE_AKTIF && (
+                        <td className="px-4 py-3">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${PAYMENT_BADGE[reg.payment_status]}`}
+                          >
+                            {PAYMENT_LABELS[reg.payment_status]}
+                          </span>
+                        </td>
+                      )}
                       <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
                         {formatDate(reg.created_at)}
                       </td>
@@ -194,22 +267,12 @@ export default function AdminDashboardClient({ registrations }: Props) {
                               disabled={isLoading}
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white text-xs font-medium rounded-lg transition-colors"
                             >
-                              {isLoading ? (
-                                <>
-                                  <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24" fill="none">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                                  </svg>
-                                  Membuat...
-                                </>
-                              ) : (
-                                'Buat Link'
-                              )}
+                              {isLoading ? 'Membuat...' : 'Buat Link Bayar'}
                             </button>
                           )}
 
                           {/* Show payment link */}
-                          {generatedLink && (
+                          {showPaymentLink && (
                             <div className="flex flex-wrap items-center gap-1.5">
                               <a
                                 href={generatedLink}
@@ -225,13 +288,7 @@ export default function AdminDashboardClient({ registrations }: Props) {
                                 className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
                                 title="Salin link"
                               >
-                                {copied === reg.id ? (
-                                  <span className="text-green-600">✓</span>
-                                ) : (
-                                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                  </svg>
-                                )}
+                                {copied === reg.id ? <span className="text-green-600">✓</span> : 'Salin'}
                               </button>
                               {/* Link Midtrans berlaku 24 jam — izinkan membuat ulang selama belum lunas */}
                               {canGenerateLink && (
@@ -252,10 +309,9 @@ export default function AdminDashboardClient({ registrations }: Props) {
                             <p className="text-xs text-red-500">{errors[reg.id]}</p>
                           )}
 
-                          {/* Detail link */}
                           <Link
                             href={`/admin/pendaftaran/${reg.id}`}
-                            className="text-xs text-blue-600 hover:underline"
+                            className="inline-flex justify-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
                           >
                             Detail →
                           </Link>

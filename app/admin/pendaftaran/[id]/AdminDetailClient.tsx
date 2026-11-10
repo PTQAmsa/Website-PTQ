@@ -1,21 +1,50 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { BIAYA_PENDAFTARAN, formatRupiah } from '@/lib/config/psb';
+import { BIAYA_PENDAFTARAN, PEMBAYARAN_ONLINE_AKTIF, formatRupiah, hitungUsia } from '@/lib/config/psb';
+import {
+  JENIS_KELAMIN,
+  JENIS_PENDAFTARAN,
+  LULUSAN,
+  STATUS_PENDAFTARAN,
+  labelHubunganKontak,
+  labelOpsi,
+  linkWhatsApp,
+  statusInfo,
+  type StatusPendaftaran,
+} from '@/lib/psb/pilihan';
 import type {
   RegistrationRecord,
   RegistrationDocument,
   PaymentLog,
   PaymentStatus,
 } from '@/lib/types/registration';
+import { getRegistrantContact } from '@/lib/utils/registration';
+import { DataBadge } from '../AdminDashboardClient';
+import EditDataForm from './EditDataForm';
+import type { LogPendaftaran } from '@/lib/psb/log';
 
 interface Props {
   registration: RegistrationRecord;
   paymentLogs: PaymentLog[];
   documents: RegistrationDocument[];
+  linkLengkapi: string | null;
+  riwayat: LogPendaftaran[];
+  riwayatTersedia: boolean;
 }
+
+const AKSI_LABELS: Record<string, string> = {
+  pendaftaran_dibuat: 'Mendaftar lewat formulir awal',
+  data_dilengkapi: 'Melengkapi data & dokumen',
+  data_diedit: 'Mengedit data',
+  tahapan_diubah: 'Mengubah tahapan',
+  link_dibuat: 'Membuat link lengkapi data',
+  link_dibuka_kembali: 'Membuka kembali form untuk perbaikan',
+};
+
+const OLEH_LABELS: Record<string, string> = { admin: 'Admin', wali: 'Wali', sistem: 'Sistem' };
 
 const STATUS_BADGE: Record<PaymentStatus, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -50,6 +79,19 @@ function formatDate(iso: string | null | undefined) {
   });
 }
 
+function formatTanggalLahir(iso: string | null | undefined) {
+  if (!iso) return '-';
+  const [y, m, d] = iso.split('-').map(Number);
+  const tanggal = new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+  const usia = hitungUsia(iso);
+  return usia === null ? tanggal : `${tanggal} (${usia} th saat masuk)`;
+}
+
 function Field({ label, value }: { label: string; value: string | null | undefined }) {
   return (
     <div>
@@ -59,9 +101,105 @@ function Field({ label, value }: { label: string; value: string | null | undefin
   );
 }
 
-export default function AdminDetailClient({ registration: reg, paymentLogs, documents }: Props) {
+function Group({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="sm:col-span-2 border-t border-gray-100 pt-4 mt-2">
+      <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{children}</p>
+    </div>
+  );
+}
+
+export default function AdminDetailClient({
+  registration: reg,
+  paymentLogs,
+  documents,
+  linkLengkapi,
+  riwayat,
+  riwayatTersedia,
+}: Props) {
   const router = useRouter();
   const pasFotoUrl = documents.find((d) => d.key === 'url_pas_foto')?.url;
+  const contact = getRegistrantContact(reg);
+  const isWali = reg.hubungan_wali !== 'orang-tua-kandung';
+
+  // ── Tahapan & link pelengkapan data ──
+  const currentStatus = statusInfo(reg.status_pendaftaran).value;
+  const [tahapan, setTahapan] = useState<StatusPendaftaran>(currentStatus);
+  const [savingTahapan, setSavingTahapan] = useState(false);
+  const [creatingLink, setCreatingLink] = useState(false);
+  const [prosesResult, setProsesResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [editing, setEditing] = useState(false);
+
+  async function callAdminApi(url: string, method: 'POST' | 'PATCH', body: unknown) {
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (res.status === 401) {
+      window.location.reload(); // sesi habis → tampilkan form login
+      return null;
+    }
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.success) throw new Error(json.error ?? 'Terjadi kesalahan');
+    return json;
+  }
+
+  async function handleSaveTahapan() {
+    setSavingTahapan(true);
+    setProsesResult(null);
+    try {
+      if (!(await callAdminApi('/api/admin/status-pendaftaran', 'PATCH', { registrationId: reg.id, status: tahapan }))) return;
+      setProsesResult({ ok: true, message: `Tahapan diubah ke "${statusInfo(tahapan).label}".` });
+      router.refresh();
+    } catch (err) {
+      setProsesResult({ ok: false, message: err instanceof Error ? err.message : 'Terjadi kesalahan' });
+    } finally {
+      setSavingTahapan(false);
+    }
+  }
+
+  async function handleCreateLink() {
+    if (
+      linkLengkapi &&
+      !window.confirm(
+        reg.data_lengkap_at
+          ? `Buka kembali form untuk ${reg.nama_lengkap}? Wali bisa memperbaiki data lewat link baru. Link lama tidak berlaku lagi.`
+          : `Buat link baru untuk ${reg.nama_lengkap}? Link lama tidak berlaku lagi.`
+      )
+    ) {
+      return;
+    }
+    setCreatingLink(true);
+    setProsesResult(null);
+    try {
+      if (!(await callAdminApi('/api/admin/link-lengkapi', 'POST', { registrationId: reg.id }))) return;
+      setProsesResult({ ok: true, message: 'Link berhasil dibuat. Kirimkan ke wali lewat tombol WhatsApp.' });
+      router.refresh();
+    } catch (err) {
+      setProsesResult({ ok: false, message: err instanceof Error ? err.message : 'Terjadi kesalahan' });
+    } finally {
+      setCreatingLink(false);
+    }
+  }
+
+  async function handleCopyLink() {
+    if (!linkLengkapi) return;
+    await navigator.clipboard.writeText(linkLengkapi);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
+  }
+
+  const sapaan = contact.nama ? `Bapak/Ibu ${contact.nama}` : 'Bapak/Ibu';
+  const pesanLink = linkLengkapi
+    ? `Assalamu'alaikum ${sapaan}. Terima kasih telah mendaftarkan ${reg.nama_lengkap} di PTQ Amsa001.\n\n` +
+      `Langkah selanjutnya, mohon lengkapi data dan unggah dokumen pendaftaran melalui link berikut:\n${linkLengkapi}\n\n` +
+      `Dokumen yang disiapkan: Kartu Keluarga, Akta Kelahiran, Ijazah/SKL, KTP orang tua/wali, dan pas foto 3x4.\n\n` +
+      `Link ini khusus untuk ananda, mohon tidak dibagikan. Jazakumullahu khairan.`
+    : '';
+
+  // ── Pembayaran (hanya bila PEMBAYARAN_ONLINE_AKTIF) ──
   const [selectedStatus, setSelectedStatus] = useState<PaymentStatus>(reg.payment_status);
   const [updating, setUpdating] = useState(false);
   const [updateResult, setUpdateResult] = useState<{ ok: boolean; message: string } | null>(null);
@@ -116,14 +254,14 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, docu
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
           <div>
             <h1 className="text-xl font-semibold text-gray-800">{reg.nama_lengkap}</h1>
             <p className="text-sm text-gray-500 mt-0.5">ID: {reg.id}</p>
           </div>
           <Link
             href="/admin/pendaftaran"
-            className="text-sm text-emerald-600 hover:underline"
+            className="shrink-0 text-sm text-emerald-600 hover:underline"
           >
             ← Kembali ke Daftar
           </Link>
@@ -131,10 +269,136 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, docu
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* Registration details with photo */}
+        {/* Proses pendaftaran */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-base font-semibold text-gray-700 mb-4">Data Pendaftaran</h2>
-          
+          <h2 className="text-base font-semibold text-gray-700 mb-4">Proses Pendaftaran</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Tahapan</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <select
+                  value={tahapan}
+                  onChange={(e) => setTahapan(e.target.value as StatusPendaftaran)}
+                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+                  {STATUS_PENDAFTARAN.map((s) => (
+                    <option key={s.value} value={s.value}>
+                      {s.label}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleSaveTahapan}
+                  disabled={savingTahapan || tahapan === currentStatus}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  {savingTahapan ? 'Menyimpan...' : 'Simpan'}
+                </button>
+              </div>
+              <p className="text-xs text-gray-400 mt-2">Baru → Sudah Dihubungi → Ikut Tes → Diterima / Tidak Diterima</p>
+            </div>
+
+            <div>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Kontak Orang Tua / Wali</p>
+              <p className="text-sm text-gray-800">
+                {contact.nama ?? '-'} <span className="text-gray-500">({labelHubunganKontak(reg)})</span>
+              </p>
+              {contact.whatsapp ? (
+                <a
+                  href={linkWhatsApp(contact.whatsapp)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+                >
+                  💬 Chat WhatsApp {contact.whatsapp}
+                </a>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="mt-6 border-t border-gray-100 pt-5">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Link Lengkapi Data & Dokumen</p>
+              <DataBadge reg={reg} />
+              {reg.data_lengkap_at ? (
+                <span className="text-xs text-gray-400">dikirim {formatDate(reg.data_lengkap_at)}</span>
+              ) : null}
+            </div>
+
+            {linkLengkapi ? (
+              <>
+                <div className="flex flex-wrap items-center gap-2">
+                  <code className="flex-1 min-w-0 break-all rounded-lg bg-gray-50 border border-gray-200 px-3 py-2 text-xs text-gray-700">
+                    {linkLengkapi}
+                  </code>
+                  <button
+                    onClick={handleCopyLink}
+                    className="px-3 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    {linkCopied ? '✓ Disalin' : 'Salin'}
+                  </button>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  {contact.whatsapp && !reg.data_lengkap_at ? (
+                    <a
+                      href={linkWhatsApp(contact.whatsapp, pesanLink)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+                    >
+                      💬 Kirim Link via WhatsApp
+                    </a>
+                  ) : null}
+                  <button
+                    onClick={handleCreateLink}
+                    disabled={creatingLink}
+                    className="text-sm text-gray-500 underline hover:text-emerald-700 disabled:opacity-50"
+                  >
+                    {creatingLink ? 'Membuat...' : reg.data_lengkap_at ? 'Buka kembali untuk perbaikan' : 'Buat link baru'}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-gray-500 mb-3">
+                  Setelah menghubungi wali, buat link pribadi agar wali bisa melengkapi data dan mengunggah dokumen.
+                </p>
+                <button
+                  onClick={handleCreateLink}
+                  disabled={creatingLink}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  {creatingLink ? 'Membuat...' : 'Buat Link Lengkapi Data'}
+                </button>
+              </>
+            )}
+          </div>
+
+          {prosesResult && (
+            <p className={`mt-4 text-sm font-medium ${prosesResult.ok ? 'text-green-600' : 'text-red-600'}`}>
+              {prosesResult.message}
+            </p>
+          )}
+        </div>
+
+        {/* Data pendaftaran */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <h2 className="text-base font-semibold text-gray-700">{editing ? 'Edit Data Pendaftaran' : 'Data Pendaftaran'}</h2>
+            {!editing ? (
+              <button
+                onClick={() => setEditing(true)}
+                className="px-3 py-1.5 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                ✏️ Edit Data
+              </button>
+            ) : null}
+          </div>
+
+          {editing ? (
+            <EditDataForm reg={reg} onClose={() => setEditing(false)} />
+          ) : (
           <div className="flex flex-col md:flex-row gap-6">
             {/* Pas Foto 3x4 */}
             {pasFotoUrl && (
@@ -149,84 +413,64 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, docu
                 <p className="text-xs text-gray-400 text-center mt-2">Pas Foto 3x4</p>
               </div>
             )}
-            
-            {/* Data fields */}
+
             <dl className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+              <div className="sm:col-span-2">
+                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Formulir Awal</p>
+              </div>
               <Field label="Nama Lengkap" value={reg.nama_lengkap} />
+              <Field label="Jenis Kelamin" value={labelOpsi(JENIS_KELAMIN, reg.jenis_kelamin)} />
+              <Field label="Tanggal Lahir" value={formatTanggalLahir(reg.tanggal_lahir)} />
+              <Field label="Jenis Pendaftaran" value={labelOpsi(JENIS_PENDAFTARAN, reg.jenis_pendaftaran)} />
+              <Field label="Lulusan" value={labelOpsi(LULUSAN, reg.lulusan)} />
+              <Field label="Asal Sekolah" value={reg.asal_sekolah} />
+              <Field label="Kota / Kabupaten" value={reg.kota} />
+              <Field label="Tahu PTQ Amsa dari" value={reg.sumber_info} />
+              <Field label="Nama Orang Tua / Wali" value={contact.nama} />
+              <Field label="Hubungan" value={labelHubunganKontak(reg)} />
+              <Field label="No. WhatsApp" value={contact.whatsapp} />
+              <Field label="Email" value={contact.email} />
+              <Field label="Tanggal Daftar" value={formatDate(reg.created_at)} />
+
+              <Group>Data Lengkap {reg.data_lengkap_at ? '' : '— belum diisi wali'}</Group>
               <Field label="Nama Panggilan" value={reg.nama_panggilan} />
+              <Field label="Tempat Lahir" value={reg.tempat_lahir} />
               <Field label="NIK" value={reg.nik} />
               <Field label="NISN" value={reg.nisn} />
-              <Field label="Tempat Lahir" value={reg.tempat_lahir} />
-              <Field label="Tanggal Lahir" value={reg.tanggal_lahir} />
-              <Field label="Jenis Kelamin" value={reg.jenis_kelamin} />
-              <Field label="No. WhatsApp Santri" value={reg.no_whatsapp_santri} />
-              
-              {/* Status dalam keluarga */}
-              <div className="sm:col-span-2 border-t border-gray-100 pt-4 mt-2">
-                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Status dalam Keluarga</p>
-              </div>
-              <Field 
-                label="Anak Ke" 
-                value={reg.anak_ke && reg.total_saudara ? `Anak ke-${reg.anak_ke} dari ${reg.total_saudara} bersaudara` : '-'} 
+              <Field
+                label="Anak Ke"
+                value={reg.anak_ke && reg.total_saudara ? `Anak ke-${reg.anak_ke} dari ${reg.total_saudara} bersaudara` : null}
               />
               <Field label="Status Anak" value={reg.status_anak} />
-              
-              {/* Data Wali/Orang Tua */}
-              <div className="sm:col-span-2 border-t border-gray-100 pt-4 mt-2">
-                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Data Wali & Orang Tua</p>
-              </div>
-              <Field 
-                label="Hubungan Wali" 
-                value={reg.hubungan_wali === 'orang-tua-kandung' ? 'Orang Tua Kandung' : reg.hubungan_wali} 
-              />
-              
-              {reg.hubungan_wali === 'orang-tua-kandung' ? (
+              <Field label="No. WhatsApp Santri" value={reg.no_whatsapp_santri} />
+
+              <Group>Orang Tua / Wali</Group>
+              {isWali ? (
+                <>
+                  <Field label="Pekerjaan Wali" value={reg.pekerjaan_wali} />
+                  <Field label="Nama Ayah Kandung" value={reg.nama_ayah_kandung} />
+                  <Field label="Nama Ibu Kandung" value={reg.nama_ibu_kandung} />
+                </>
+              ) : (
                 <>
                   <Field label="Nama Ayah" value={reg.nama_ayah} />
                   <Field label="Nama Ibu" value={reg.nama_ibu} />
                   <Field label="Pekerjaan Ayah" value={reg.pekerjaan_ayah} />
                   <Field label="Pekerjaan Ibu" value={reg.pekerjaan_ibu} />
-                  <Field label="No. WhatsApp Ortu" value={reg.no_whatsapp_ortu} />
-                  <Field label="Relasi WhatsApp" value={reg.relasi_whatsapp} />
-                  <Field label="Email Orang Tua" value={reg.email_ortu} />
-                </>
-              ) : (
-                <>
-                  <Field label="Nama Wali" value={reg.nama_wali} />
-                  <Field label="Hubungan dengan Santri" value={reg.hubungan_dengan_santri} />
-                  <Field label="Pekerjaan Wali" value={reg.pekerjaan_wali} />
-                  <Field label="No. WhatsApp Wali" value={reg.no_whatsapp_wali} />
-                  <Field label="Email Wali" value={reg.email_wali} />
-                  <div className="sm:col-span-2 bg-blue-50 border border-blue-100 rounded-lg p-3 mt-2">
-                    <p className="text-xs font-medium text-blue-800 mb-2">Data Orang Tua Kandung</p>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Field label="Nama Ayah Kandung" value={reg.nama_ayah_kandung} />
-                      <Field label="Nama Ibu Kandung" value={reg.nama_ibu_kandung} />
-                    </div>
-                  </div>
                 </>
               )}
-              
               <Field label="Penghasilan per Bulan" value={reg.penghasilan_ortu} />
-              
-              {/* Data Pendidikan */}
-              <div className="sm:col-span-2 border-t border-gray-100 pt-4 mt-2">
-                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Data Pendidikan</p>
-              </div>
-              <Field label="Asal Sekolah" value={reg.asal_sekolah} />
-              <Field label="Alamat Sekolah" value={reg.alamat_sekolah} />
-              <Field label="Alamat Domisili" value={reg.alamat_domisili} />
+
+              <Group>Sekolah & Alamat</Group>
+              <Field label="Alamat Sekolah Asal" value={reg.alamat_sekolah} />
               <Field label="Provinsi" value={reg.provinsi} />
-              <Field label="Kota" value={reg.kota} />
-              
-              {/* Metadata */}
-              <div className="sm:col-span-2 border-t border-gray-100 pt-4 mt-2">
-                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Metadata</p>
+              <div className="sm:col-span-2">
+                <Field label="Alamat Lengkap" value={reg.alamat_domisili} />
               </div>
-              <Field label="Tanggal Daftar" value={formatDate(reg.created_at)} />
               <Field label="Terakhir Diperbarui" value={formatDate(reg.updated_at)} />
             </dl>
           </div>
+          )}
         </div>
 
         {/* Documents */}
@@ -234,7 +478,7 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, docu
           <h2 className="text-base font-semibold text-gray-700 mb-1">Dokumen Pendaftaran</h2>
           <p className="text-xs text-gray-400 mb-4">Link dokumen berlaku 1 jam. Muat ulang halaman bila sudah kadaluarsa.</p>
           {documents.length === 0 ? (
-            <p className="text-sm text-gray-400">Tidak ada dokumen.</p>
+            <p className="text-sm text-gray-400">Belum ada dokumen. Dokumen diunggah wali lewat link lengkapi data.</p>
           ) : (
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {documents.map((doc) => (
@@ -254,6 +498,55 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, docu
           )}
         </div>
 
+        {/* Riwayat perubahan */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-base font-semibold text-gray-700 mb-1">Riwayat Perubahan</h2>
+          <p className="text-xs text-gray-400 mb-4">Semua perubahan data oleh wali dan admin tercatat di sini.</p>
+          {!riwayatTersedia ? (
+            <p className="text-sm text-amber-700">Riwayat belum aktif. Jalankan SQL supabase/2026-11_log_pendaftaran.sql di Supabase.</p>
+          ) : riwayat.length === 0 ? (
+            <p className="text-sm text-gray-400">Belum ada riwayat.</p>
+          ) : (
+            <ol className="relative border-l border-gray-200 space-y-5 ml-2">
+              {riwayat.map((log) => (
+                <li key={log.id} className="ml-4">
+                  <div
+                    className={`absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-white ${
+                      log.oleh === 'admin' ? 'bg-blue-500' : 'bg-emerald-500'
+                    }`}
+                  />
+                  <p className="text-sm font-medium text-gray-800">
+                    <span
+                      className={`mr-2 rounded px-1.5 py-0.5 text-xs font-semibold ${
+                        log.oleh === 'admin' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'
+                      }`}
+                    >
+                      {OLEH_LABELS[log.oleh] ?? log.oleh}
+                    </span>
+                    {AKSI_LABELS[log.aksi] ?? log.aksi}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">{formatDate(log.created_at)}</p>
+                  {log.detail?.catatan ? <p className="text-xs text-gray-500 mt-1">{log.detail.catatan}</p> : null}
+                  {log.detail?.perubahan?.length ? (
+                    <ul className="mt-1.5 space-y-0.5 text-xs text-gray-600">
+                      {log.detail.perubahan.map((p, i) => (
+                        <li key={i}>
+                          <span className="font-medium">{p.kolom}:</span>{' '}
+                          <span className="text-gray-400 line-through">{p.dari ?? '(kosong)'}</span>
+                          {' → '}
+                          <span className="text-gray-800">{p.ke ?? '(kosong)'}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+
+        {PEMBAYARAN_ONLINE_AKTIF && (
+        <>
         {/* Payment info */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-base font-semibold text-gray-700 mb-4">Informasi Pembayaran</h2>
@@ -373,6 +666,8 @@ export default function AdminDetailClient({ registration: reg, paymentLogs, docu
             </ol>
           )}
         </div>
+        </>
+        )}
       </div>
     </div>
   );

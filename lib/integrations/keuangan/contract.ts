@@ -117,7 +117,7 @@ export type ExportRow = Pick<
   | 'order_id'
 >;
 
-// Label pilihan "Hubungan Wali" di form pendaftaran (components/RegistrationForm.tsx)
+// Label pilihan "Hubungan" di form pendaftaran (lib/psb/pilihan.ts)
 const HUBUNGAN_WALI_LABELS: Record<string, string> = {
   'ayah-tiri': 'Ayah Tiri',
   'ibu-tiri': 'Ibu Tiri',
@@ -164,16 +164,16 @@ export function toPsbApplicantV1(reg: ExportRow): PsbApplicantV1 {
     updated_at: reg.updated_at,
     student: {
       nama_lengkap: reg.nama_lengkap,
-      nama_panggilan: reg.nama_panggilan,
-      nisn: reg.nisn,
+      nama_panggilan: reg.nama_panggilan ?? '',
+      nisn: reg.nisn ?? '',
       jenis_kelamin: isPutri ? 'P' : 'L',
       santri_group: isPutri ? 'putri' : 'putra',
-      tempat_lahir: reg.tempat_lahir,
+      tempat_lahir: reg.tempat_lahir ?? '',
       tanggal_lahir: reg.tanggal_lahir,
       asal_sekolah: reg.asal_sekolah,
       kota_asal: reg.kota,
-      provinsi: reg.provinsi,
-      alamat_lengkap: reg.alamat_domisili,
+      provinsi: reg.provinsi ?? '',
+      alamat_lengkap: reg.alamat_domisili ?? '',
     },
     guardian: mapGuardian(reg),
     registration_fee: {

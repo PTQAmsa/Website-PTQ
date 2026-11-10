@@ -1,6 +1,14 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import { URL_FORMULIR_PENDAFTARAN } from '@/lib/config/psb';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Beasiswa Yatim & Dhuafa | PTQ Amsa001",
+  description: "Program beasiswa PTQ Amsa001 untuk santri yatim dan dhuafa: keringanan SPP 50% dan bebas biaya wakaf. Keringanan lain dapat dikonsultasikan.",
+  alternates: { canonical: '/beasiswa' },
+};
 
 export default function Beasiswa() {
   return (
@@ -67,9 +75,7 @@ export default function Beasiswa() {
             <p className="text-xl mb-6">Konsultasikan kebutuhan Anda dengan admin atau jadwalkan kunjungan ke pesantren</p>
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
               <a
-                href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
-                target="_blank"
-                rel="noopener noreferrer"
+                href={URL_FORMULIR_PENDAFTARAN}
                 className="bg-yellow-400 text-blue-900 px-8 py-4 rounded-full font-semibold text-lg hover:bg-yellow-300 transition"
               >
                 Daftar Santri Baru

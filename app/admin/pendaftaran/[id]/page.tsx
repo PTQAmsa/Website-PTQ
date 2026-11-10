@@ -1,8 +1,11 @@
 ﻿import Link from 'next/link';
+import { headers } from 'next/headers';
 import AdminDetailClient from './AdminDetailClient';
 import AdminLoginForm from '../../AdminLoginForm';
 import ServiceRoleWarning from '../../ServiceRoleWarning';
 import { isAdminAuthenticated } from '@/lib/admin-auth';
+import { urlLengkapi } from '@/lib/psb/lengkapi';
+import type { LogPendaftaran } from '@/lib/psb/log';
 import { getRegistrationDocuments } from '@/lib/storage/documents';
 import { getServiceRoleKeyStatus, getSupabaseAdmin } from '@/lib/supabase/server';
 import type { RegistrationRecord, PaymentLog } from '@/lib/types/registration';
@@ -49,14 +52,26 @@ export default async function AdminDetailPage({ params, searchParams }: PageProp
 
   const registration = reg as RegistrationRecord;
 
-  const [{ data: logs }, documents] = await Promise.all([
+  // Link dibuat dari host yang sedang dibuka admin (localhost saat uji coba)
+  const h = await headers();
+  const host = h.get('host');
+  const origin = host ? `${h.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')}://${host}` : undefined;
+  const linkLengkapi = registration.token_lengkapi ? urlLengkapi(registration.token_lengkapi, origin) : null;
+
+  const [{ data: logs }, { data: riwayat, error: riwayatError }, documents] = await Promise.all([
     supabase
       .from('payment_logs')
       .select('*')
       .eq('registration_id', id)
       .order('created_at', { ascending: false }),
+    supabase
+      .from('log_pendaftaran')
+      .select('*')
+      .eq('registration_id', id)
+      .order('created_at', { ascending: false }),
     getRegistrationDocuments(registration),
   ]);
+  if (riwayatError) console.error('[admin-detail] Riwayat error:', riwayatError.message);
 
   return (
     <>
@@ -65,6 +80,9 @@ export default async function AdminDetailPage({ params, searchParams }: PageProp
         registration={registration}
         paymentLogs={(logs ?? []) as PaymentLog[]}
         documents={documents}
+        linkLengkapi={linkLengkapi}
+        riwayat={(riwayat ?? []) as LogPendaftaran[]}
+        riwayatTersedia={!riwayatError}
       />
     </>
   );

@@ -10,6 +10,11 @@ import VideoSection from '@/components/VideoSection';
 import FAQPreview from '@/components/FAQPreview';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+};
 import BackToTop from '@/components/BackToTop';
 
 export default function Home() {

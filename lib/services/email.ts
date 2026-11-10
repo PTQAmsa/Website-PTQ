@@ -1,4 +1,4 @@
-import { BIAYA_PENDAFTARAN, formatRupiah } from '@/lib/config/psb';
+import { BIAYA_PENDAFTARAN, PEMBAYARAN_ONLINE_AKTIF, formatRupiah } from '@/lib/config/psb';
 import type { RegistrationRecord } from '@/lib/types/registration';
 
 // Google Apps Script URL — same service used by Tes Multiple Intelligence
@@ -62,7 +62,9 @@ export async function sendAdminRegistrationNotification(
       timeZone: 'Asia/Jakarta',
     }),
     admin_dashboard_url: adminDashboardUrl,
-    pesan: `Pendaftaran baru telah masuk dari ${data.nama_lengkap}. Silakan buka dashboard admin untuk membuat link pembayaran dan mengirimkannya ke orang tua.`,
+    pesan: PEMBAYARAN_ONLINE_AKTIF
+      ? `Pendaftaran baru telah masuk dari ${data.nama_lengkap}. Silakan buka dashboard admin untuk membuat link pembayaran dan mengirimkannya ke orang tua.`
+      : `Pendaftaran baru telah masuk dari ${data.nama_lengkap}. Silakan hubungi orang tua/wali melalui WhatsApp, lalu kirimkan link pelengkapan data & dokumen dari dashboard admin.`,
   });
 }
 
@@ -133,5 +135,50 @@ export async function sendPaymentLinkToParent(
     payment_link: paymentLink,
     jumlah_bayar: formattedAmount,
     pesan: `Berikut adalah link pembayaran biaya pendaftaran santri baru untuk ${data.nama_lengkap}. Silakan selesaikan pembayaran sebesar ${formattedAmount} melalui link berikut.`,
+  });
+}
+
+/**
+ * Memberi tahu admin bahwa wali sudah melengkapi data & dokumen (tahap 2).
+ * Butuh handler "admin_data_lengkap_notification" di Apps Script.
+ */
+export async function sendAdminDataLengkapNotification(data: {
+  id: string;
+  nama_lengkap: string;
+  whatsapp: string | null;
+  email: string | null;
+}): Promise<void> {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
+
+  await sendEmail({
+    type: 'admin_data_lengkap_notification',
+    to: ADMIN_EMAIL,
+    nama_santri: data.nama_lengkap,
+    no_whatsapp: data.whatsapp ?? '-',
+    email_wali: data.email ?? '-',
+    registration_id: data.id,
+    tanggal: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
+    admin_dashboard_url: `${siteUrl}/admin/pendaftaran/${data.id}`,
+  });
+}
+
+/**
+ * Konfirmasi ke orang tua/wali bahwa formulir singkat sudah diterima.
+ * Hanya terkirim bila wali mengisi email. Butuh handler
+ * "wali_registration_confirmation" di Apps Script.
+ */
+export async function sendWaliRegistrationConfirmation(data: {
+  to: string;
+  nama_wali: string;
+  nama_santri: string;
+  registration_id: string;
+}): Promise<void> {
+  await sendEmail({
+    type: 'wali_registration_confirmation',
+    to: data.to,
+    nama_wali: data.nama_wali,
+    nama_santri: data.nama_santri,
+    registration_id: data.registration_id,
+    tanggal_daftar: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
   });
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { URL_FORMULIR_PENDAFTARAN } from '@/lib/config/psb';
 
 type Mode = 'online' | 'offline';
 
@@ -10,15 +11,14 @@ const stepsOnline = [
     title: 'Daftar Online',
     description: (
       <>
-        Isi formulir pendaftaran online di{' '}
+        Isi{' '}
         <a
-          href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
-          target="_blank"
-          rel="noopener noreferrer"
+          href={URL_FORMULIR_PENDAFTARAN}
           className="text-blue-600 underline hover:text-blue-800 font-medium"
         >
-          Google Form PTQ Amsa
-        </a>
+          formulir pendaftaran online
+        </a>{' '}
+        singkat (±2 menit)
       </>
     ),
   },
@@ -29,8 +29,8 @@ const stepsOnline = [
   },
   {
     number: 3,
-    title: 'Verifikasi',
-    description: 'Tim kami akan memverifikasi data Anda',
+    title: 'Lengkapi Data',
+    description: 'Admin menghubungi via WhatsApp dan mengirim link untuk melengkapi data serta mengunggah dokumen',
   },
   {
     number: 4,
@@ -143,9 +143,7 @@ export default function AlurPendaftaran({ hideCTA = false }: { hideCTA?: boolean
         {!hideCTA && (
         <div className="mt-12 text-center">
           <a
-            href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
-            target="_blank"
-            rel="noopener noreferrer"
+            href={URL_FORMULIR_PENDAFTARAN}
             className="inline-block bg-blue-600 text-white px-10 py-3 rounded-full font-bold hover:bg-blue-700 transition shadow-md"
           >
             Daftar Sekarang →

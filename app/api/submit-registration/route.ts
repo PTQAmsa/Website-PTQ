@@ -1,285 +1,174 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { BIAYA_PENDAFTARAN } from '@/lib/config/psb';
-import { sendAdminRegistrationNotification } from '@/lib/services/email';
+import { catatLog } from '@/lib/psb/log';
+import {
+  BIAYA_PENDAFTARAN,
+  LABEL_AWAL_TAHUN_AJARAN,
+  USIA_MAX,
+  USIA_MIN,
+  hitungUsia,
+} from '@/lib/config/psb';
+import {
+  HUBUNGAN_KONTAK,
+  JENIS_KELAMIN,
+  JENIS_PENDAFTARAN,
+  LULUSAN,
+  POLA_EMAIL,
+  POLA_WHATSAPP,
+  SUMBER_INFO,
+  SUMBER_INFO_LAINNYA,
+  isOpsi,
+} from '@/lib/psb/pilihan';
+import { sendAdminRegistrationNotification, sendWaliRegistrationConfirmation } from '@/lib/services/email';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
 import { generateOrderId } from '@/lib/utils/order-id';
 import { createRateLimiter, getClientIP } from '@/lib/utils/rate-limit';
 
-// ── Rate limiting ────────────────────────────────────────────────────────────
+/**
+ * Pendaftaran tahap 1 (form singkat). Data lengkap & dokumen menyusul lewat
+ * /api/lengkapi-pendaftaran setelah admin mengirim link pribadi ke wali.
+ */
+
 // 5 requests per 10 minutes per IP
 const isRateLimited = createRateLimiter({ windowMs: 10 * 60 * 1000, max: 5 });
 
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-/**
- * File diunggah browser langsung ke bucket "dokumen-santri" di folder
- * pendaftaran/<registrationId>/. Tolak URL lain agar data tidak bisa diisi
- * link sembarang (phishing / pelacak) yang nanti dibuka admin.
- */
-function isOwnDocumentUrl(value: string, registrationId: string): boolean {
-  try {
-    const url = new URL(value);
-    const supabaseOrigin = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').origin;
-    return (
-      url.origin === supabaseOrigin &&
-      url.pathname.startsWith(
-        `/storage/v1/object/public/dokumen-santri/pendaftaran/${registrationId}/`
-      )
-    );
-  } catch {
-    return false;
-  }
+function bad(error: string, status = 400) {
+  return NextResponse.json({ success: false, error }, { status });
 }
 
-// ── Required text fields ─────────────────────────────────────────────────────
-const BASE_REQUIRED_FIELDS = [
-  'namaLengkap', 'namaPanggilan', 'nik', 'nisn', 'tempatLahir',
-  'tanggalLahir', 'jenisKelamin', 'anakKe', 'totalSaudara',
-  'statusAnak', 'hubunganWali', 'penghasilanOrtu',
-  'asalSekolah', 'alamatSekolah', 'alamatDomisili', 'provinsi', 'kota',
-] as const;
+/** Ambil teks dari body JSON: trim + batasi panjang; '' bila bukan string. */
+function text(body: Record<string, unknown>, key: string, maxLength = 150): string {
+  const value = body[key];
+  return typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
+}
 
-const ORANG_TUA_KANDUNG_FIELDS = [
-  'namaAyah', 'namaIbu', 'pekerjaanAyah', 'pekerjaanIbu',
-  'noWhatsappOrtu', 'relasiWhatsapp', 'emailOrtu',
-] as const;
-
-const WALI_FIELDS = [
-  'namaWali', 'hubunganDenganSantri', 'pekerjaanWali',
-  'noWhatsappWali', 'emailWali', 'namaAyahKandung', 'namaIbuKandung',
-] as const;
-
-// ── POST handler ─────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
-  // Rate limiting
-  const ip = getClientIP(req);
-  if (isRateLimited(ip)) {
-    return NextResponse.json(
-      { success: false, error: 'Terlalu banyak permintaan. Coba lagi dalam beberapa menit.' },
-      { status: 429 }
-    );
+  if (isRateLimited(getClientIP(req))) {
+    return bad('Terlalu banyak permintaan. Coba lagi dalam beberapa menit.', 429);
   }
 
-  let formData: FormData;
+  let body: Record<string, unknown>;
   try {
-    formData = await req.formData();
+    const parsed = await req.json();
+    if (!parsed || typeof parsed !== 'object') throw new Error();
+    body = parsed as Record<string, unknown>;
   } catch {
-    return NextResponse.json(
-      { success: false, error: 'Format request tidak valid.' },
-      { status: 400 }
-    );
+    return bad('Format request tidak valid.');
   }
 
-  // ── Validate required text fields ──────────────────────────────────────────
-  const fields: Record<string, string> = {};
-
-  for (const field of BASE_REQUIRED_FIELDS) {
-    const value = formData.get(field);
-    if (!value || typeof value !== 'string' || value.trim() === '') {
-      return NextResponse.json(
-        { success: false, error: `Field "${field}" wajib diisi.` },
-        { status: 400 }
-      );
-    }
-    fields[field] = value.trim();
+  // Bot pengisi semua kolom → pura-pura berhasil, jangan simpan
+  if (text(body, 'website')) {
+    return NextResponse.json({ success: true, registrationId: crypto.randomUUID(), studentName: '' });
   }
 
-  const hubunganWali = fields.hubunganWali;
+  const f = {
+    jenisPendaftaran: text(body, 'jenisPendaftaran'),
+    lulusan: text(body, 'lulusan'),
+    namaLengkap: text(body, 'namaLengkap', 100),
+    jenisKelamin: text(body, 'jenisKelamin'),
+    tanggalLahir: text(body, 'tanggalLahir', 10),
+    asalSekolah: text(body, 'asalSekolah'),
+    namaKontak: text(body, 'namaKontak', 100),
+    hubunganKontak: text(body, 'hubunganKontak'),
+    hubunganLainnya: text(body, 'hubunganLainnya', 100),
+    noWhatsapp: text(body, 'noWhatsapp', 15),
+    email: text(body, 'email', 100).toLowerCase(),
+    kota: text(body, 'kota', 100),
+    sumberInfo: text(body, 'sumberInfo'),
+    sumberInfoLainnya: text(body, 'sumberInfoLainnya'),
+  };
 
-  if (hubunganWali === 'orang-tua-kandung') {
-    for (const field of ORANG_TUA_KANDUNG_FIELDS) {
-      const value = formData.get(field);
-      if (!value || typeof value !== 'string' || value.trim() === '') {
-        return NextResponse.json(
-          { success: false, error: `Field "${field}" wajib diisi.` },
-          { status: 400 }
-        );
-      }
-      fields[field] = value.trim();
-    }
-  } else {
-    for (const field of WALI_FIELDS) {
-      const value = formData.get(field);
-      if (!value || typeof value !== 'string' || value.trim() === '') {
-        return NextResponse.json(
-          { success: false, error: `Field "${field}" wajib diisi.` },
-          { status: 400 }
-        );
-      }
-      fields[field] = value.trim();
-    }
+  if (!isOpsi(JENIS_PENDAFTARAN, f.jenisPendaftaran)) return bad('Pilih jenis pendaftaran.');
+  if (!isOpsi(LULUSAN, f.lulusan)) return bad('Pilih lulusan calon santri.');
+  if (f.namaLengkap.length < 2) return bad('Nama lengkap minimal 2 karakter.');
+  if (!isOpsi(JENIS_KELAMIN, f.jenisKelamin)) return bad('Pilih jenis kelamin.');
+  if (!f.asalSekolah) return bad('Asal sekolah wajib diisi.');
+  if (f.namaKontak.length < 2) return bad('Nama orang tua/wali wajib diisi.');
+  if (!isOpsi(HUBUNGAN_KONTAK, f.hubunganKontak)) return bad('Pilih hubungan dengan calon santri.');
+  if (f.hubunganKontak === 'lainnya' && !f.hubunganLainnya) return bad('Sebutkan hubungan dengan calon santri.');
+  if (!POLA_WHATSAPP.test(f.noWhatsapp)) return bad('Nomor WhatsApp tidak valid.');
+  if (f.email && !POLA_EMAIL.test(f.email)) return bad('Format email tidak valid.');
+  if (!f.kota) return bad('Kota/kabupaten wajib diisi.');
+  if (!isOpsi(SUMBER_INFO, f.sumberInfo)) return bad('Pilih dari mana Anda tahu PTQ Amsa.');
+  if (f.sumberInfo === SUMBER_INFO_LAINNYA && !f.sumberInfoLainnya) return bad('Sebutkan dari mana Anda tahu PTQ Amsa.');
+
+  const usia = hitungUsia(f.tanggalLahir);
+  if (usia === null) return bad('Tanggal lahir tidak valid.');
+  if (usia < USIA_MIN || usia > USIA_MAX) {
+    return bad(`Usia calon santri harus ${USIA_MIN}–${USIA_MAX} tahun pada awal tahun ajaran (${LABEL_AWAL_TAHUN_AJARAN}).`);
   }
 
-  // Optional noWhatsappSantri
-  const noWhatsappSantriValue = (() => {
-    const v = formData.get('noWhatsappSantri');
-    return v && typeof v === 'string' && v.trim() !== '' ? v.trim() : null;
-  })();
-
-  // Validations
-  if (!/^\d{16}$/.test(fields.nik)) {
-    return NextResponse.json({ success: false, error: 'NIK harus berjumlah 16 digit angka.' }, { status: 400 });
-  }
-  if (!/^\d{10}$/.test(fields.nisn)) {
-    return NextResponse.json({ success: false, error: 'NISN harus berjumlah 10 digit angka.' }, { status: 400 });
-  }
-  if (fields.namaLengkap.length < 2) {
-    return NextResponse.json({ success: false, error: 'Nama lengkap minimal 2 karakter.' }, { status: 400 });
-  }
-
-  const anakKe = parseInt(fields.anakKe);
-  const totalSaudara = parseInt(fields.totalSaudara);
-  if (isNaN(anakKe) || isNaN(totalSaudara) || anakKe < 1 || totalSaudara < 1) {
-    return NextResponse.json({ success: false, error: 'Anak ke dan total saudara harus angka minimal 1.' }, { status: 400 });
-  }
-  if (anakKe > totalSaudara) {
-    return NextResponse.json({ success: false, error: 'Anak ke tidak boleh lebih besar dari total saudara.' }, { status: 400 });
-  }
-
-  let emailValue: string;
-  let whatsappValue: string;
-
-  if (hubunganWali === 'orang-tua-kandung') {
-    emailValue = fields.emailOrtu.toLowerCase();
-    whatsappValue = fields.noWhatsappOrtu;
-    if (!/^\+?[0-9]{9,15}$/.test(whatsappValue)) {
-      return NextResponse.json({ success: false, error: 'Nomor WhatsApp orang tua tidak valid.' }, { status: 400 });
-    }
-  } else {
-    emailValue = fields.emailWali.toLowerCase();
-    whatsappValue = fields.noWhatsappWali;
-    if (!/^\+?[0-9]{9,15}$/.test(whatsappValue)) {
-      return NextResponse.json({ success: false, error: 'Nomor WhatsApp wali tidak valid.' }, { status: 400 });
-    }
-  }
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-    return NextResponse.json({ success: false, error: 'Format email tidak valid.' }, { status: 400 });
-  }
-
-  // ── Use registrationId from client (files already uploaded with this ID) ──
-  const registrationId = formData.get('registrationId');
-  if (typeof registrationId !== 'string' || !UUID_PATTERN.test(registrationId)) {
-    return NextResponse.json(
-      { success: false, error: 'ID pendaftaran tidak valid. Muat ulang halaman lalu coba lagi.' },
-      { status: 400 }
-    );
-  }
-
-  // ── Validate file URLs (files uploaded from client browser to Supabase) ───
-  const urlKk = formData.get('urlKk');
-  const urlAkta = formData.get('urlAkta');
-  const urlIjazah = formData.get('urlIjazah');
-  const urlKtpOrtu = formData.get('urlKtpOrtu');
-  const urlPasFoto = formData.get('urlPasFoto');
-  const urlSuratSehat = formData.get('urlSuratSehat');
-
-  for (const [label, url] of [
-    ['Kartu Keluarga', urlKk],
-    ['Akta Kelahiran', urlAkta],
-    ['Ijazah', urlIjazah],
-    ['KTP Orang Tua', urlKtpOrtu],
-    ['Pas Foto', urlPasFoto],
-  ]) {
-    if (!url || typeof url !== 'string' || !isOwnDocumentUrl(url, registrationId)) {
-      return NextResponse.json(
-        { success: false, error: `URL file ${label} tidak valid. Pastikan upload berhasil.` },
-        { status: 400 }
-      );
-    }
-  }
-
-  if (urlSuratSehat && (typeof urlSuratSehat !== 'string' || !isOwnDocumentUrl(urlSuratSehat, registrationId))) {
-    return NextResponse.json(
-      { success: false, error: 'URL file Surat Keterangan Sehat tidak valid. Pastikan upload berhasil.' },
-      { status: 400 }
-    );
-  }
-
+  const registrationId = crypto.randomUUID();
   const orderId = generateOrderId();
-
-  // ── Insert registration record ─────────────────────────────────────────────
-  const supabase = getSupabaseAdmin();
+  const email = f.email || null;
 
   const insertData: Record<string, unknown> = {
     id: registrationId,
-    nama_lengkap: fields.namaLengkap,
-    nama_panggilan: fields.namaPanggilan,
-    nik: fields.nik,
-    nisn: fields.nisn,
-    tempat_lahir: fields.tempatLahir,
-    tanggal_lahir: fields.tanggalLahir,
-    jenis_kelamin: fields.jenisKelamin,
-    no_whatsapp_santri: noWhatsappSantriValue,
-    anak_ke: anakKe,
-    total_saudara: totalSaudara,
-    status_anak: fields.statusAnak,
-    hubungan_wali: hubunganWali,
-    penghasilan_ortu: fields.penghasilanOrtu,
-    asal_sekolah: fields.asalSekolah,
-    alamat_sekolah: fields.alamatSekolah,
-    alamat_domisili: fields.alamatDomisili,
-    provinsi: fields.provinsi,
-    kota: fields.kota,
-    url_kk: urlKk,
-    url_akta: urlAkta,
-    url_ijazah: urlIjazah,
-    url_ktp_ortu: urlKtpOrtu,
-    url_pas_foto: urlPasFoto,
-    url_surat_sehat: typeof urlSuratSehat === 'string' && urlSuratSehat ? urlSuratSehat : null,
+    jenis_pendaftaran: f.jenisPendaftaran,
+    lulusan: f.lulusan,
+    nama_lengkap: f.namaLengkap,
+    jenis_kelamin: f.jenisKelamin,
+    tanggal_lahir: f.tanggalLahir,
+    asal_sekolah: f.asalSekolah,
+    kota: f.kota,
+    sumber_info:
+      f.sumberInfo === SUMBER_INFO_LAINNYA ? `${SUMBER_INFO_LAINNYA}: ${f.sumberInfoLainnya}` : f.sumberInfo,
+    status_pendaftaran: 'baru',
     payment_status: 'pending',
     payment_amount: BIAYA_PENDAFTARAN,
     order_id: orderId,
   };
 
-  if (hubunganWali === 'orang-tua-kandung') {
-    insertData.nama_ayah = fields.namaAyah;
-    insertData.nama_ibu = fields.namaIbu;
-    insertData.pekerjaan_ayah = fields.pekerjaanAyah;
-    insertData.pekerjaan_ibu = fields.pekerjaanIbu;
-    insertData.no_whatsapp_ortu = fields.noWhatsappOrtu;
-    insertData.relasi_whatsapp = fields.relasiWhatsapp;
-    insertData.email_ortu = emailValue;
+  // Kontak utama dipetakan ke kolom orang tua kandung atau wali
+  if (f.hubunganKontak === 'ayah-kandung' || f.hubunganKontak === 'ibu-kandung') {
+    const isIbu = f.hubunganKontak === 'ibu-kandung';
+    Object.assign(insertData, {
+      hubungan_wali: 'orang-tua-kandung',
+      relasi_whatsapp: isIbu ? 'Ibu' : 'Ayah',
+      [isIbu ? 'nama_ibu' : 'nama_ayah']: f.namaKontak,
+      no_whatsapp_ortu: f.noWhatsapp,
+      email_ortu: email,
+    });
   } else {
-    insertData.nama_wali = fields.namaWali;
-    insertData.hubungan_dengan_santri = fields.hubunganDenganSantri;
-    insertData.pekerjaan_wali = fields.pekerjaanWali;
-    insertData.no_whatsapp_wali = fields.noWhatsappWali;
-    insertData.email_wali = emailValue;
-    insertData.nama_ayah_kandung = fields.namaAyahKandung;
-    insertData.nama_ibu_kandung = fields.namaIbuKandung;
+    Object.assign(insertData, {
+      hubungan_wali: f.hubunganKontak,
+      hubungan_dengan_santri: f.hubunganKontak === 'lainnya' ? f.hubunganLainnya : null,
+      nama_wali: f.namaKontak,
+      no_whatsapp_wali: f.noWhatsapp,
+      email_wali: email,
+    });
   }
 
-  const { error: insertError } = await supabase.from('pendaftaran_santri').insert([insertData]);
+  const { error: insertError } = await getSupabaseAdmin().from('pendaftaran_santri').insert([insertData]);
 
   if (insertError) {
     // Detail error database hanya untuk log server, jangan dikirim ke publik
     console.error('[submit-registration] Insert error:', insertError);
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Gagal menyimpan data pendaftaran. Silakan coba lagi atau hubungi admin via WhatsApp.',
-      },
-      { status: 500 }
-    );
+    return bad('Gagal menyimpan data pendaftaran. Silakan coba lagi atau hubungi admin via WhatsApp.', 500);
   }
 
-  // ── Send admin notification ────────────────────────────────────────────────
+  await catatLog({ registrationId, aksi: 'pendaftaran_dibuat', oleh: 'wali', detail: { catatan: 'Formulir awal dikirim lewat website.' } });
+
   await sendAdminRegistrationNotification({
     id: registrationId,
-    nama_lengkap: fields.namaLengkap,
-    no_whatsapp_ortu: whatsappValue,
-    email_ortu: emailValue,
+    nama_lengkap: f.namaLengkap,
+    no_whatsapp_ortu: f.noWhatsapp,
+    email_ortu: email,
     order_id: orderId,
     created_at: new Date().toISOString(),
   }).catch((err) => console.error('[submit-registration] Admin notification failed:', err));
 
+  if (email) {
+    await sendWaliRegistrationConfirmation({
+      to: email,
+      nama_wali: f.namaKontak,
+      nama_santri: f.namaLengkap,
+      registration_id: registrationId,
+    }).catch((err) => console.error('[submit-registration] Wali confirmation failed:', err));
+  }
+
   return NextResponse.json({
     success: true,
     registrationId,
-    orderId,
-    studentName: fields.namaLengkap,
-    parentPhone: whatsappValue,
-    parentEmail: emailValue,
+    studentName: f.namaLengkap,
   });
 }

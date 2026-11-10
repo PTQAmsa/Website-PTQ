@@ -1,6 +1,13 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Visi & Misi | PTQ Amsa001",
+  description: "Visi dan misi Pesantren Tadabbur Al-Qur'an Amsa001 Gadog dalam membentuk generasi Qur'ani yang berakhlak mulia.",
+  alternates: { canonical: '/visi-misi' },
+};
 
 export default function VisiMisi() {
   return (

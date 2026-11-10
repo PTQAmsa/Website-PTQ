@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { URL_FORMULIR_PENDAFTARAN } from '@/lib/config/psb';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -60,7 +61,7 @@ export default function Navbar() {
               }`}>
                 Pendaftaran <svg className="inline-block w-2.5 h-2.5 ml-1" fill="currentColor" viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg>
               </button>
-              <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
                 <a href="/pendaftaran-santri-baru" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg">
                   Pendaftaran Santri Baru
                 </a>
@@ -74,7 +75,7 @@ export default function Navbar() {
               }`}>
                 Tentang PTQ Amsa <svg className="inline-block w-2.5 h-2.5 ml-1" fill="currentColor" viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg>
               </button>
-              <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
                 <a href="/tentang-pesantren" target="_blank" className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-t-lg">
                   Tentang Pesantren
                 </a>
@@ -110,9 +111,7 @@ export default function Navbar() {
               FAQ
             </a>
             <a
-              href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={URL_FORMULIR_PENDAFTARAN}
               className={`ml-2 px-5 py-2 rounded-full font-semibold transition whitespace-nowrap flex-shrink-0 ${
                 isScrolled
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
@@ -126,6 +125,8 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
+            aria-expanded={isMobileMenuOpen}
             className={`md:hidden p-2 rounded-lg ${
               isScrolled ? 'text-gray-700' : 'text-white'
             }`}
@@ -204,9 +205,7 @@ export default function Navbar() {
               FAQ
             </a>
             <a
-              href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={URL_FORMULIR_PENDAFTARAN}
               onClick={() => setIsMobileMenuOpen(false)}
               className="block w-full text-center bg-blue-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-700"
             >

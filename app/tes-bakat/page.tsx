@@ -6,6 +6,7 @@ import MITest from '../../components/MITest';
 export const metadata: Metadata = {
   title: 'Tes Bakat Multiple Intelligence',
   description: 'Temukan kecerdasan dominan anakmu melalui Tes Multiple Intelligence PTQ Amsa001. Gratis dan hanya butuh 2 menit!',
+  alternates: { canonical: '/tes-bakat' },
 };
 
 export default function TesBakatPage() {

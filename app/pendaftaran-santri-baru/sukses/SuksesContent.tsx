@@ -2,6 +2,24 @@
 
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { BIAYA_PENDAFTARAN, PEMBAYARAN_ONLINE_AKTIF, formatRupiah } from "@/lib/config/psb";
+
+const BIAYA = formatRupiah(BIAYA_PENDAFTARAN);
+
+const NEXT_STEPS = PEMBAYARAN_ONLINE_AKTIF
+  ? [
+      "Simpan ID Pendaftaran Anda sebagai referensi",
+      "Tunggu link pembayaran dari admin (maks. 24 jam) via WhatsApp/email",
+      `Selesaikan pembayaran biaya pendaftaran ${BIAYA} melalui link tersebut`,
+      "Setelah pembayaran berhasil, Anda akan menerima konfirmasi",
+    ]
+  : [
+      "Simpan ID Pendaftaran Anda sebagai referensi",
+      "Admin menghubungi Anda melalui WhatsApp dan mengirimkan link pribadi untuk melengkapi data",
+      "Lengkapi data dan unggah dokumen (KK, akta kelahiran, ijazah/SKL, KTP orang tua/wali, pas foto) melalui link tersebut",
+      "Calon santri mengikuti tes masuk sesuai jadwal yang disampaikan admin",
+      "Hasil seleksi diumumkan oleh admin",
+    ];
 
 export default function SuksesContent() {
   const searchParams = useSearchParams();
@@ -32,7 +50,7 @@ export default function SuksesContent() {
         <h2 className="text-2xl font-bold text-blue-900 mb-3">Pendaftaran Anda Telah Diterima</h2>
         <p className="text-gray-600">
           Terima kasih telah mendaftar. Tim kami akan menghubungi Anda melalui WhatsApp atau email
-          dalam waktu 24 jam dengan informasi pembayaran lebih lanjut.
+          untuk tahap selanjutnya.
         </p>
       </div>
     );
@@ -76,6 +94,7 @@ export default function SuksesContent() {
       </div>
 
       {/* Payment info box */}
+      {PEMBAYARAN_ONLINE_AKTIF && (
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6">
         <div className="flex gap-3">
           <div className="flex-shrink-0 mt-0.5">
@@ -85,22 +104,18 @@ export default function SuksesContent() {
           </div>
           <p className="text-amber-800 text-sm leading-relaxed">
             <span className="font-semibold">Informasi Pembayaran:</span> Link pembayaran sebesar{" "}
-            <span className="font-semibold">Rp 200.000</span> akan dikirimkan oleh admin ke nomor
+            <span className="font-semibold">{BIAYA}</span> akan dikirimkan oleh admin ke nomor
             WhatsApp/email Anda dalam <span className="font-semibold">24 jam</span>.
           </p>
         </div>
       </div>
+      )}
 
       {/* Steps */}
       <div>
         <h3 className="text-base font-semibold text-blue-900 mb-4">Langkah Selanjutnya</h3>
         <ol className="space-y-3">
-          {[
-            "Simpan ID Pendaftaran Anda sebagai referensi",
-            "Tunggu link pembayaran dari admin (maks. 24 jam) via WhatsApp/email",
-            "Selesaikan pembayaran biaya pendaftaran Rp 200.000 melalui link tersebut",
-            "Setelah pembayaran berhasil, Anda akan menerima konfirmasi",
-          ].map((step, i) => (
+          {NEXT_STEPS.map((step, i) => (
             <li key={i} className="flex items-start gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center justify-center mt-0.5">
                 {i + 1}

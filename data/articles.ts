@@ -887,7 +887,7 @@ export const articles: Article[] = [
       <h3>Alur Pendaftaran</h3>
       <p>Pendaftaran bisa dilakukan secara online maupun dengan datang langsung ke pesantren.</p>
       <ol>
-        <li><strong>Isi formulir pendaftaran</strong>, secara online melalui <a href="https://forms.gle/L7GqaZdfDdZ2cxBK6" target="_blank" rel="noopener noreferrer">formulir pendaftaran PTQ Amsa001</a> atau dengan datang langsung ke pesantren.</li>
+        <li><strong>Isi formulir pendaftaran</strong>, secara online melalui <a href="/pendaftaran-santri-baru#formulir">formulir pendaftaran PTQ Amsa001</a> atau dengan datang langsung ke pesantren.</li>
         <li><strong>Bayar biaya formulir pendaftaran</strong> sebesar Rp 200.000 sebagai bukti pendaftaran.</li>
         <li><strong>Verifikasi data</strong> oleh tim pendaftaran.</li>
         <li><strong>Ikuti tes masuk</strong>, yang bisa dilaksanakan secara online maupun offline.</li>

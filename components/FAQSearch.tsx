@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import faqData from '../data/faqData';
 import FAQAccordion from './FAQAccordion';
 
-const DAFTAR_LINK = "https://forms.gle/L7GqaZdfDdZ2cxBK6";
+import { URL_FORMULIR_PENDAFTARAN as DAFTAR_LINK } from '@/lib/config/psb';
 
 const LOKASI_ANSWER = (
   <>
@@ -112,7 +112,7 @@ function renderAnswer(q: string, a: string): React.ReactNode {
     return (
       <>
         Daftar bisa melalui online (bisa{' '}
-        <a href={DAFTAR_LINK} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800 font-medium">
+        <a href={DAFTAR_LINK} className="text-blue-600 underline hover:text-blue-800 font-medium">
           klik disini
         </a>
         ) ataupun datang langsung ke pesantren (offline). Bisa hubungi admin via WhatsApp untuk jadwalkan waktu survei lokasi.

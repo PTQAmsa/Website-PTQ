@@ -2,7 +2,15 @@
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import AlurPendaftaran from '@/components/AlurPendaftaran';
+import RegistrationForm from '@/components/RegistrationForm';
 import Image from 'next/image';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Pendaftaran Santri Baru 2027/2028 | PTQ Amsa001",
+  description: "Daftar santri baru PTQ Amsa001 Gadog, Bogor, tahun ajaran 2027/2028: syarat, dokumen, alur pendaftaran, dan formulir pendaftaran online.",
+  alternates: { canonical: '/pendaftaran-santri-baru' },
+};
 
 export default function PendaftaranSantriBaru() {
   return (
@@ -59,6 +67,12 @@ export default function PendaftaranSantriBaru() {
       <section className="py-9 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+          {/* Formulir Pendaftaran Online */}
+          <div id="formulir" className="mb-16 scroll-mt-20">
+            <h2 className="text-3xl font-bold text-blue-900 mb-8 text-center">Formulir Pendaftaran Online</h2>
+            <RegistrationForm />
+          </div>
+
           {/* Persyaratan Pendaftaran */}
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-blue-900 mb-8 text-center">Persyaratan Pendaftaran</h2>
@@ -70,6 +84,7 @@ export default function PendaftaranSantriBaru() {
                     'Fotocopy Kartu Keluarga (KK)',
                     'Fotocopy Akta Kelahiran',
                     'Fotocopy Ijazah/SKHUN terakhir',
+                    'Fotocopy KTP Orang Tua/Wali',
                     'Pas foto 3x4',
                     'Surat keterangan sehat dari dokter (opsional)',
                   ].map((item) => (
@@ -98,18 +113,6 @@ export default function PendaftaranSantriBaru() {
                 </ul>
               </div>
             </div>
-          </div>
-
-          {/* Tombol Daftar Sekarang — di atas Alur Pendaftaran */}
-          <div className="mb-10 text-center">
-            <a
-              href="https://forms.gle/L7GqaZdfDdZ2cxBK6"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-blue-600 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition shadow-md"
-            >
-              Daftar Sekarang →
-            </a>
           </div>
 
           {/* Alur Pendaftaran — tanpa CTA button di bawah */}

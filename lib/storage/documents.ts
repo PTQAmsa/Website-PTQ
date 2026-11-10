@@ -35,6 +35,26 @@ export function getDocumentPath(storedUrl: string | null | undefined): string | 
 }
 
 /**
+ * File diunggah browser langsung ke bucket di folder pendaftaran/<registrationId>/.
+ * Tolak URL lain agar data tidak bisa diisi link sembarang (phishing /
+ * pelacak) yang nanti dibuka admin.
+ */
+export function isOwnDocumentUrl(value: unknown, registrationId: string): value is string {
+  if (typeof value !== 'string') return false;
+  try {
+    const url = new URL(value);
+    const supabaseOrigin = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').origin;
+    return (
+      url.origin === supabaseOrigin &&
+      url.pathname.startsWith(`${PUBLIC_PATH_MARKER}pendaftaran/${registrationId}/`) &&
+      !url.pathname.includes('..')
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
  * URL dokumen untuk admin. Memakai signed URL (berlaku 1 jam) supaya bucket
  * bisa dijadikan private. Bila pembuatan signed URL gagal, jatuh ke URL
  * tersimpan — tetap berfungsi selama bucket masih public.

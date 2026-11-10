@@ -20,7 +20,7 @@ export default async function AdminPendaftaranPage({ searchParams }: PageProps) 
   const { data, error } = await getSupabaseAdmin()
     .from('pendaftaran_santri')
     .select(
-      'id, nama_lengkap, hubungan_wali, no_whatsapp_ortu, email_ortu, no_whatsapp_wali, email_wali, payment_status, payment_link, order_id, created_at'
+      'id, nama_lengkap, jenis_pendaftaran, lulusan, kota, sumber_info, hubungan_wali, relasi_whatsapp, nama_ayah, nama_ibu, nama_wali, no_whatsapp_ortu, email_ortu, no_whatsapp_wali, email_wali, status_pendaftaran, token_lengkapi, data_lengkap_at, payment_status, payment_link, order_id, created_at'
     )
     .order('created_at', { ascending: false });
 

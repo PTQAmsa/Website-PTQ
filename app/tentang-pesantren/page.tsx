@@ -2,6 +2,13 @@ import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Tentang Pesantren | PTQ Amsa001",
+  description: "Profil Pesantren Tadabbur Al-Qur'an Amsa001 Gadog, Bogor: sejarah, program tahfidz dan tadabbur, serta pendidikan setara SMP–SMA.",
+  alternates: { canonical: '/tentang-pesantren' },
+};
 
 export default function TentangPesantren() {
   return (
