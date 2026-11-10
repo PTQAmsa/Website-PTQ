@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { URL_FORMULIR_PENDAFTARAN } from '@/lib/config/psb';
 import type { Metadata } from 'next';
+import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
 
 export const metadata: Metadata = {
   title: "Beasiswa Yatim & Dhuafa | PTQ Amsa001",
@@ -14,6 +15,7 @@ export default function Beasiswa() {
   return (
     <main className="min-h-screen">
       <Navbar />
+      <BreadcrumbJsonLd items={[{ name: 'Beasiswa', path: '/beasiswa' }]} />
       <BackToTop />
       
       {/* Hero Section */}

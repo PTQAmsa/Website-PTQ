@@ -8,15 +8,16 @@ const BIAYA = formatRupiah(BIAYA_PENDAFTARAN);
 
 const NEXT_STEPS = PEMBAYARAN_ONLINE_AKTIF
   ? [
-      "Simpan ID Pendaftaran Anda sebagai referensi",
+      "Simpan Nomor Pendaftaran Anda sebagai referensi",
       "Tunggu link pembayaran dari admin (maks. 24 jam) via WhatsApp/email",
       `Selesaikan pembayaran biaya pendaftaran ${BIAYA} melalui link tersebut`,
       "Setelah pembayaran berhasil, Anda akan menerima konfirmasi",
     ]
   : [
-      "Simpan ID Pendaftaran Anda sebagai referensi",
+      "Simpan Nomor Pendaftaran Anda sebagai referensi",
       "Admin menghubungi Anda melalui WhatsApp dan mengirimkan link pribadi untuk melengkapi data",
       "Lengkapi data dan unggah dokumen (KK, akta kelahiran, ijazah/SKL, KTP orang tua/wali, pas foto) melalui link tersebut",
+      `Membayar biaya pendaftaran ${BIAYA}, bisa online (transfer) atau offline (langsung di pesantren). Info pembayaran dari admin via WhatsApp`,
       "Calon santri mengikuti tes masuk sesuai jadwal yang disampaikan admin",
       "Hasil seleksi diumumkan oleh admin",
     ];
@@ -66,12 +67,12 @@ export default function SuksesContent() {
 
       {/* Registration ID */}
       <div className="mb-6">
-        <p className="text-gray-500 text-sm uppercase tracking-wide font-medium mb-2">ID Pendaftaran</p>
+        <p className="text-gray-500 text-sm uppercase tracking-wide font-medium mb-2">Nomor Pendaftaran</p>
         <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
           <code className="font-mono text-blue-900 font-semibold text-lg flex-1 break-all">{id}</code>
           <button
             onClick={handleCopy}
-            title="Salin ID Pendaftaran"
+            title="Salin Nomor Pendaftaran"
             className="flex-shrink-0 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-3 py-1.5 rounded-lg transition-colors"
           >
             {copied ? (

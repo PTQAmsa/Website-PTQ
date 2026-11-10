@@ -25,7 +25,7 @@ const stepsOnline = [
   {
     number: 2,
     title: 'Biaya Pendaftaran',
-    description: 'Membayar formulir pendaftaran sejumlah Rp 200.000 sebagai bukti pendaftaran',
+    description: 'Membayar formulir pendaftaran Rp 200.000, bisa secara online (transfer) maupun offline (langsung di pesantren). Info pembayaran dikirim admin via WhatsApp',
   },
   {
     number: 3,
@@ -66,7 +66,7 @@ const stepsOffline = [
   {
     number: 2,
     title: 'Biaya Pendaftaran',
-    description: 'Membayar formulir pendaftaran sejumlah Rp 200.000 sebagai bukti pendaftaran',
+    description: 'Membayar formulir pendaftaran Rp 200.000, bisa secara online (transfer) maupun offline (langsung di pesantren). Info pembayaran dikirim admin via WhatsApp',
   },
   {
     number: 3,
@@ -91,7 +91,7 @@ export default function AlurPendaftaran({ hideCTA = false }: { hideCTA?: boolean
   const steps = mode === 'online' ? stepsOnline : stepsOffline;
 
   return (
-    <section className="py-16 px-4 bg-gray-50">
+    <section className="py-10 px-4 bg-gray-50">
       <div className="max-w-5xl mx-auto">
         <h2 className="text-3xl font-bold text-blue-900 mb-4 text-center">Alur Pendaftaran</h2>
         {/* Toggle */}
@@ -141,7 +141,7 @@ export default function AlurPendaftaran({ hideCTA = false }: { hideCTA?: boolean
         </div>
 
         {!hideCTA && (
-        <div className="mt-12 text-center">
+        <div className="mt-8 text-center">
           <a
             href={URL_FORMULIR_PENDAFTARAN}
             className="inline-block bg-blue-600 text-white px-10 py-3 rounded-full font-bold hover:bg-blue-700 transition shadow-md"

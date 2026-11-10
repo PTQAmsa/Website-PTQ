@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -132,7 +133,7 @@ export default function SuksesPage() {
 
       {/* Back to home */}
       <div className="py-8 bg-gray-50 text-center">
-        <a
+        <Link
           href="/"
           className="inline-flex items-center gap-2 text-blue-700 hover:text-blue-900 font-semibold transition-colors"
         >
@@ -140,7 +141,7 @@ export default function SuksesPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           Kembali ke Beranda
-        </a>
+        </Link>
       </div>
 
       <Footer />

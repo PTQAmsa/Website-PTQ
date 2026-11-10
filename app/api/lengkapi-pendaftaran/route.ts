@@ -175,6 +175,7 @@ export async function POST(req: NextRequest) {
   const contact = getRegistrantContact(row as Parameters<typeof getRegistrantContact>[0]);
   await sendAdminDataLengkapNotification({
     id: row.id,
+    no_pendaftaran: row.no_pendaftaran,
     nama_lengkap: row.nama_lengkap ?? '',
     whatsapp: contact.whatsapp,
     email: contact.email,

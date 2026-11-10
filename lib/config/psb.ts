@@ -15,9 +15,8 @@ export const PEMBAYARAN_ONLINE_AKTIF = false;
 
 /**
  * Batas usia calon santri, dihitung pada awal tahun ajaran — bukan saat
- * mendaftar. Syarat resmi 12–15 tahun; form sengaja lebih longgar (11–15)
- * supaya anak yang selisih beberapa bulan tetap bisa mendaftar dan
- * diputuskan admin.
+ * mendaftar. Syarat tertulis di website juga 11–15 tahun
+ * (dulu 12–15, dilonggarkan Nov 2026).
  */
 export const USIA_MIN = 11;
 export const USIA_MAX = 15;

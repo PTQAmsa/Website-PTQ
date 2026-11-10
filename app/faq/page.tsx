@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import FAQSearch from '../../components/FAQSearch';
+import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
 
 export const metadata: Metadata = {
-  title: 'FAQ - Pertanyaan yang Sering Diajukan',
+  title: 'Tanya Jawab Seputar Pesantren (FAQ) | PTQ Amsa001',
   description: 'Temukan jawaban atas pertanyaan umum seputar PTQ Amsa001 — kurikulum, fasilitas, pendaftaran, biaya, dan lainnya.',
   alternates: { canonical: '/faq' },
 };
@@ -13,6 +14,7 @@ export default function FAQPage() {
   return (
     <>
       <Navbar />
+      <BreadcrumbJsonLd items={[{ name: 'FAQ', path: '/faq' }]} />
       <main className="min-h-screen bg-gray-50">
         {/* Header biru */}
         <section className="bg-gradient-to-br from-blue-800 to-blue-900 pt-32 pb-16 px-4 text-white text-center">

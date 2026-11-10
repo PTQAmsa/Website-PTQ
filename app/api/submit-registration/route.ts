@@ -77,6 +77,7 @@ export async function POST(req: NextRequest) {
     sumberInfoLainnya: text(body, 'sumberInfoLainnya'),
   };
 
+  if (body.setujuPrivasi !== true) return bad('Mohon setujui pemberitahuan privasi.');
   if (!isOpsi(JENIS_PENDAFTARAN, f.jenisPendaftaran)) return bad('Pilih jenis pendaftaran.');
   if (!isOpsi(LULUSAN, f.lulusan)) return bad('Pilih lulusan calon santri.');
   if (f.namaLengkap.length < 2) return bad('Nama lengkap minimal 2 karakter.');
@@ -138,7 +139,8 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const { error: insertError } = await getSupabaseAdmin().from('pendaftaran_santri').insert([insertData]);
+  const supabase = getSupabaseAdmin();
+  const { error: insertError } = await supabase.from('pendaftaran_santri').insert([insertData]);
 
   if (insertError) {
     // Detail error database hanya untuk log server, jangan dikirim ke publik
@@ -146,7 +148,15 @@ export async function POST(req: NextRequest) {
     return bad('Gagal menyimpan data pendaftaran. Silakan coba lagi atau hubungi admin via WhatsApp.', 500);
   }
 
-  await catatLog({ registrationId, aksi: 'pendaftaran_dibuat', oleh: 'wali', detail: { catatan: 'Formulir awal dikirim lewat website.' } });
+  // Nomor pendaftaran (PSB27-001) dibuat database; bila belum tersedia pakai uuid
+  const { data: nomor } = await supabase
+    .from('pendaftaran_santri')
+    .select('no_pendaftaran')
+    .eq('id', registrationId)
+    .maybeSingle();
+  const noPendaftaran: string = nomor?.no_pendaftaran ?? registrationId;
+
+  await catatLog({ registrationId, aksi: 'pendaftaran_dibuat', oleh: 'wali', detail: { catatan: 'Formulir awal dikirim lewat website. Wali menyetujui pemberitahuan privasi.' } });
 
   await sendAdminRegistrationNotification({
     id: registrationId,
@@ -155,6 +165,7 @@ export async function POST(req: NextRequest) {
     email_ortu: email,
     order_id: orderId,
     created_at: new Date().toISOString(),
+    no_pendaftaran: noPendaftaran,
   }).catch((err) => console.error('[submit-registration] Admin notification failed:', err));
 
   if (email) {
@@ -162,13 +173,13 @@ export async function POST(req: NextRequest) {
       to: email,
       nama_wali: f.namaKontak,
       nama_santri: f.namaLengkap,
-      registration_id: registrationId,
+      registration_id: noPendaftaran,
     }).catch((err) => console.error('[submit-registration] Wali confirmation failed:', err));
   }
 
   return NextResponse.json({
     success: true,
-    registrationId,
+    registrationId: noPendaftaran,
     studentName: f.namaLengkap,
   });
 }

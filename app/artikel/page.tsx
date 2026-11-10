@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { formatArticleDate, getPublishedArticles } from '@/lib/articles';
 import { SITE_URL } from '@/lib/site';
+import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
 
 // Artikel terjadwal muncul tanpa deploy ulang (lihat lib/articles.ts)
 export const revalidate = 3600;
@@ -23,6 +24,7 @@ export default function Artikel() {
   return (
     <main className="min-h-screen">
       <Navbar />
+      <BreadcrumbJsonLd items={[{ name: 'Artikel', path: '/artikel' }]} />
       <BackToTop />
       
       {/* Hero Section */}

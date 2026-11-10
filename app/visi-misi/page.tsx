@@ -2,6 +2,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import type { Metadata } from 'next';
+import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
 
 export const metadata: Metadata = {
   title: "Visi & Misi | PTQ Amsa001",
@@ -13,6 +14,7 @@ export default function VisiMisi() {
   return (
     <main className="min-h-screen">
       <Navbar />
+      <BreadcrumbJsonLd items={[{ name: 'Visi & Misi', path: '/visi-misi' }]} />
       <BackToTop />
       
       {/* Hero Section */}

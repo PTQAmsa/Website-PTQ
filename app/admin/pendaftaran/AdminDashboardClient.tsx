@@ -8,6 +8,7 @@ import {
   JENIS_PENDAFTARAN,
   LULUSAN,
   STATUS_PENDAFTARAN,
+  labelMetodeBayar,
   labelOpsi,
   linkWhatsApp,
   statusInfo,
@@ -71,7 +72,9 @@ export default function AdminDashboardClient({ registrations }: Props) {
   const filtered = registrations.filter(
     (r) =>
       (filter === 'semua' || statusInfo(r.status_pendaftaran).value === filter) &&
-      (!keyword || r.nama_lengkap.toLowerCase().includes(keyword))
+      (!keyword ||
+        r.nama_lengkap.toLowerCase().includes(keyword) ||
+        (r.no_pendaftaran ?? '').toLowerCase().includes(keyword))
   );
 
   const countByStatus = (status: StatusPendaftaran) =>
@@ -136,6 +139,13 @@ export default function AdminDashboardClient({ registrations }: Props) {
           </p>
         </div>
         <div className="flex items-center gap-5">
+          {/* Unduh semua pendaftar sebagai file Excel */}
+          <a
+            href="/api/admin/export-pendaftaran"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+          >
+            ⬇️ Unduh Excel
+          </a>
           <Link href="/admin/artikel" className="text-sm text-gray-500 hover:text-emerald-700 transition-colors">
             Artikel
           </Link>
@@ -167,7 +177,7 @@ export default function AdminDashboardClient({ registrations }: Props) {
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari nama santri…"
+            placeholder="Cari nama / no. pendaftaran…"
             className="ml-auto w-full sm:w-56 rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
         </div>
@@ -183,9 +193,7 @@ export default function AdminDashboardClient({ registrations }: Props) {
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Orang Tua / Wali</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Tahapan</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Data Lengkap</th>
-                  {PEMBAYARAN_ONLINE_AKTIF && (
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Pembayaran</th>
-                  )}
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Pembayaran</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Tanggal Daftar</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Aksi</th>
                 </tr>
@@ -193,7 +201,7 @@ export default function AdminDashboardClient({ registrations }: Props) {
               <tbody className="divide-y divide-gray-100">
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={PEMBAYARAN_ONLINE_AKTIF ? 8 : 7} className="text-center py-10 text-gray-400">
+                    <td colSpan={8} className="text-center py-10 text-gray-400">
                       Tidak ada data.
                     </td>
                   </tr>
@@ -216,6 +224,7 @@ export default function AdminDashboardClient({ registrations }: Props) {
                         </Link>
                         <p className="text-xs text-gray-500 mt-0.5">
                           {[
+                            reg.no_pendaftaran,
                             reg.jenis_pendaftaran && labelOpsi(JENIS_PENDAFTARAN, reg.jenis_pendaftaran),
                             reg.lulusan && `Lulusan ${labelOpsi(LULUSAN, reg.lulusan)}`,
                             reg.kota,
@@ -246,15 +255,22 @@ export default function AdminDashboardClient({ registrations }: Props) {
                       <td className="px-4 py-3">
                         <DataBadge reg={reg} />
                       </td>
-                      {PEMBAYARAN_ONLINE_AKTIF && (
-                        <td className="px-4 py-3">
+                      <td className="px-4 py-3">
+                        {PEMBAYARAN_ONLINE_AKTIF || reg.payment_status === 'paid' ? (
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${PAYMENT_BADGE[reg.payment_status]}`}
                           >
                             {PAYMENT_LABELS[reg.payment_status]}
                           </span>
-                        </td>
-                      )}
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            Belum bayar
+                          </span>
+                        )}
+                        {reg.payment_status === 'paid' && reg.payment_method ? (
+                          <p className="mt-1 text-xs text-gray-500">{labelMetodeBayar(reg.payment_method)}</p>
+                        ) : null}
+                      </td>
                       <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
                         {formatDate(reg.created_at)}
                       </td>

@@ -13,6 +13,7 @@ export type PaymentLogAction =
 // membuka link pelengkapan data dari admin.
 export interface RegistrationRecord {
   id: string;
+  no_pendaftaran?: string | null; // mis. PSB27-001, untuk ditampilkan ke wali
   // ── Tahap 1: form singkat ──
   jenis_pendaftaran?: string | null; // 'baru' | 'pindahan'
   lulusan?: string | null; // 'SD/MI' | 'SMP/MTs'

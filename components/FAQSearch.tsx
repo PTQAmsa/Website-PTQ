@@ -37,7 +37,7 @@ const SYARAT_PENDAFTARAN_ANSWER = (
   <>
     Syarat Pendaftaran:
     <ul className="list-none mt-2 mb-2 space-y-1">
-      <li>✓ Muslim/muslimah, berusia 12 - 15 tahun</li>
+      <li>✓ Muslim/muslimah, berusia 11 - 15 tahun</li>
       <li>✓ Berijazah SD/MI atau SMP/MTs</li>
       <li>✓ Mampu membaca Al-Qur&apos;an dengan baik dan benar</li>
       <li>✓ Latar belakang pribadi, keluarga dan sosial yang baik</li>
@@ -65,7 +65,7 @@ const BIAYA_PENDAFTARAN_ANSWER = (
     <table className="w-full text-sm mb-4">
       <tbody>
         <tr className="border-b border-gray-100">
-          <td className="py-1.5">1. Biaya Pendaftaran</td>
+          <td className="py-1.5">1. Biaya Pendaftaran <span className="text-gray-500 font-normal">(bayar online/transfer atau langsung di pesantren)</span></td>
           <td className="py-1.5 text-right font-semibold">Rp 200.000,-</td>
         </tr>
         <tr className="border-b border-gray-100">

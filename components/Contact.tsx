@@ -115,7 +115,7 @@ export default function Contact() {
                 </div>
               </a>
               <a 
-                href="https://www.facebook.com/profile.php?id=61588216673281&locale=id_ID" 
+                href="https://www.facebook.com/profile.php?id=61595199511907" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-start gap-4 hover:opacity-80 transition"

@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import type { Metadata } from 'next';
+import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
 
 export const metadata: Metadata = {
   title: "Majelis Kyai | PTQ Amsa001",
@@ -14,6 +15,7 @@ export default function MajelisKyai() {
   return (
     <main className="min-h-screen">
       <Navbar />
+      <BreadcrumbJsonLd items={[{ name: 'Majelis Kyai', path: '/majelis-kyai' }]} />
       <BackToTop />
       
       {/* Hero Section */}

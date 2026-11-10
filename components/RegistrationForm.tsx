@@ -14,6 +14,7 @@ import {
   SUMBER_INFO_LAINNYA,
 } from "@/lib/psb/pilihan";
 import { Input, RadioCards, Row, SectionTitle, Select } from "@/components/psb/FormFields";
+import { PrivasiLink } from "@/components/psb/Privasi";
 
 /**
  * Pendaftaran tahap 1: form singkat tanpa dokumen. Data lengkap & dokumen
@@ -58,6 +59,7 @@ const INITIAL: FormState = {
 
 export default function RegistrationForm() {
   const [form, setForm] = useState<FormState>(INITIAL);
+  const [setujuPrivasi, setSetujuPrivasi] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -89,6 +91,7 @@ export default function RegistrationForm() {
     }
     if (!POLA_WHATSAPP.test(form.noWhatsapp)) return "Nomor WhatsApp tidak valid. Gunakan angka, contoh: 08123456789";
     if (form.email.trim() && !POLA_EMAIL.test(form.email.trim())) return "Format email tidak valid.";
+    if (!setujuPrivasi) return "Mohon centang persetujuan pemberitahuan privasi.";
     return null;
   };
 
@@ -104,7 +107,7 @@ export default function RegistrationForm() {
       const response = await fetch("/api/submit-registration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, setujuPrivasi }),
       });
       const result = (await response.json().catch(() => ({}))) as {
         success?: boolean;
@@ -179,8 +182,20 @@ export default function RegistrationForm() {
           <input type="text" name="website" value={form.website} onChange={handleChange} tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
         </div>
 
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          Setelah formulir terkirim, admin akan menghubungi Anda melalui WhatsApp dan mengirimkan link untuk melengkapi data serta dokumen.
+        {/* Hanya kotak centang yang bisa diklik (teks bukan <label>) supaya persetujuan disengaja */}
+        <div className="mt-6 flex items-start gap-3 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            required
+            checked={setujuPrivasi}
+            onChange={(e) => setSetujuPrivasi(e.target.checked)}
+            aria-label="Saya setuju dengan Pemberitahuan Privasi"
+            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-emerald-600"
+          />
+          <p>
+            Saya setuju data yang saya isi digunakan untuk proses penerimaan santri sesuai <PrivasiLink />.
+            <span className="ml-0.5 text-red-500">*</span>
+          </p>
         </div>
 
         <button

@@ -7,15 +7,19 @@ import WhatsAppFloat from '../components/WhatsAppFloat';
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
+// Deskripsi beranda di hasil Google (±155 karakter)
+const DESKRIPSI =
+  "Pesantren putra-putri di Gadog, Bogor, untuk lulusan SD dan SMP. Santri menghafal sekaligus memahami Al-Qur'an, dengan ijazah Mu'adalah yang diakui Kemenag.";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.ptqamsa.id"),
   title: "PTQ Amsa001 | Pesantren Tadabbur Al-Qur'an Terbaik di Bogor",
-  description: "Mencetak generasi Qur'ani di Bogor. Program tahfidz dan tadabbur Al-Qur'an intensif di Pesantren Amsa001.",
+  description: DESKRIPSI,
   keywords: ["pesantren bogor", "tahfidz quran bogor", "ptq amsa001", "tadabbur alquran", "pondok pesantren bogor", "pesantren terbaik bogor"],
   authors: [{ name: "PTQ Amsa001" }],
   openGraph: {
     title: "PTQ Amsa001 - Pesantren Tadabbur Al-Qur'an",
-    description: "Mencetak generasi Qur'ani.",
+    description: DESKRIPSI,
     // Tanpa url di sini: halaman lain tidak ikut mengaku sebagai beranda saat dibagikan
     siteName: "PTQ Amsa001",
     images: [
@@ -32,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "PTQ Amsa001 - Pesantren Tadabbur Al-Qur'an",
-    description: "Pusat pembelajaran Al-Qur'an di Bogor.",
+    description: DESKRIPSI,
     images: ["https://www.ptqamsa.id/og-image.jpg"],
   },
   robots: {
@@ -68,28 +72,35 @@ export default function RootLayout({
               "url": "https://www.ptqamsa.id",
               "logo": "https://www.ptqamsa.id/Logo-color.png",
               "image": "https://www.ptqamsa.id/hero-bg-1.jpg",
-              "description": "Pesantren tahfidz dan tadabbur Al-Qur'an di Bogor yang mencetak generasi Qur'ani dengan program intensif",
+              "description": "Pesantren tahfidz dan tadabbur Al-Qur'an putra-putri di Gadog, Megamendung, Bogor, dengan kurikulum Mu'adalah setara SMP–SMA",
+              "telephone": "+62-856-9225-3516",
+              "email": "info@ptqamsa.id",
               "address": {
                 "@type": "PostalAddress",
-                "streetAddress": "Gadog",
-                "addressLocality": "Bogor",
+                "streetAddress": "Jl. Cikopo Selatan, Gg. Yulias, Kampung Sukabirus, Desa Gadog",
+                "addressLocality": "Megamendung, Kabupaten Bogor",
                 "addressRegion": "Jawa Barat",
                 "postalCode": "16770",
                 "addressCountry": "ID"
               },
+              // Sama dengan titik peta Google Maps di bagian Kontak
               "geo": {
                 "@type": "GeoCoordinates",
-                "latitude": "-6.6667",
-                "longitude": "106.9500"
+                "latitude": -6.6629298,
+                "longitude": 106.8781296
               },
+              "hasMap": "https://maps.app.goo.gl/1H7EXzVznGXvpLG7A",
               "contactPoint": {
                 "@type": "ContactPoint",
                 "contactType": "Admissions",
+                "telephone": "+62-856-9225-3516",
+                "email": "info@ptqamsa.id",
                 "availableLanguage": ["Indonesian", "Arabic", "English"]
               },
               "sameAs": [
                 "https://www.instagram.com/ptqamsa001",
-                "https://www.youtube.com/@pesantrentadabburalquranamsa"
+                "https://www.youtube.com/@pesantrentadabburalquranamsa",
+                "https://www.facebook.com/profile.php?id=61595199511907"
               ],
               "foundingDate": "2001",
               "founder": {

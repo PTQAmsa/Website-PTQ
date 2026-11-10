@@ -14,7 +14,8 @@ export type AksiLog =
   | 'data_diedit'
   | 'tahapan_diubah'
   | 'link_dibuat'
-  | 'link_dibuka_kembali';
+  | 'link_dibuka_kembali'
+  | 'pembayaran_dicatat';
 
 export type Perubahan = { kolom: string; dari: string | null; ke: string | null };
 

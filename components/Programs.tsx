@@ -72,7 +72,7 @@ export default function Programs() {
   ];
 
   return (
-    <section id="programs" className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white">
+    <section id="programs" className="py-12 px-4 bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-4 text-blue-800">
           Program Pendidikan

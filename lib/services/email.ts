@@ -44,6 +44,7 @@ export async function sendAdminRegistrationNotification(
     | 'email_ortu'
     | 'order_id'
     | 'created_at'
+    | 'no_pendaftaran'
   >
 ): Promise<void> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
@@ -56,7 +57,7 @@ export async function sendAdminRegistrationNotification(
     nama_santri: data.nama_lengkap,
     no_whatsapp_ortu: data.no_whatsapp_ortu,
     email_ortu: data.email_ortu ?? '-',
-    registration_id: data.id,
+    registration_id: data.no_pendaftaran ?? data.id,
     order_id: data.order_id ?? '-',
     tanggal_daftar: new Date(data.created_at).toLocaleString('id-ID', {
       timeZone: 'Asia/Jakarta',
@@ -144,6 +145,7 @@ export async function sendPaymentLinkToParent(
  */
 export async function sendAdminDataLengkapNotification(data: {
   id: string;
+  no_pendaftaran?: string | null;
   nama_lengkap: string;
   whatsapp: string | null;
   email: string | null;
@@ -156,7 +158,7 @@ export async function sendAdminDataLengkapNotification(data: {
     nama_santri: data.nama_lengkap,
     no_whatsapp: data.whatsapp ?? '-',
     email_wali: data.email ?? '-',
-    registration_id: data.id,
+    registration_id: data.no_pendaftaran ?? data.id,
     tanggal: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
     admin_dashboard_url: `${siteUrl}/admin/pendaftaran/${data.id}`,
   });

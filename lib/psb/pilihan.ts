@@ -126,3 +126,16 @@ export function linkWhatsApp(nomor: string, pesan?: string): string {
   const base = `https://wa.me/${nomorWaInternasional(nomor)}`;
   return pesan ? `${base}?text=${encodeURIComponent(pesan)}` : base;
 }
+
+// ── Pembayaran biaya pendaftaran (dicatat manual oleh admin) ─────────────────
+
+export const METODE_BAYAR: Opsi[] = [
+  { value: 'online', label: 'Online (transfer)' },
+  { value: 'offline', label: 'Offline (tunai di pesantren)' },
+];
+
+/** Label metode bayar; nilai lain (mis. dari Midtrans) ditampilkan apa adanya. */
+export function labelMetodeBayar(value: string | null | undefined): string | null {
+  if (!value) return null;
+  return METODE_BAYAR.find((m) => m.value === value)?.label ?? value;
+}

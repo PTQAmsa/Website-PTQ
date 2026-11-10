@@ -54,13 +54,15 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE0YzMuMzEgMCA2LTIuNjkgNi02cy0yLjY5LTYtNi02LTYgMi42OS02IDYgMi42OSA2IDYgNnptMC00YzEuMSAwIDItLjkgMi0ycy0uOS0yLTItMi0yIC45LTIgMiAuOSAyIDIgMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20"></div>
       
       <div className="relative z-10 text-center text-white px-4 max-w-5xl mx-auto">
-        <h1 className="text-3xl md:text-7xl mb-4 opacity-95 font-bold drop-shadow-md">
-          Penerimaan Santri Baru</h1>
-        <h1 className="text-3xl md:text-5xl mb-8 opacity-95 font-semibold drop-shadow-md">
-          (Putra - Putri)
+        <h1 className="mb-4 opacity-95 font-bold drop-shadow-md">
+          <span className="block text-3xl md:text-7xl">Penerimaan Santri Baru</span>
+          <span className="mt-2 block text-xl md:text-4xl font-semibold">Pesantren Tadabbur Al-Qur&apos;an Amsa001</span>
         </h1>
+        <p className="text-3xl md:text-5xl mb-8 opacity-95 font-semibold drop-shadow-md">
+          (Putra - Putri)
+        </p>
         <p className="text-xl md:text-3xl mb-2 text-yellow-400 drop-shadow-lg">
-          Muadalah Mu'allimien (SMP-SMA Sederajat)
+          Muadalah Mu&apos;allimien (SMP-SMA Sederajat)
         </p>
         <p className="text-xl md:text-4xl mb-8 opacity-90 max-w-3xl mx-auto drop-shadow-md font-semibold">
           Tahun Ajaran 2027-2028 M / 1448-1449 H

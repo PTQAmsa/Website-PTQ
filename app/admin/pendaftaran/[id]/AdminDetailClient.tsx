@@ -8,8 +8,10 @@ import {
   JENIS_KELAMIN,
   JENIS_PENDAFTARAN,
   LULUSAN,
+  METODE_BAYAR,
   STATUS_PENDAFTARAN,
   labelHubunganKontak,
+  labelMetodeBayar,
   labelOpsi,
   linkWhatsApp,
   statusInfo,
@@ -42,6 +44,7 @@ const AKSI_LABELS: Record<string, string> = {
   tahapan_diubah: 'Mengubah tahapan',
   link_dibuat: 'Membuat link lengkapi data',
   link_dibuka_kembali: 'Membuka kembali form untuk perbaikan',
+  pembayaran_dicatat: 'Mencatat pembayaran',
 };
 
 const OLEH_LABELS: Record<string, string> = { admin: 'Admin', wali: 'Wali', sistem: 'Sistem' };
@@ -199,7 +202,28 @@ export default function AdminDetailClient({
       `Link ini khusus untuk ananda, mohon tidak dibagikan. Jazakumullahu khairan.`
     : '';
 
-  // ── Pembayaran (hanya bila PEMBAYARAN_ONLINE_AKTIF) ──
+  // ── Pembayaran manual: online (transfer) / offline (tunai) ──
+  const sudahLunas = reg.payment_status === 'paid';
+  const [metodeBayar, setMetodeBayar] = useState(reg.payment_method ?? '');
+  const [savingBayar, setSavingBayar] = useState(false);
+  const [bayarResult, setBayarResult] = useState<{ ok: boolean; message: string } | null>(null);
+
+  async function handleSimpanBayar(lunas: boolean) {
+    if (!lunas && !window.confirm(`Batalkan status lunas untuk ${reg.nama_lengkap}?`)) return;
+    setSavingBayar(true);
+    setBayarResult(null);
+    try {
+      if (!(await callAdminApi('/api/admin/pembayaran', 'PATCH', { registrationId: reg.id, lunas, metode: metodeBayar }))) return;
+      setBayarResult({ ok: true, message: lunas ? 'Pembayaran dicatat lunas.' : 'Status lunas dibatalkan.' });
+      router.refresh();
+    } catch (err) {
+      setBayarResult({ ok: false, message: err instanceof Error ? err.message : 'Terjadi kesalahan' });
+    } finally {
+      setSavingBayar(false);
+    }
+  }
+
+  // ── Pembayaran Midtrans (hanya bila PEMBAYARAN_ONLINE_AKTIF) ──
   const [selectedStatus, setSelectedStatus] = useState<PaymentStatus>(reg.payment_status);
   const [updating, setUpdating] = useState(false);
   const [updateResult, setUpdateResult] = useState<{ ok: boolean; message: string } | null>(null);
@@ -257,7 +281,10 @@ export default function AdminDetailClient({
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
           <div>
             <h1 className="text-xl font-semibold text-gray-800">{reg.nama_lengkap}</h1>
-            <p className="text-sm text-gray-500 mt-0.5">ID: {reg.id}</p>
+            <p className="text-sm text-gray-500 mt-0.5">
+              {reg.no_pendaftaran ? <span className="font-semibold text-gray-700">{reg.no_pendaftaran}</span> : null}
+              <span className="ml-2 text-xs text-gray-400">ID: {reg.id}</span>
+            </p>
           </div>
           <Link
             href="/admin/pendaftaran"
@@ -495,6 +522,63 @@ export default function AdminDetailClient({
                 </li>
               ))}
             </ul>
+          )}
+        </div>
+
+        {/* Pembayaran biaya pendaftaran */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex flex-wrap items-center gap-2 mb-1">
+            <h2 className="text-base font-semibold text-gray-700">Pembayaran Biaya Pendaftaran</h2>
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                sudahLunas ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+              }`}
+            >
+              {sudahLunas ? 'Lunas' : 'Belum bayar'}
+            </span>
+          </div>
+          <p className="text-xs text-gray-400 mb-4">
+            {formatRupiah(BIAYA_PENDAFTARAN)} — bisa dibayar online (transfer) atau offline (tunai di pesantren).
+          </p>
+          {sudahLunas ? (
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-700">
+              <span>Metode: <strong>{labelMetodeBayar(reg.payment_method) ?? '-'}</strong></span>
+              <span>Dicatat: {formatDate(reg.payment_date)}</span>
+              <button
+                onClick={() => handleSimpanBayar(false)}
+                disabled={savingBayar}
+                className="text-sm text-gray-500 underline hover:text-red-600 disabled:opacity-50"
+              >
+                Batalkan lunas
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                value={metodeBayar}
+                onChange={(e) => setMetodeBayar(e.target.value)}
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                <option value="">Pilih metode pembayaran</option>
+                {METODE_BAYAR.map((m) => (
+                  <option key={m.value} value={m.value}>
+                    {m.label}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => handleSimpanBayar(true)}
+                disabled={savingBayar || !metodeBayar}
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                {savingBayar ? 'Menyimpan...' : 'Tandai Lunas'}
+              </button>
+            </div>
+          )}
+          {bayarResult && (
+            <p className={`mt-3 text-sm font-medium ${bayarResult.ok ? 'text-green-600' : 'text-red-600'}`}>
+              {bayarResult.message}
+            </p>
           )}
         </div>
 

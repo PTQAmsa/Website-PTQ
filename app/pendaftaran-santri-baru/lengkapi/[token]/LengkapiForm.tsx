@@ -12,6 +12,7 @@ import {
   labelOpsi,
 } from "@/lib/psb/pilihan";
 import { Input, ReadOnlyField, Row, SectionTitle, Select, TextArea } from "@/components/psb/FormFields";
+import { PrivasiLink } from "@/components/psb/Privasi";
 import type { RegistrationRecord } from "@/lib/types/registration";
 
 type DokumenKey = "kk" | "akta" | "ijazah" | "ktpOrtu" | "pasFoto" | "suratSehat";
@@ -380,10 +381,14 @@ export default function LengkapiForm({ token, data }: { token: string; data: Dat
           ))}
         </div>
 
+        <p className="mt-8 text-sm text-gray-600">
+          Data dan dokumen yang Anda kirim dilindungi sesuai <PrivasiLink />.
+        </p>
+
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-8 w-full rounded-lg bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
+          className="mt-6 w-full rounded-lg bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
         >
           {isSubmitting ? "Mengunggah & Mengirim..." : "Kirim Data Lengkap"}
         </button>

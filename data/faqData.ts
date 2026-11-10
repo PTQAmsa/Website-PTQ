@@ -169,7 +169,7 @@ const faqData: FaqCategory[] = [
     questions: [
       {
         q: "Apakah ada usia minimal untuk masuk?",
-        a: "Usia minimal adalah 12 tahun (setara kelas 6 SD atau baru lulus SD) untuk lulusan SMP.",
+        a: "Usia calon santri 11–15 tahun pada awal tahun ajaran (Juli), untuk lulusan SD/MI maupun SMP/MTs.",
       },
       {
         q: "Apakah ada batasan asal daerah?",

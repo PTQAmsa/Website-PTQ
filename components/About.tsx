@@ -24,7 +24,7 @@ export default function About() {
   }, [images.length]);
 
   return (
-    <section id="about" className="py-20 px-4 bg-white">
+    <section id="about" className="py-12 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-4 text-blue-800">
           Profil Singkat

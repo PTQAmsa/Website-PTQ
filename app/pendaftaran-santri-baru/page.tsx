@@ -5,6 +5,7 @@ import AlurPendaftaran from '@/components/AlurPendaftaran';
 import RegistrationForm from '@/components/RegistrationForm';
 import Image from 'next/image';
 import type { Metadata } from 'next';
+import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
 
 export const metadata: Metadata = {
   title: "Pendaftaran Santri Baru 2027/2028 | PTQ Amsa001",
@@ -16,6 +17,7 @@ export default function PendaftaranSantriBaru() {
   return (
     <main className="min-h-screen">
       <Navbar />
+      <BreadcrumbJsonLd items={[{ name: 'Pendaftaran Santri Baru', path: '/pendaftaran-santri-baru' }]} />
       <BackToTop />
 
       {/* Hero Banner Section */}
@@ -73,6 +75,11 @@ export default function PendaftaranSantriBaru() {
             <RegistrationForm />
           </div>
 
+          {/* Alur Pendaftaran — tanpa CTA button di bawah */}
+          <div className="mb-16 -mx-4 sm:-mx-6 lg:-mx-8">
+            <AlurPendaftaran hideCTA={true} />
+          </div>
+
           {/* Persyaratan Pendaftaran */}
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-blue-900 mb-8 text-center">Persyaratan Pendaftaran</h2>
@@ -99,7 +106,7 @@ export default function PendaftaranSantriBaru() {
                 <h3 className="text-xl font-semibold text-blue-900 mb-4">Syarat Pendaftaran:</h3>
                 <ul className="space-y-3">
                   {[
-                    'Muslim/muslimah, berusia 12 - 15 tahun',
+                    'Muslim/muslimah, berusia 11 - 15 tahun',
                     'Berijazah SD/MI atau SMP/MTs',
                     'Mampu membaca Al-Qur\'an dengan baik dan benar',
                     'Latar belakang pribadi, keluarga dan sosial yang baik',
@@ -113,11 +120,6 @@ export default function PendaftaranSantriBaru() {
                 </ul>
               </div>
             </div>
-          </div>
-
-          {/* Alur Pendaftaran — tanpa CTA button di bawah */}
-          <div className="mb-16 -mx-4 sm:-mx-6 lg:-mx-8">
-            <AlurPendaftaran hideCTA={true} />
           </div>
 
           {/* Butuh Bantuan */}

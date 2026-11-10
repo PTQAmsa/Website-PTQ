@@ -1,7 +1,7 @@
 import Image from 'next/image';
 export default function PSBBanner() {
   return (
-    <section className="py-12 px-4 bg-white">
+    <section className="pt-12 pb-6 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
         <a 
           href="/pendaftaran-santri-baru"

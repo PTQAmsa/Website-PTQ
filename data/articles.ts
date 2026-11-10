@@ -624,7 +624,7 @@ export const articles: Article[] = [
       <p>Nabi Ibrahim tidak hanya melepas, tetapi juga mendoakan. Begitu pula orang tua santri: mengantar anak ke tempat ilmu, lalu menitipkannya kepada Allah dalam setiap doa.</p>
 
       <h3>Usia Santri Baru di PTQ Amsa001</h3>
-      <p>PTQ Amsa001 menerima calon santri putra dan putri berusia 12–15 tahun, lulusan SD/MI atau SMP/MTs, yang mampu membaca Al-Qur'an dengan baik dan benar. Saat seleksi, calon santri juga mengikuti tes <em>Multiple Intelligence</em> (MI) untuk mengenali bakat dan gaya belajarnya, sehingga pendampingan di pesantren bisa lebih tepat. Santri baru didampingi secara intensif oleh musyrif/musyrifah dan kakak kelas selama masa adaptasi.</p>
+      <p>PTQ Amsa001 menerima calon santri putra dan putri berusia 11–15 tahun, lulusan SD/MI atau SMP/MTs, yang mampu membaca Al-Qur'an dengan baik dan benar. Saat seleksi, calon santri juga mengikuti tes <em>Multiple Intelligence</em> (MI) untuk mengenali bakat dan gaya belajarnya, sehingga pendampingan di pesantren bisa lebih tepat. Santri baru didampingi secara intensif oleh musyrif/musyrifah dan kakak kelas selama masa adaptasi.</p>
 
       <p>Masih ragu apakah ananda sudah siap? Ayah dan Bunda dipersilakan berkunjung dan berkonsultasi langsung dengan kami. Persyaratan lengkap ada di halaman <a href="/pendaftaran-santri-baru">Pendaftaran Santri Baru</a>.</p>
 
@@ -868,7 +868,7 @@ export const articles: Article[] = [
 
       <h3>Syarat Pendaftaran</h3>
       <ul>
-        <li>Muslim/muslimah, berusia 12–15 tahun</li>
+        <li>Muslim/muslimah, berusia 11–15 tahun</li>
         <li>Berijazah SD/MI atau SMP/MTs</li>
         <li>Mampu membaca Al-Qur'an dengan baik dan benar</li>
         <li>Memiliki latar belakang pribadi, keluarga, dan sosial yang baik</li>
@@ -888,7 +888,7 @@ export const articles: Article[] = [
       <p>Pendaftaran bisa dilakukan secara online maupun dengan datang langsung ke pesantren.</p>
       <ol>
         <li><strong>Isi formulir pendaftaran</strong>, secara online melalui <a href="/pendaftaran-santri-baru#formulir">formulir pendaftaran PTQ Amsa001</a> atau dengan datang langsung ke pesantren.</li>
-        <li><strong>Bayar biaya formulir pendaftaran</strong> sebesar Rp 200.000 sebagai bukti pendaftaran.</li>
+        <li><strong>Bayar biaya formulir pendaftaran</strong> sebesar Rp 200.000, bisa secara online (transfer) maupun offline (langsung di pesantren). Info pembayaran dikirim admin melalui WhatsApp.</li>
         <li><strong>Verifikasi data</strong> oleh tim pendaftaran.</li>
         <li><strong>Ikuti tes masuk</strong>, yang bisa dilaksanakan secara online maupun offline.</li>
         <li><strong>Santri diterima</strong> dan bersiap memulai kehidupan di pesantren.</li>
@@ -1237,5 +1237,271 @@ export const articles: Article[] = [
     publishedAt: '2026-12-28',
     category: 'Pendidikan',
     tags: ['kisah teladan', 'tahfidz', 'adab menuntut ilmu', 'pendidikan islam']
+  },
+  {
+    id: '19',
+    title: 'Gelombang 1 Dibuka: Mengapa Sebaiknya Daftar Lebih Awal',
+    slug: 'daftar-pesantren-lebih-awal-gelombang-1',
+    excerpt: 'Akhir tahun adalah musim orang tua mencari pesantren. Ini alasan mendaftar di gelombang pertama membuat persiapan anak dan keluarga jauh lebih tenang.',
+    content: `
+      <p>Bulan Desember biasanya ramai dengan pembagian rapor semester. Di grup WhatsApp orang tua, pertanyaan yang sama mulai sering muncul: <em>"Anaknya nanti lanjut ke mana?"</em> Bagi keluarga yang anaknya duduk di kelas 6 SD atau kelas 9 SMP, akhir tahun memang saatnya mulai serius memikirkan sekolah berikutnya.</p>
+
+      <p>Tahun ajaran baru memang baru dimulai bulan Juli. Namun sebagian besar pesantren sudah membuka pendaftaran jauh sebelum itu. Ayah dan Bunda yang mulai mencari sekarang sebenarnya sedang berada di waktu yang tepat.</p>
+
+      <h3>Menjaga Keluarga Dimulai dari Memilih Tempat Belajar</h3>
+      <p>Allah Ta'ala berfirman:</p>
+
+      <blockquote>"Wahai orang-orang yang beriman! Peliharalah dirimu dan keluargamu dari api neraka..." (QS. At-Tahrim: 6)</blockquote>
+
+      <p>Salah satu cara menjaga anak adalah memastikan ia tumbuh di lingkungan yang dekat dengan Al-Qur'an, ilmu, dan orang-orang saleh. Memilih tempat belajar bukan sekadar urusan administrasi. Ini bagian dari amanah yang kelak dimintai pertanggungjawaban.</p>
+
+      <h3>Lima Keuntungan Mendaftar Lebih Awal</h3>
+      <ol>
+        <li><strong>Waktu persiapan anak lebih panjang.</strong> Dari Desember sampai Juli ada sekitar tujuh bulan. Waktu ini cukup untuk memperbaiki bacaan Al-Qur'an, membiasakan shalat tepat waktu, dan melatih kemandirian sedikit demi sedikit, tanpa terburu-buru.</li>
+        <li><strong>Pilihan masih lapang.</strong> Setiap pesantren punya batas jumlah kamar dan kelas. Mendaftar di awal membuat Ayah dan Bunda tidak perlu khawatir kehabisan tempat di pesantren yang sudah menjadi pilihan.</li>
+        <li><strong>Survei bisa dilakukan dengan tenang.</strong> Ada cukup waktu untuk berkunjung, bertanya, dan berdiskusi dengan anak. Keputusan yang diambil dengan tenang biasanya lebih mantap.</li>
+        <li><strong>Biaya bisa direncanakan.</strong> Dengan mengetahui rincian biaya sejak awal, keluarga bisa menyiapkan dana secara bertahap, bukan mendadak menjelang hari masuk.</li>
+        <li><strong>Hasil tes jadi bahan perbaikan.</strong> Bila dari tes masuk ternyata bacaan Al-Qur'an anak masih perlu diperbaiki, masih ada waktu berbulan-bulan untuk belajar sebelum mulai mondok.</li>
+      </ol>
+
+      <h3>Daftar Awal Bukan Berarti Terburu-buru</h3>
+      <p>Mendaftar lebih awal tetap perlu diiringi musyawarah dengan anak dan istikharah. Sahabat Jabir bin Abdillah radhiyallahu 'anhu berkata:</p>
+
+      <blockquote>"Rasulullah ﷺ mengajarkan kepada kami istikharah dalam segala urusan, sebagaimana beliau mengajarkan surah dari Al-Qur'an." (HR. Bukhari)</blockquote>
+
+      <p>Ajak anak berbicara tentang rencana ini. Dengarkan harapan dan kekhawatirannya. Anak yang dilibatkan sejak awal biasanya lebih siap menjalani hari-harinya di pesantren. Bila Ayah dan Bunda masih ragu soal kesiapan anak, artikel <a href="/artikel/usia-berapa-anak-siap-mondok">Usia Berapa Anak Siap Mondok?</a> bisa menjadi bahan pertimbangan.</p>
+
+      <h3>Jadwal Pendaftaran di PTQ Amsa001</h3>
+      <p>PTQ Amsa001 membuka pendaftaran santri baru tahun ajaran 2027/2028 dalam tiga gelombang:</p>
+      <ul>
+        <li><strong>Gelombang 1:</strong> Desember – Februari</li>
+        <li><strong>Gelombang 2:</strong> Maret – April</li>
+        <li><strong>Gelombang 3:</strong> Mei – Juni</li>
+      </ul>
+
+      <p>Alurnya sederhana. Ayah dan Bunda cukup mengisi formulir singkat secara online, lalu membayar biaya formulir Rp 200.000 lewat transfer atau langsung di pesantren. Setelah itu admin akan menghubungi lewat WhatsApp dan mengirimkan link untuk melengkapi data dan dokumen. Calon santri kemudian mengikuti tes masuk, baik online maupun offline, yang meliputi bacaan Al-Qur'an, fiqih dasar, pengetahuan agama, tes akademik, dan tes <em>Multiple Intelligence</em>.</p>
+
+      <p>Penjelasan langkah demi langkah dan rincian biayanya ada di artikel <a href="/artikel/panduan-pendaftaran-santri-baru-2027-2028">Panduan Mendaftar Santri Baru PTQ Amsa001 2027/2028</a>.</p>
+
+      <p>Semoga Allah memudahkan Ayah dan Bunda menemukan tempat terbaik untuk ananda. Bila ingin mengenal PTQ Amsa001 lebih dekat, silakan berkunjung atau langsung mengisi formulir di halaman <a href="/pendaftaran-santri-baru">Pendaftaran Santri Baru</a>.</p>
+
+      <p><em>Foto: Timur Weber / Pexels</em></p>
+    `,
+    image: '/artikel/Artikel-19.jpg',
+    author: 'Admin PTQ Amsa',
+    publishedAt: '2026-12-03',
+    category: 'Info PSB',
+    tags: ['psb', 'santri baru', 'persiapan mondok', 'tips orang tua']
+  },
+  {
+    id: '20',
+    title: '9 Pertanyaan Penting Sebelum Memilih Pesantren',
+    slug: 'pertanyaan-penting-sebelum-memilih-pesantren',
+    excerpt: 'Brosur dan media sosial hanya memberi gambaran awal. Sembilan pertanyaan ini membantu Ayah dan Bunda menilai pesantren dengan jernih sebelum memutuskan.',
+    content: `
+      <p>Mencari pesantren hari ini jauh lebih mudah daripada sepuluh tahun lalu. Cukup membuka media sosial, puluhan pilihan langsung muncul lengkap dengan foto gedung yang megah dan video kegiatan yang menarik. Namun justru karena pilihannya banyak, tidak sedikit orang tua yang bingung harus mulai dari mana.</p>
+
+      <p>Brosur dan unggahan media sosial hanya memberi gambaran awal. Untuk benar-benar mengenal sebuah pesantren, Ayah dan Bunda perlu bertanya.</p>
+
+      <h3>Lingkungan Membentuk Anak</h3>
+      <p>Rasulullah ﷺ memberikan perumpamaan yang sangat jelas tentang pengaruh lingkungan:</p>
+
+      <blockquote>"Perumpamaan teman yang saleh dan teman yang buruk seperti penjual minyak wangi dan pandai besi. Penjual minyak wangi mungkin memberimu minyak wangi, atau engkau membeli darinya, atau setidaknya engkau mencium bau harum darinya. Adapun pandai besi, mungkin ia membakar pakaianmu, atau engkau mencium bau tidak sedap darinya." (HR. Bukhari dan Muslim)</blockquote>
+
+      <p>Di pesantren, anak akan menghabiskan hampir seluruh waktunya bersama teman dan gurunya. Karena itu, memilih pesantren sama dengan memilih lingkungan yang akan ikut membentuk akhlaknya.</p>
+
+      <h3>Sembilan Pertanyaan yang Perlu Diajukan</h3>
+      <ol>
+        <li><strong>Siapa pengasuh dan gurunya?</strong> Kenali kyai pengasuh dan para ustadznya. Tanyakan latar belakang keilmuan mereka, dan apakah para guru tinggal di dalam pesantren bersama santri.</li>
+        <li><strong>Kurikulum apa yang dipakai, dan apakah ijazahnya diakui?</strong> Ini penting untuk jenjang pendidikan anak selanjutnya. Tanyakan pula pelajaran umum apa saja yang diajarkan.</li>
+        <li><strong>Bagaimana program Al-Qur'annya?</strong> Berapa target hafalan per tahun, bagaimana sistem setoran dan murajaah, dan apakah santri juga diajak memahami makna ayat yang dihafalnya.</li>
+        <li><strong>Bagaimana santri diawasi?</strong> Siapa yang mendampingi santri di asrama, terutama di malam hari? Apa yang dilakukan bila santri sakit atau sedang menghadapi masalah?</li>
+        <li><strong>Bagaimana aturan gadget?</strong> Apakah santri boleh membawa HP? Bila tidak, bagaimana caranya berkomunikasi dengan orang tua?</li>
+        <li><strong>Kapan boleh dijenguk dan pulang?</strong> Ketahui jadwal penjengukan dan liburan sejak awal, supaya Ayah, Bunda, dan anak sama-sama siap.</li>
+        <li><strong>Bagaimana makan, kebersihan, dan kesehatan?</strong> Berapa kali makan sehari, siapa yang mencuci pakaian, dan bagaimana penanganan santri yang sakit.</li>
+        <li><strong>Berapa rincian biaya lengkapnya?</strong> Jangan hanya bertanya biaya masuk. Tanyakan juga iuran bulanan dan biaya lain yang mungkin muncul, supaya tidak ada kejutan di kemudian hari.</li>
+        <li><strong>Apakah anak merasa cocok?</strong> Pertanyaan terakhir ini bukan untuk pesantren, melainkan untuk anak sendiri. Ajak ia melihat langsung dan dengarkan pendapatnya.</li>
+      </ol>
+
+      <p>Catat jawaban dari setiap pesantren yang Ayah dan Bunda kunjungi. Dengan begitu, membandingkan beberapa pilihan menjadi lebih mudah dan objektif.</p>
+
+      <h3>Jawaban dari PTQ Amsa001</h3>
+      <p>Sebagai gambaran, berikut jawaban PTQ Amsa001 untuk beberapa pertanyaan di atas:</p>
+      <ul>
+        <li><strong>Kurikulum:</strong> Kurikulum Mu'adalah yang diakui Kementerian Agama, dipadukan dengan pelajaran umum seperti Matematika, Biologi, Fisika, dan Geografi, serta bahasa Arab dan Inggris.</li>
+        <li><strong>Al-Qur'an:</strong> target hafalan 1 juz per tahun, dengan setoran harian kepada ustadz/ustadzah pembimbing dan murajaah terjadwal. Kami mengutamakan kualitas hafalan dan pemahaman makna.</li>
+        <li><strong>Pengawasan:</strong> santri didampingi 24 jam oleh asatidz dan asatidzah yang tinggal di dalam pesantren.</li>
+        <li><strong>Gadget:</strong> santri tidak membawa HP. Orang tua dapat berkomunikasi lewat telepon pesantren sesuai jadwal, atau langsung saat hari penjengukan.</li>
+        <li><strong>Kebutuhan harian:</strong> makan tiga kali sehari dan layanan laundry.</li>
+      </ul>
+
+      <p>Jadwal penjengukan, rincian biaya, dan jawaban untuk pertanyaan lainnya bisa Ayah dan Bunda baca di halaman <a href="/faq">Tanya Jawab (FAQ)</a>.</p>
+
+      <h3>Setelah Bertanya, Bermusyawarahlah</h3>
+      <p>Setelah semua informasi terkumpul, duduklah bersama anak dan pasangan. Timbang dengan tenang, lalu serahkan keputusan akhirnya kepada Allah melalui shalat istikharah. Bila Ayah dan Bunda baru mulai mencari, baca juga <a href="/artikel/daftar-pesantren-lebih-awal-gelombang-1">Mengapa Sebaiknya Daftar Pesantren Lebih Awal</a>.</p>
+
+      <p>Kami dengan senang hati menjawab pertanyaan Ayah dan Bunda, baik lewat WhatsApp maupun saat berkunjung langsung ke PTQ Amsa001 di Gadog, Bogor.</p>
+
+      <p><em>Foto: August de Richelieu / Pexels</em></p>
+    `,
+    image: '/artikel/Artikel-20.jpg',
+    author: 'Admin PTQ Amsa',
+    publishedAt: '2026-12-10',
+    category: 'Parenting',
+    tags: ['tips orang tua', 'persiapan mondok', 'pendidikan islam', 'psb']
+  },
+  {
+    id: '21',
+    title: 'Survei Pesantren di Musim Libur: Panduan untuk Orang Tua',
+    slug: 'survei-pesantren-saat-libur-sekolah',
+    excerpt: 'Libur akhir tahun waktu yang pas untuk mengunjungi pesantren bersama anak. Ini hal-hal yang perlu diperhatikan supaya survei tidak sekadar jalan-jalan.',
+    content: `
+      <p>Libur sekolah akhir tahun sering dimanfaatkan keluarga untuk berlibur. Bagi orang tua yang sedang mencari pesantren, libur ini juga kesempatan yang baik untuk survei. Anak tidak sedang sekolah, sehingga ia bisa ikut melihat langsung calon tempat belajarnya.</p>
+
+      <p>Namun survei yang baik bukan sekadar datang, berkeliling, lalu pulang. Ada beberapa hal yang sebaiknya disiapkan dan diperhatikan.</p>
+
+      <h3>Sebelum Berangkat</h3>
+      <ol>
+        <li><strong>Buat janji terlebih dahulu.</strong> Hubungi admin pesantren dan sampaikan rencana kunjungan. Dengan begitu, ada pihak pesantren yang siap menemani dan menjawab pertanyaan.</li>
+        <li><strong>Tanyakan apakah santri sedang di pondok.</strong> Pesantren juga punya jadwal libur. Bila memungkinkan, pilih waktu ketika santri sedang beraktivitas, supaya Ayah dan Bunda bisa merasakan suasana yang sebenarnya.</li>
+        <li><strong>Siapkan daftar pertanyaan.</strong> Tuliskan hal-hal yang ingin diketahui. Panduannya ada di artikel <a href="/artikel/pertanyaan-penting-sebelum-memilih-pesantren">9 Pertanyaan Penting Sebelum Memilih Pesantren</a>.</li>
+        <li><strong>Ajak anak, dan siapkan hatinya.</strong> Ceritakan bahwa kunjungan ini untuk melihat-lihat, bukan untuk langsung ditinggal. Anak yang tidak merasa tertekan akan lebih terbuka menilai.</li>
+      </ol>
+
+      <p>Datang dengan membuat janji juga bagian dari adab bertamu. Allah Ta'ala berfirman:</p>
+
+      <blockquote>"Wahai orang-orang yang beriman! Janganlah kamu memasuki rumah yang bukan rumahmu sebelum meminta izin dan memberi salam kepada penghuninya..." (QS. An-Nur: 27)</blockquote>
+
+      <h3>Yang Perlu Diperhatikan Saat Berkunjung</h3>
+      <ul>
+        <li><strong>Masjid dan suasana ibadah.</strong> Bila sempat, ikutlah shalat berjamaah. Perhatikan apakah santri datang tepat waktu dan bagaimana suasana setelah shalat.</li>
+        <li><strong>Kamar dan kamar mandi.</strong> Inilah tempat anak menghabiskan banyak waktunya. Lihat kerapian, kebersihan, dan tempat penyimpanan barang pribadinya.</li>
+        <li><strong>Dapur dan ruang makan.</strong> Kebersihan tempat makan menjadi salah satu tanda pesantren memperhatikan kesehatan santrinya.</li>
+        <li><strong>Cara guru berinteraksi dengan santri.</strong> Apakah hangat dan saling menghormati? Hubungan guru dan santri yang baik membuat anak betah belajar.</li>
+        <li><strong>Wajah para santri.</strong> Santri yang betah biasanya tampak ceria dan ramah. Bila diizinkan, ajak satu-dua santri mengobrol tentang keseharian mereka.</li>
+        <li><strong>Kegiatan Al-Qur'an.</strong> Lihat bagaimana setoran hafalan dan murajaah berjalan, dan bagaimana santri dibimbing.</li>
+        <li><strong>Lingkungan dan akses.</strong> Perhatikan keamanan lingkungan sekitar, serta jarak dan waktu tempuh dari rumah untuk keperluan penjengukan.</li>
+      </ul>
+
+      <h3>Setelah Pulang</h3>
+      <p>Dalam perjalanan pulang atau setibanya di rumah, tanyakan kepada anak apa yang ia sukai dan apa yang membuatnya ragu. Jangan buru-buru menyimpulkan. Catat kesan Ayah dan Bunda selagi masih segar, lalu bandingkan dengan pesantren lain yang dikunjungi. Setelah itu, bermusyawarahlah dan mohonlah petunjuk kepada Allah melalui shalat istikharah.</p>
+
+      <h3>Berkunjung ke PTQ Amsa001</h3>
+      <p>PTQ Amsa001 menerima kunjungan calon wali santri setiap hari pada jam kerja. Silakan hubungi admin lewat WhatsApp terlebih dahulu untuk mengatur jadwal. Saat berkunjung, Ayah dan Bunda bisa melihat asrama putra dan putri, masjid, lab komputer, perpustakaan, fasilitas olahraga, hingga gazebo tempat penjengukan.</p>
+
+      <p>Lokasi kami di Jl. Cikopo Selatan, Gg. Yulias, Desa Gadog, Kecamatan Megamendung, Kabupaten Bogor. Dari Jakarta, keluar di gerbang tol Gadog (Vimala Hills), lalu belok kanan ke jalur alternatif menuju Taman Safari Cisarua.</p>
+
+      <p>Sebelum berkunjung, ananda juga bisa mencoba <a href="/tes-bakat">Tes Bakat Multiple Intelligence</a> secara gratis untuk mengenali kecerdasan dominannya. Hasilnya bisa menjadi bahan obrolan yang menarik saat survei nanti.</p>
+
+      <p><em>Foto: apyfz / Pexels</em></p>
+    `,
+    image: '/artikel/Artikel-21.jpg',
+    author: 'Admin PTQ Amsa',
+    publishedAt: '2026-12-17',
+    category: 'Info PSB',
+    tags: ['psb', 'persiapan mondok', 'tips orang tua', 'santri baru']
+  },
+  {
+    id: '22',
+    title: 'Ijazah Pesantren Mu\'adalah, Apakah Diakui Negara?',
+    slug: 'ijazah-pesantren-muadalah-diakui-negara',
+    excerpt: 'Banyak orang tua bertanya apakah lulusan pesantren Mu\'adalah bisa melanjutkan ke perguruan tinggi. Begini penjelasan singkat tentang pengakuan ijazahnya.',
+    content: `
+      <p><em>"Kalau anak saya mondok, nanti ijazahnya bisa dipakai kuliah tidak?"</em> Pertanyaan ini hampir selalu muncul ketika orang tua mempertimbangkan pesantren. Wajar saja. Setiap orang tua ingin anaknya kuat agamanya, tetapi juga tidak tertutup jalannya untuk melanjutkan pendidikan.</p>
+
+      <p>Salah satu istilah yang sering ditemui saat mencari pesantren adalah <strong>Mu'adalah</strong>. Apa sebenarnya artinya, dan bagaimana status ijazahnya?</p>
+
+      <h3>Apa Itu Pendidikan Mu'adalah?</h3>
+      <p>Kata <em>mu'adalah</em> berasal dari bahasa Arab yang berarti "penyetaraan". Pendidikan Mu'adalah adalah pendidikan formal yang diselenggarakan oleh pesantren dengan kurikulum khas pesantren itu sendiri, misalnya kajian kitab dan ilmu-ilmu keislaman, dengan pola pendidikan <em>mu'allimin</em> yang berjenjang. Di dalamnya tetap ada pelajaran umum, sehingga lulusannya setara dengan lulusan sekolah formal pada jenjang yang sama.</p>
+
+      <p>Pola ini sudah lama dikenal di Indonesia. Banyak pesantren besar menerapkan sistem <em>Kulliyatul Mu'allimin</em> yang memadukan ilmu agama, bahasa Arab dan Inggris, serta pelajaran umum dalam satu kurikulum utuh untuk jenjang setara SMP hingga SMA.</p>
+
+      <h3>Dasar Hukumnya</h3>
+      <p>Pengakuan terhadap pendidikan pesantren semakin kuat sejak terbitnya <strong>Undang-Undang Nomor 18 Tahun 2019 tentang Pesantren</strong>. Undang-undang ini menempatkan pendidikan Mu'adalah sebagai bagian dari jalur pendidikan formal, dan lulusannya memiliki kesetaraan dengan lulusan pendidikan formal lainnya. Ketentuan pelaksanaannya diatur lebih lanjut dalam <strong>Peraturan Menteri Agama Nomor 31 Tahun 2020 tentang Pendidikan Pesantren</strong>.</p>
+
+      <p>Artinya, ijazah dari pesantren Mu'adalah yang telah diakui Kementerian Agama dapat dipakai untuk melanjutkan ke jenjang berikutnya, baik ke perguruan tinggi umum maupun perguruan tinggi keagamaan.</p>
+
+      <h3>Mengapa Banyak Keluarga Memilihnya</h3>
+      <ul>
+        <li><strong>Agama dan ilmu umum berjalan bersama.</strong> Anak tidak harus memilih salah satu.</li>
+        <li><strong>Bahasa sebagai bekal.</strong> Bahasa Arab membuka jalan memahami Al-Qur'an dan kitab, sedangkan bahasa Inggris membuka pintu ilmu yang lebih luas.</li>
+        <li><strong>Adab dan kemandirian.</strong> Kehidupan asrama melatih disiplin, tanggung jawab, dan kepedulian kepada sesama.</li>
+        <li><strong>Pilihan lanjutan yang luas.</strong> Lulusan bisa melanjutkan ke perguruan tinggi di dalam maupun luar negeri.</li>
+      </ul>
+
+      <p>Semangat menuntut ilmu agama dengan sungguh-sungguh ini sejalan dengan firman Allah:</p>
+
+      <blockquote>"...Mengapa tidak pergi dari setiap golongan di antara mereka beberapa orang untuk memperdalam pengetahuan agama mereka dan untuk memberi peringatan kepada kaumnya apabila mereka telah kembali kepadanya, supaya mereka itu dapat menjaga dirinya." (QS. At-Taubah: 122)</blockquote>
+
+      <h3>Hal yang Perlu Ditanyakan ke Pesantren</h3>
+      <ol>
+        <li>Apakah pesantren sudah memiliki izin dan pengakuan dari Kementerian Agama?</li>
+        <li>Pelajaran umum apa saja yang diajarkan, dan bagaimana porsinya?</li>
+        <li>Berapa lama masa belajar untuk lulusan SD, dan bagaimana untuk lulusan SMP?</li>
+        <li>Ke mana saja para alumninya melanjutkan pendidikan?</li>
+      </ol>
+
+      <p>Untuk kebutuhan yang lebih khusus, misalnya rencana pindah sekolah di tengah jalan, sebaiknya konsultasikan langsung dengan pihak pesantren karena setiap kasus bisa berbeda.</p>
+
+      <h3>Mu'adalah di PTQ Amsa001</h3>
+      <p>PTQ Amsa001 menggunakan Kurikulum Mu'adalah Mu'allimin setara SMP–SMA yang diakui Kementerian Agama. Santri belajar bahasa Arab dan Inggris, ilmu-ilmu keislaman, serta pelajaran umum seperti Matematika, Biologi, Fisika, dan Geografi dengan pembelajaran berbasis proyek. Di samping itu, santri menghafal dan mentadabburi Al-Qur'an setiap hari. Lulusannya dapat melanjutkan ke perguruan tinggi di dalam maupun luar negeri, umum maupun keagamaan.</p>
+
+      <p>Ada pertanyaan lain seputar kurikulum dan ijazah? Silakan baca halaman <a href="/faq">Tanya Jawab (FAQ)</a> atau hubungi admin kami lewat WhatsApp.</p>
+
+      <p><em>Foto: fotobi / Pexels</em></p>
+    `,
+    image: '/artikel/Artikel-22.jpg',
+    author: 'Admin PTQ Amsa',
+    publishedAt: '2026-12-24',
+    category: 'Pendidikan',
+    tags: ['pendidikan islam', 'psb', 'tips orang tua', 'bahasa arab']
+  },
+  {
+    id: '23',
+    title: 'Enam Bulan Menuju Pondok: Persiapan Bertahap untuk Anak',
+    slug: 'persiapan-enam-bulan-sebelum-mondok',
+    excerpt: 'Tahun ajaran baru dimulai Juli. Enam bulan cukup untuk menyiapkan anak sedikit demi sedikit: bacaan Al-Qur\'an, ibadah, kemandirian, dan hatinya.',
+    content: `
+      <p>Hari ini adalah hari terakhir di tahun 2026. Bagi keluarga yang sudah mantap memondokkan anaknya tahun depan, ini saat yang tepat untuk menengok kalender. Dari Januari sampai Juli, masih ada sekitar enam bulan sebelum ananda resmi menjadi santri.</p>
+
+      <p>Enam bulan terdengar lama, tetapi waktu berjalan cepat. Bila persiapan dilakukan mendadak di bulan terakhir, anak dan orang tua sama-sama tegang. Sebaliknya, persiapan yang dicicil sedikit demi sedikit terasa lebih ringan dan hasilnya lebih menetap.</p>
+
+      <blockquote>"Amalan yang paling dicintai Allah adalah yang paling terus-menerus dikerjakan, meskipun sedikit." (HR. Bukhari dan Muslim)</blockquote>
+
+      <h3>Januari: Perbaiki Bacaan Al-Qur'an</h3>
+      <p>Mulailah dari pondasi. Ajak anak membaca Al-Qur'an setiap hari di depan guru ngaji atau orang tua yang bacaannya baik. Fokus pada makhraj huruf dan tajwid dasar, bukan banyaknya halaman. Bacaan yang benar akan memudahkan anak saat mulai menghafal. Alasannya dijelaskan di artikel <a href="/artikel/kenapa-tahsin-sebelum-menghafal-al-quran">Kenapa Tahsin Didahulukan Sebelum Menghafal Al-Qur'an</a>.</p>
+
+      <h3>Februari: Biasakan Shalat Tepat Waktu dan Bangun Sebelum Subuh</h3>
+      <p>Di pesantren, hari dimulai sebelum fajar. Biasakan anak tidur lebih awal agar bisa bangun sebelum subuh tanpa drama. Insya Allah bulan Ramadhan tahun depan jatuh sekitar Februari hingga Maret 2027. Manfaatkan momen sahur, tarawih, dan tadarus bersama keluarga sebagai latihan alami.</p>
+
+      <h3>Maret: Latih Kemandirian</h3>
+      <p>Berikan tanggung jawab kecil yang rutin: mencuci pakaian dalamnya sendiri, merapikan tempat tidur, menyiapkan pakaian, dan mengatur uang jajan mingguan. Biarkan anak sesekali keliru, lalu bimbing ia memperbaikinya. Kemandirian tumbuh dari kesempatan mencoba.</p>
+
+      <h3>April: Mulai Menghafal Surah Pendek</h3>
+      <p>Pilih surah-surah pendek di juz 30 dan hafalkan bersama. Tidak perlu mengejar target besar. Yang lebih penting adalah anak merasakan nikmatnya menghafal dan terbiasa mengulang hafalannya. Panduan menentukan target yang sehat ada di artikel <a href="/artikel/target-hafalan-realistis-anak-sd-smp">Target Hafalan yang Realistis untuk Anak Usia SD dan SMP</a>.</p>
+
+      <h3>Mei: Kurangi Gadget Secara Bertahap</h3>
+      <p>Banyak pesantren, termasuk PTQ Amsa001, tidak mengizinkan santri membawa HP. Agar anak tidak kaget, kurangi waktu layar sedikit demi sedikit dan gantikan dengan kegiatan lain: membaca buku, berolahraga, atau membantu pekerjaan rumah. Tips selengkapnya ada di artikel <a href="/artikel/gadget-saat-liburan-panduan-orang-tua-santri">Gadget Saat Liburan: Panduan untuk Orang Tua Santri</a>.</p>
+
+      <h3>Juni: Siapkan Fisik, Perlengkapan, dan Hati</h3>
+      <ul>
+        <li><strong>Periksa kesehatan anak</strong>, termasuk gigi dan mata, supaya ia memulai mondok dalam kondisi prima.</li>
+        <li><strong>Siapkan perlengkapan</strong> bersama anak. Biarkan ia ikut memilih dan menandai barang-barangnya. Daftarnya bisa dilihat di <a href="/artikel/checklist-barang-bawaan-santri-baru">Checklist Barang Bawaan Santri Baru</a>.</li>
+        <li><strong>Bicarakan perasaannya.</strong> Wajar bila anak gugup menjelang hari pertama. Dengarkan, yakinkan, dan doakan. Baca juga <a href="/artikel/tips-menyiapkan-mental-anak-masuk-pesantren">Tips Menyiapkan Mental Anak Sebelum Masuk Pesantren</a>.</li>
+      </ul>
+
+      <h3>Jangan Lupakan Persiapan Orang Tua</h3>
+      <p>Persiapan bukan hanya untuk anak. Ayah dan Bunda juga perlu menyiapkan hati untuk melepas, mengatur rencana penjengukan, dan merencanakan keuangan. Yang terpenting, iringi setiap langkah dengan doa. Anak yang berangkat dengan doa dan restu orang tuanya insya Allah lebih kuat menghadapi hari-hari awal di pesantren.</p>
+
+      <h3>Masih Ada Waktu untuk Mendaftar</h3>
+      <p>Persiapan ini juga sejalan dengan tes masuk PTQ Amsa001 yang meliputi bacaan Al-Qur'an, fiqih dasar seperti wudhu dan shalat, pengetahuan dasar agama, tes akademik, dan tes <em>Multiple Intelligence</em>. Pendaftaran Gelombang 1 masih dibuka hingga Februari, disusul Gelombang 2 (Maret–April) dan Gelombang 3 (Mei–Juni). Silakan isi formulir di halaman <a href="/pendaftaran-santri-baru">Pendaftaran Santri Baru</a> atau hubungi admin kami lewat WhatsApp.</p>
+
+      <p><em>Foto: Al Hoque / Pexels</em></p>
+    `,
+    image: '/artikel/Artikel-23.jpg',
+    author: 'Admin PTQ Amsa',
+    publishedAt: '2026-12-31',
+    category: 'Parenting',
+    tags: ['persiapan mondok', 'santri baru', 'kemandirian', 'tips orang tua', 'tahsin']
   },
 ];
