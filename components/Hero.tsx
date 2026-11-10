@@ -58,7 +58,7 @@ export default function Hero() {
           <span className="block text-3xl md:text-7xl">Penerimaan Santri Baru</span>
           <span className="mt-2 block text-xl md:text-4xl font-semibold">Pesantren Tadabbur Al-Qur&apos;an Amsa001</span>
         </h1>
-        <p className="text-3xl md:text-5xl mb-8 opacity-95 font-semibold drop-shadow-md">
+        <p className="text-xl md:text-4xl mb-8 opacity-95 font-semibold drop-shadow-md">
           (Putra - Putri)
         </p>
         <p className="text-xl md:text-3xl mb-2 text-yellow-400 drop-shadow-lg">

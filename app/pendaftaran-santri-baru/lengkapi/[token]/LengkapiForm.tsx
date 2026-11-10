@@ -56,13 +56,13 @@ export type DataAwal = Pick<
   | "provinsi"
 > & { dokumenAda: Record<DokumenKey, boolean> };
 
-const DOKUMEN: { key: DokumenKey; label: string; prefix: string; hint: string; optional?: boolean }[] = [
-  { key: "kk", label: "Kartu Keluarga (KK)", prefix: "kk", hint: "Scan/foto yang jelas" },
-  { key: "akta", label: "Akta Kelahiran", prefix: "akta", hint: "Scan/foto yang jelas" },
-  { key: "ijazah", label: "Ijazah / Surat Keterangan Lulus", prefix: "ijazah", hint: "Ijazah terakhir (SD/MI atau SMP/MTs)" },
-  { key: "ktpOrtu", label: "KTP Orang Tua / Wali", prefix: "ktp-ortu", hint: "Scan/foto yang jelas" },
-  { key: "pasFoto", label: "Pas Foto 3x4", prefix: "pas-foto", hint: "Foto terbaru, latar belakang terang" },
-  { key: "suratSehat", label: "Surat Keterangan Sehat", prefix: "surat-sehat", hint: "Dari dokter", optional: true },
+const DOKUMEN: { key: DokumenKey; label: string; hint: string; optional?: boolean }[] = [
+  { key: "kk", label: "Kartu Keluarga (KK)", hint: "Scan/foto yang jelas" },
+  { key: "akta", label: "Akta Kelahiran", hint: "Scan/foto yang jelas" },
+  { key: "ijazah", label: "Ijazah / Surat Keterangan Lulus", hint: "Ijazah terakhir (SD/MI atau SMP/MTs)" },
+  { key: "ktpOrtu", label: "KTP Orang Tua / Wali", hint: "Scan/foto yang jelas" },
+  { key: "pasFoto", label: "Pas Foto 3x4", hint: "Foto terbaru, latar belakang terang" },
+  { key: "suratSehat", label: "Surat Keterangan Sehat", hint: "Dari dokter", optional: true },
 ];
 
 const MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024;
@@ -166,16 +166,32 @@ export default function LengkapiForm({ token, data }: { token: string; data: Dat
 
     setIsSubmitting(true);
     try {
-      // File diunggah langsung dari browser ke Supabase (bypass batas ukuran request Vercel)
+      // File diunggah langsung dari browser ke Supabase (bypass batas ukuran request Vercel),
+      // memakai izin unggah sekali pakai dari server yang hanya diberikan kepada pemegang link ini
       const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
       const uploads = await Promise.all(
         DOKUMEN.filter((d) => files[d.key]).map(async (d) => {
           const file = files[d.key]!;
-          const ext = (file.name.split(".").pop() ?? "bin").replace(/[^a-zA-Z0-9]/g, "").toLowerCase() || "bin";
-          const path = `pendaftaran/${data.id}/${d.prefix}-${Date.now()}.${ext}`;
-          const { error } = await supabase.storage.from("dokumen-santri").upload(path, file, { upsert: false });
+          const izin = await fetch("/api/lengkapi-pendaftaran/upload", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token, key: d.key, type: file.type, size: file.size }),
+          });
+          const hasil = (await izin.json().catch(() => ({}))) as {
+            success?: boolean;
+            error?: string;
+            path?: string;
+            uploadToken?: string;
+            publicUrl?: string;
+          };
+          if (!hasil.success || !hasil.path || !hasil.uploadToken || !hasil.publicUrl) {
+            throw new Error(`Gagal mengunggah ${d.label}: ${hasil.error ?? "silakan coba lagi."}`);
+          }
+          const { error } = await supabase.storage
+            .from("dokumen-santri")
+            .uploadToSignedUrl(hasil.path, hasil.uploadToken, file, { contentType: file.type });
           if (error) throw new Error(`Gagal mengunggah ${d.label}: ${error.message}`);
-          return [d.key, supabase.storage.from("dokumen-santri").getPublicUrl(path).data.publicUrl] as const;
+          return [d.key, hasil.publicUrl] as const;
         })
       );
 
