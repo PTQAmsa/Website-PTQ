@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import miQuestions from '../data/miQuestions';
 import MIResultModal from './MIResultModal';
@@ -12,7 +12,7 @@ const SCALE = [
   { value: 4, label: "Sangat Sesuai" },
 ];
 
-export default function MITest() {
+export default function MITest({ breadcrumb }: { breadcrumb?: ReactNode }) {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState('');
@@ -47,6 +47,7 @@ export default function MITest() {
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-blue-900/50 flex flex-col items-center justify-center text-white text-center px-4">
+          {breadcrumb}
           <span className="bg-yellow-400 text-blue-900 text-m font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wide">
             Gratis · Hanya 2 Menit
           </span>

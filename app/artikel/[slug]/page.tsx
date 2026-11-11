@@ -3,9 +3,8 @@ import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
-import Link from 'next/link';
 import ArticleBody from '@/components/ArticleBody';
-import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
+import Breadcrumb from '@/components/Breadcrumb';
 import { getPublishedArticle, getPublishedArticles } from '@/lib/articles';
 import { SITE_URL } from '@/lib/site';
 
@@ -102,26 +101,17 @@ export default async function ArtikelDetail({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
 
-      <BreadcrumbJsonLd
-        items={[
-          { name: 'Artikel', path: '/artikel' },
-          { name: article.title, path: `/artikel/${article.slug}` },
-        ]}
-      />
-
       {/* Article Header */}
       <article className="pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb */}
-          <nav aria-label="Breadcrumb" className="mb-6 text-sm">
-            <ol className="flex min-w-0 items-center gap-1.5 text-gray-500">
-              <li className="shrink-0"><Link href="/" className="text-blue-600 hover:text-blue-800">Beranda</Link></li>
-              <li aria-hidden="true" className="shrink-0">›</li>
-              <li className="shrink-0"><Link href="/artikel" className="text-blue-600 hover:text-blue-800">Artikel</Link></li>
-              <li aria-hidden="true" className="shrink-0">›</li>
-              <li aria-current="page" className="min-w-0 truncate text-gray-600">{article.title}</li>
-            </ol>
-          </nav>
+          <Breadcrumb
+            tone="light"
+            align="start"
+            items={[
+              { name: 'Artikel', path: '/artikel' },
+              { name: article.title, path: `/artikel/${article.slug}` },
+            ]}
+          />
 
           <ArticleBody article={article} />
 

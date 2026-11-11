@@ -5,7 +5,7 @@ import AlurPendaftaran from '@/components/AlurPendaftaran';
 import RegistrationForm from '@/components/RegistrationForm';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
+import Breadcrumb from '@/components/Breadcrumb';
 
 export const metadata: Metadata = {
   title: "Pendaftaran Santri Baru 2027/2028 | PTQ Amsa001",
@@ -17,7 +17,6 @@ export default function PendaftaranSantriBaru() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      <BreadcrumbJsonLd items={[{ name: 'Pendaftaran Santri Baru', path: '/pendaftaran-santri-baru' }]} />
       <BackToTop />
 
       {/* Hero Banner Section */}
@@ -37,6 +36,7 @@ export default function PendaftaranSantriBaru() {
           </div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Breadcrumb items={[{ name: 'Pendaftaran Santri Baru', path: '/pendaftaran-santri-baru' }]} />
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6">
             Pendaftaran Santri Baru
           </h1>

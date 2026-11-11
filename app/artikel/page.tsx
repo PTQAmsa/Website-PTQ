@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { formatArticleDate, getPublishedArticles } from '@/lib/articles';
 import { SITE_URL } from '@/lib/site';
-import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
+import Breadcrumb from '@/components/Breadcrumb';
 
 // Artikel terjadwal muncul tanpa deploy ulang (lihat lib/articles.ts)
 export const revalidate = 3600;
@@ -24,12 +24,12 @@ export default function Artikel() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      <BreadcrumbJsonLd items={[{ name: 'Artikel', path: '/artikel' }]} />
       <BackToTop />
       
       {/* Hero Section */}
       <section className="pt-24 pb-16 bg-gradient-to-br from-blue-800 to-blue-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Breadcrumb items={[{ name: 'Artikel', path: '/artikel' }]} />
           <h1 className="text-4xl md:text-5xl font-bold text-white text-center mb-6">
             Artikel & Berita
           </h1>

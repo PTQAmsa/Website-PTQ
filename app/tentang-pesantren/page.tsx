@@ -3,7 +3,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import type { Metadata } from 'next';
-import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
+import Breadcrumb from '@/components/Breadcrumb';
 
 export const metadata: Metadata = {
   title: "Tentang Pesantren | PTQ Amsa001",
@@ -15,12 +15,12 @@ export default function TentangPesantren() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      <BreadcrumbJsonLd items={[{ name: 'Tentang Pesantren', path: '/tentang-pesantren' }]} />
       <BackToTop />
       
       {/* Hero Section */}
       <section className="pt-24 pb-16 bg-gradient-to-br from-blue-800 to-blue-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Breadcrumb items={[{ name: 'Tentang Pesantren', path: '/tentang-pesantren' }]} />
           <h1 className="text-4xl md:text-5xl font-bold text-white text-center mb-6">
             Tentang Pesantren
           </h1>
