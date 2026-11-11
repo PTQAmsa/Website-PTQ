@@ -136,10 +136,10 @@ export default function PendaftaranSantriBaru() {
                 WhatsApp: +62 856-9225-3516
               </a>
               <a
-                href="mailto:info@ptqamsa.id"
-                className="bg-white text-blue-900 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition"
+                href="mailto:pesantrentaddaburquran@gmail.com"
+                className="bg-white text-blue-900 px-5 md:px-6 py-3 rounded-full text-sm md:text-base font-semibold hover:bg-gray-100 transition"
               >
-                Email: info@ptqamsa.id
+                <span className="hidden sm:inline">Email: </span>pesantrentaddaburquran@gmail.com
               </a>
             </div>
           </div>

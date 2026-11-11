@@ -935,7 +935,7 @@ export const articles: Article[] = [
       <h3>Kontak Pendaftaran</h3>
       <ul>
         <li>WhatsApp: <a href="https://wa.me/6285692253516" target="_blank" rel="noopener noreferrer">+62 856-9225-3516</a></li>
-        <li>Email: <a href="mailto:info@ptqamsa.id">info@ptqamsa.id</a></li>
+        <li>Email: <a href="mailto:pesantrentaddaburquran@gmail.com">pesantrentaddaburquran@gmail.com</a></li>
       </ul>
 
       <h3>Pertanyaan yang Sering Diajukan</h3>

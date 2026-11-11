@@ -36,13 +36,13 @@ export default function Footer() {
                 <span>+62 856-9225-3516</span>
               </a>
               <a
-                href="mailto:info@ptqamsa.id"
+                href="mailto:pesantrentaddaburquran@gmail.com"
                 className="flex items-center gap-3 hover:text-white transition"
               >
                 <svg className="w-5 h-5 flex-shrink-0" fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
                 </svg>
-                <span>info@ptqamsa.id</span>
+                <span className="break-all">pesantrentaddaburquran@gmail.com</span>
               </a>
               <a
                 href="https://www.instagram.com/ptqamsa001"
@@ -86,7 +86,7 @@ export default function Footer() {
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
             </a>
-            <a href="mailto:info@ptqamsa.id" className="hover:opacity-80 transition" aria-label="Email">
+            <a href="mailto:pesantrentaddaburquran@gmail.com" className="hover:opacity-80 transition" aria-label="Email">
               <svg className="w-8 h-8" fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
               </svg>

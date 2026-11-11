@@ -74,7 +74,7 @@ export default function RootLayout({
               "image": "https://www.ptqamsa.id/hero-bg-1.jpg",
               "description": "Pesantren tahfidz dan tadabbur Al-Qur'an putra-putri di Gadog, Megamendung, Bogor, dengan kurikulum Mu'adalah setara SMP–SMA",
               "telephone": "+62-856-9225-3516",
-              "email": "info@ptqamsa.id",
+              "email": "pesantrentaddaburquran@gmail.com",
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "Jl. Cikopo Selatan, Gg. Yulias, Kampung Sukabirus, Desa Gadog",
@@ -94,7 +94,7 @@ export default function RootLayout({
                 "@type": "ContactPoint",
                 "contactType": "Admissions",
                 "telephone": "+62-856-9225-3516",
-                "email": "info@ptqamsa.id",
+                "email": "pesantrentaddaburquran@gmail.com",
                 "availableLanguage": ["Indonesian", "Arabic", "English"]
               },
               "sameAs": [

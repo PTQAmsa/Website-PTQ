@@ -99,11 +99,11 @@ export default function Contact() {
                 </svg>
                 <div>
                   <div className="font-bold text-lg mb-1">YouTube</div>
-                  <div className="opacity-90">Pesantren Tadabbur Al-Qur'an Amsa</div>
+                  <div className="opacity-90">Pesantren Tadabbur Al-Qur&apos;an Amsa</div>
                 </div>
               </a>
               <a 
-                href="mailto:info@ptqamsa.id"
+                href="mailto:pesantrentaddaburquran@gmail.com"
                 className="flex items-start gap-4 hover:opacity-80 transition"
               >
                 <svg className="w-8 h-8 mt-1 flex-shrink-0" fill="#fbbf24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -111,7 +111,7 @@ export default function Contact() {
                 </svg>
                 <div>
                   <div className="font-bold text-lg mb-1">Email</div>
-                  <div className="opacity-90">info@ptqamsa.id</div>
+                  <div className="opacity-90 break-all">pesantrentaddaburquran@gmail.com</div>
                 </div>
               </a>
               <a 
